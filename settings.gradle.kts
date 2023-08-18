@@ -14,5 +14,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Route Search"
-include(":app")
- 
+include(
+  ":app",
+  ":data",
+)
