@@ -1,4 +1,5 @@
 [versions]
+apollo = "3.8.2"
 agp = "8.2.0-alpha16"
 kotlin = "1.8.10"
 core-ktx = "1.10.1"
@@ -7,6 +8,7 @@ activity-compose = "1.7.2"
 compose-bom = "2023.03.00"
 
 [libraries]
+apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
@@ -21,7 +23,7 @@ ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 
 [plugins]
+apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-
