@@ -1,8 +1,10 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
   id(libs.plugins.androidApplication.get().pluginId)
   id(libs.plugins.kotlinAndroid.get().pluginId)
 }
-
 android {
   namespace = "com.route_search"
   compileSdk = 34
@@ -41,13 +43,26 @@ android {
     }
   }
 }
-
+tasks.withType<Test> {
+  useJUnitPlatform()
+  testLogging {
+    exceptionFormat = TestExceptionFormat.FULL
+    events = setOf(
+      TestLogEvent.SKIPPED,
+      TestLogEvent.PASSED,
+      TestLogEvent.FAILED,
+    )
+    showStandardStreams = true
+  }
+}
 dependencies {
+  implementation(project(":data"))
 
   implementation(libs.core.ktx)
   implementation(libs.lifecycle.runtime.ktx)
   implementation(libs.activity.compose)
   implementation(platform(libs.compose.bom))
+  implementation(libs.koin.android)
   implementation(libs.ui)
   implementation(libs.ui.graphics)
   implementation(libs.ui.tooling.preview)
@@ -55,4 +70,7 @@ dependencies {
 
   debugImplementation(libs.ui.tooling)
   debugImplementation(libs.ui.test.manifest)
+
+  testImplementation(libs.junit.jupiter)
+  testImplementation(libs.koin.android.test)
 }
