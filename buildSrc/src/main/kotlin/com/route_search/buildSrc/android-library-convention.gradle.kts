@@ -1,5 +1,6 @@
-import org.gradle.api.JavaVersion
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 val libs = the<LibrariesForLibs>()
 
@@ -11,7 +12,6 @@ plugins {
   id("org.jetbrains.kotlin.android")
   id("com.android.library")
 }
-
 android {
   compileSdk = 34
   lint.targetSdk = 34
@@ -30,5 +30,17 @@ android {
   }
   kotlin {
     jvmToolchain(17)
+  }
+}
+tasks.withType<Test> {
+  useJUnitPlatform()
+  testLogging {
+    exceptionFormat = TestExceptionFormat.FULL
+    events = setOf(
+      TestLogEvent.SKIPPED,
+      TestLogEvent.PASSED,
+      TestLogEvent.FAILED,
+    )
+    showStandardStreams = true
   }
 }
