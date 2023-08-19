@@ -12,5 +12,7 @@ apollo {
   generateKotlinModels.set(true)
 }
 dependencies {
+  api(libs.koin.core)
+
   implementation(libs.apollo.runtime)
 }
