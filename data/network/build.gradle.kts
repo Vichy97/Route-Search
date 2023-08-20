@@ -4,6 +4,18 @@ plugins {
 }
 android {
   namespace = "com.route_search.network"
+  
+  buildFeatures {
+    buildConfig = true
+  }
+  buildTypes {
+    debug {
+      buildConfigField("String", "API_URL", "\"https://stg-api.openbeta.io/\"")
+    }
+    release {
+      buildConfigField("String", "API_URL", "\"https://api.openbeta.io/\"")
+    }
+  }
 }
 apollo {
   service("open_beta") {
