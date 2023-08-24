@@ -1,0 +1,24 @@
+query AreaQuery($uuid: ID) {
+  area(uuid: $uuid) {
+    id
+    areaName
+    content {
+      description
+    }
+    pathTokens
+    authorMetadata {
+      createdAt
+      updatedAt
+    }
+    metadata {
+      lng
+      lat
+    }
+    children {
+      areaName
+      uuid
+      totalClimbs
+    }
+    totalClimbs
+  }
+}
