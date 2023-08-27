@@ -77,6 +77,7 @@ dependencies {
   implementation(libs.ui.tooling.preview)
   implementation(libs.material3)
 
+  debugImplementation(libs.leakcanary.android)
   debugImplementation(libs.ui.tooling)
   debugImplementation(libs.ui.test.manifest)
 
