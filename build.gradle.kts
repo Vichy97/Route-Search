@@ -8,12 +8,20 @@ plugins {
   id(libs.plugins.kotlinAndroid.get().pluginId) apply false
   id(libs.plugins.ktlint.get().pluginId).version(libs.plugins.ktlint.get().version.toString()) apply false
 }
-
 subprojects {
   apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
   configure<KtlintExtension> {
     debug.set(true)
     android.set(true)
+  }
+}
+dependencyAnalysis {
+  issues {
+    all {
+      onAny {
+        severity("fail")
+      }
+    }
   }
 }
