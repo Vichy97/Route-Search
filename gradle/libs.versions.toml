@@ -1,39 +1,46 @@
 [versions]
-activity-compose = "1.7.2"
+activity = "1.7.2"
 apollo = "3.8.2"
 agp = "8.2.0-alpha16"
 compose-bom = "2023.03.00"
-core-ktx = "1.10.1"
+core = "1.10.1"
 dependency-analysis = "1.21.0"
 junit-jupiter = "5.8.1"
 koin = "3.4.3"
 kotlin = "1.8.10"
 ktlint = "11.5.1"
 leakcanary = "2.12"
-lifecycle-runtime-ktx = "2.6.1"
+lifecycle = "2.6.1"
 logcat = "0.1"
 
 [libraries]
-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+core = { group = "androidx.core", name = "core", version.ref = "core" }
+foundation = { group = "androidx.compose.foundation", name = "foundation" }
+foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout" }
 gradle-build-tools = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junit-jupiter" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit-jupiter" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
-koin-android-test = { group = "io.insert-koin", name = "koin-android-test", version.ref = "koin" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
+lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common", version.ref = "lifecycle" }
+lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycle" }
 logcat = { group = "com.squareup.logcat", name = "logcat", version.ref = "logcat" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
+runtime = { group = "androidx.compose.runtime", name = "runtime" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+ui-text = { group = "androidx.compose.ui", name = "ui-text" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+ui-unit = { group = "androidx.compose.ui", name = "ui-unit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -52,6 +52,13 @@ android {
     }
   }
 }
+dependencyAnalysis {
+  issues {
+    onUnusedDependencies {
+      exclude(libs.leakcanary.android.get().toString())
+    }
+  }
+}
 tasks.withType<Test> {
   useJUnitPlatform()
   testLogging {
@@ -69,20 +76,30 @@ dependencies {
 
   implementation(platform(libs.compose.bom))
 
+  implementation(libs.activity)
   implementation(libs.activity.compose)
-  implementation(libs.core.ktx)
+  implementation(libs.core)
+  implementation(libs.foundation)
+  implementation(libs.foundation.layout)
   implementation(libs.koin.android)
-  implementation(libs.lifecycle.runtime.ktx)
+  implementation(libs.koin.core)
+  implementation(libs.logcat)
+  implementation(libs.lifecycle.common)
+  implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
   implementation(libs.material3)
+  implementation(libs.runtime)
   implementation(libs.ui)
   implementation(libs.ui.graphics)
-  implementation(libs.ui.tooling.preview)
+  implementation(libs.ui.text)
+  implementation(libs.ui.unit)
 
   debugImplementation(libs.leakcanary.android)
-  debugImplementation(libs.ui.test.manifest)
-  debugImplementation(libs.ui.tooling)
+
+  debugRuntimeOnly(libs.ui.test.manifest)
+  debugRuntimeOnly(libs.ui.tooling)
 
   testImplementation(libs.junit.jupiter)
-  testImplementation(libs.koin.android.test)
+  testImplementation(libs.junit.jupiter.api)
+  testImplementation(libs.koin.test)
 }
