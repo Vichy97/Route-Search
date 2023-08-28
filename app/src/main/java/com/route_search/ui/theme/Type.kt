@@ -1,4 +1,4 @@
-package com.route_search.ui.theme
+package com.routesearch.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

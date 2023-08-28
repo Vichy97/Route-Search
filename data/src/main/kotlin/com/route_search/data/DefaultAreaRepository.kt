@@ -1,6 +1,6 @@
-package com.route_search.data
+package com.routesearch.data
 
-import com.route_search.network.area.AreaRemoteDataSource
+import com.routesearch.network.area.AreaRemoteDataSource
 
 internal class DefaultAreaRepository(
   private val remoteDataSource: AreaRemoteDataSource,

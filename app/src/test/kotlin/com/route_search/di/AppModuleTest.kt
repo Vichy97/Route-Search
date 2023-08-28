@@ -1,4 +1,4 @@
-package com.route_search.di
+package com.routesearch.di
 
 import org.junit.jupiter.api.Test
 import org.koin.test.KoinTest

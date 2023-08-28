@@ -1,6 +1,6 @@
-package com.route_search.data
+package com.routesearch.data
 
-import com.route_search.network.networkModule
+import com.routesearch.network.networkModule
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module

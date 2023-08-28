@@ -1,4 +1,4 @@
-package com.route_search
+package com.routesearch
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.route_search.ui.theme.RouteSearchTheme
+import com.routesearch.ui.theme.RouteSearchTheme
 
 class MainActivity : ComponentActivity() {
 

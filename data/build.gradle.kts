@@ -2,7 +2,7 @@ plugins {
   `android-library-convention`
 }
 android {
-  namespace = "com.route_search.data"
+  namespace = "com.routesearch.data"
 }
 dependencies {
   api(libs.koin.core)

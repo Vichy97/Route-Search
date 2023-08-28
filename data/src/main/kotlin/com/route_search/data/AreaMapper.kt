@@ -1,7 +1,7 @@
-package com.route_search.data
+package com.routesearch.data
 
-import com.route_search.network.AreaQuery.Area as NetworkArea
-import com.route_search.network.AreaQuery.Child as NetworkAreaChild
+import com.routesearch.network.AreaQuery.Area as NetworkArea
+import com.routesearch.network.AreaQuery.Child as NetworkAreaChild
 
 internal fun NetworkArea.toArea() = Area(
   id = id,
