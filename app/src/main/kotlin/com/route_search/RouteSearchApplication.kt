@@ -1,7 +1,7 @@
-package com.route_search
+package com.routesearch
 
 import android.app.Application
-import com.route_search.di.appModule
+import com.routesearch.di.appModule
 import org.koin.android.BuildConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

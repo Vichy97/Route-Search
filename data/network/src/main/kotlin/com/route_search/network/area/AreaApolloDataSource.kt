@@ -1,8 +1,8 @@
-package com.route_search.network.area
+package com.routesearch.network.area
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
-import com.route_search.network.AreaQuery
+import com.routesearch.network.AreaQuery
 
 internal class AreaApolloDataSource(
   private val apolloClient: ApolloClient,

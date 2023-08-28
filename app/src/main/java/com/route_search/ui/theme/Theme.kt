@@ -1,4 +1,4 @@
-package com.route_search.ui.theme
+package com.routesearch.ui.theme
 
 import android.app.Activity
 import android.os.Build

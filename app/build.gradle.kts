@@ -6,11 +6,11 @@ plugins {
   id(libs.plugins.kotlinAndroid.get().pluginId)
 }
 android {
-  namespace = "com.route_search"
+  namespace = "com.routesearch"
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "com.route_search"
+    applicationId = "com.routesearch"
     minSdk = 28
     targetSdk = 34
     versionCode = 1

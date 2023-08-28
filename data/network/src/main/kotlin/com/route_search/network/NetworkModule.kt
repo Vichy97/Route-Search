@@ -1,8 +1,8 @@
-package com.route_search.network
+package com.routesearch.network
 
 import com.apollographql.apollo3.ApolloClient
-import com.route_search.network.area.AreaApolloDataSource
-import com.route_search.network.area.AreaRemoteDataSource
+import com.routesearch.network.area.AreaApolloDataSource
+import com.routesearch.network.area.AreaRemoteDataSource
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
