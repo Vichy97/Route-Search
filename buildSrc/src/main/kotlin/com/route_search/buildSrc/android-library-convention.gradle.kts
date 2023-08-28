@@ -31,6 +31,15 @@ android {
   kotlin {
     jvmToolchain(17)
   }
+  sourceSets.getByName("androidTest") {
+    java.srcDir("src/test/kotlin")
+  }
+  sourceSets.getByName("main") {
+    java.srcDir("src/main/kotlin")
+  }
+  sourceSets.getByName("test") {
+    java.srcDir("src/test/kotlin")
+  }
 }
 tasks.withType<Test> {
   useJUnitPlatform()

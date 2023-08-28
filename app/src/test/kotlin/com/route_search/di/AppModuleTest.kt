@@ -8,7 +8,6 @@ class AppModuleTest : KoinTest {
 
   @Test
   fun checkKoinModule() {
-
     checkKoinModules(appModule)
   }
 }

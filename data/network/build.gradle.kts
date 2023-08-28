@@ -4,7 +4,7 @@ plugins {
 }
 android {
   namespace = "com.routesearch.network"
-  
+
   buildFeatures {
     buildConfig = true
   }
