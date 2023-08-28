@@ -15,4 +15,3 @@ data class Area(
     val totalClimbs: Int,
   )
 }
-

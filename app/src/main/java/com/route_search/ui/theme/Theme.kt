@@ -50,7 +50,7 @@ fun RouteSearchTheme(
       window.statusBarColor = colorScheme.primary.toArgb()
       WindowCompat.getInsetsController(
         window,
-        view
+        view,
       ).isAppearanceLightStatusBars = darkTheme
     }
   }
