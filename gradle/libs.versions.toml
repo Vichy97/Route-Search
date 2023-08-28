@@ -4,6 +4,7 @@ apollo = "3.8.2"
 agp = "8.2.0-alpha16"
 compose-bom = "2023.03.00"
 core-ktx = "1.10.1"
+dependency-analysis = "1.21.0"
 junit-jupiter = "5.8.1"
 koin = "3.4.3"
 kotlin = "1.8.10"
@@ -37,5 +38,6 @@ ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependency-analysis" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}
