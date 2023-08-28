@@ -41,6 +41,7 @@ tasks.withType<Test> {
 dependencies {
   api(libs.koin.core)
 
+  implementation(libs.apollo.api)
   implementation(libs.apollo.runtime)
 
   testImplementation(libs.junit.jupiter)

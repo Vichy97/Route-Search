@@ -15,6 +15,7 @@ logcat = "0.1"
 
 [libraries]
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
