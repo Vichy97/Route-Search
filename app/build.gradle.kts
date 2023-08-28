@@ -67,20 +67,21 @@ tasks.withType<Test> {
 dependencies {
   implementation(project(":data"))
 
-  implementation(libs.core.ktx)
-  implementation(libs.lifecycle.runtime.ktx)
-  implementation(libs.activity.compose)
   implementation(platform(libs.compose.bom))
+
+  implementation(libs.activity.compose)
+  implementation(libs.core.ktx)
   implementation(libs.koin.android)
+  implementation(libs.lifecycle.runtime.ktx)
   implementation(libs.logcat)
+  implementation(libs.material3)
   implementation(libs.ui)
   implementation(libs.ui.graphics)
   implementation(libs.ui.tooling.preview)
-  implementation(libs.material3)
 
   debugImplementation(libs.leakcanary.android)
-  debugImplementation(libs.ui.tooling)
   debugImplementation(libs.ui.test.manifest)
+  debugImplementation(libs.ui.tooling)
 
   testImplementation(libs.junit.jupiter)
   testImplementation(libs.koin.android.test)
