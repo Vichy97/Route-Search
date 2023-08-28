@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
   `android-library-convention`
   id(libs.plugins.apollo.get().pluginId)
@@ -23,8 +26,22 @@ apollo {
   }
   generateKotlinModels.set(true)
 }
+tasks.withType<Test> {
+  useJUnitPlatform()
+  testLogging {
+    exceptionFormat = TestExceptionFormat.FULL
+    events = setOf(
+      TestLogEvent.SKIPPED,
+      TestLogEvent.PASSED,
+      TestLogEvent.FAILED,
+    )
+    showStandardStreams = true
+  }
+}
 dependencies {
   api(libs.koin.core)
 
   implementation(libs.apollo.runtime)
+
+  testImplementation(libs.junit.jupiter)
 }
