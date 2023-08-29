@@ -32,7 +32,7 @@ android {
     jvmToolchain(17)
   }
   sourceSets.getByName("androidTest") {
-    java.srcDir("src/test/kotlin")
+    java.srcDir("src/androidTest/kotlin")
   }
   sourceSets.getByName("main") {
     java.srcDir("src/main/kotlin")

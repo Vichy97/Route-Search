@@ -29,7 +29,7 @@ android {
     }
   }
   sourceSets.getByName("androidTest") {
-    java.srcDir("src/test/kotlin")
+    java.srcDir("src/androidTest/kotlin")
   }
   sourceSets.getByName("main") {
     java.srcDir("src/main/kotlin")
@@ -52,6 +52,13 @@ android {
     }
   }
 }
+dependencyAnalysis {
+  issues {
+    onUnusedDependencies {
+      exclude(libs.leakcanary.android.get().toString())
+    }
+  }
+}
 tasks.withType<Test> {
   useJUnitPlatform()
   testLogging {
@@ -67,21 +74,32 @@ tasks.withType<Test> {
 dependencies {
   implementation(project(":data"))
 
-  implementation(libs.core.ktx)
-  implementation(libs.lifecycle.runtime.ktx)
-  implementation(libs.activity.compose)
   implementation(platform(libs.compose.bom))
+
+  implementation(libs.activity)
+  implementation(libs.activity.compose)
+  implementation(libs.core)
+  implementation(libs.foundation)
+  implementation(libs.foundation.layout)
   implementation(libs.koin.android)
+  implementation(libs.koin.core)
   implementation(libs.logcat)
+  implementation(libs.lifecycle.common)
+  implementation(libs.lifecycle.viewmodel)
+  implementation(libs.logcat)
+  implementation(libs.material3)
+  implementation(libs.runtime)
   implementation(libs.ui)
   implementation(libs.ui.graphics)
-  implementation(libs.ui.tooling.preview)
-  implementation(libs.material3)
+  implementation(libs.ui.text)
+  implementation(libs.ui.unit)
 
   debugImplementation(libs.leakcanary.android)
-  debugImplementation(libs.ui.tooling)
-  debugImplementation(libs.ui.test.manifest)
+
+  debugRuntimeOnly(libs.ui.test.manifest)
+  debugRuntimeOnly(libs.ui.tooling)
 
   testImplementation(libs.junit.jupiter)
-  testImplementation(libs.koin.android.test)
+  testImplementation(libs.junit.jupiter.api)
+  testImplementation(libs.koin.test)
 }
