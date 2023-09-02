@@ -5,6 +5,7 @@ pluginManagement {
     gradlePluginPortal()
   }
 }
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
   repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
@@ -17,5 +18,5 @@ rootProject.name = "Route Search"
 include(
   ":app",
   ":data",
-  ":data:network",
+  ":data:remote",
 )

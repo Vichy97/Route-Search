@@ -7,12 +7,13 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val networkModule = module {
+val remoteDataModule = module {
 
   single<ApolloClient> {
     ApolloClient.Builder()
       .serverUrl(BuildConfig.API_URL)
       .build()
   }
+
   singleOf(::AreaApolloDataSource) bind AreaRemoteDataSource::class
 }
