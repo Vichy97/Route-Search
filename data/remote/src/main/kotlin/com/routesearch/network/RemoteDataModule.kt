@@ -14,5 +14,6 @@ val remoteDataModule = module {
       .serverUrl(BuildConfig.API_URL)
       .build()
   }
+
   singleOf(::AreaApolloDataSource) bind AreaRemoteDataSource::class
 }

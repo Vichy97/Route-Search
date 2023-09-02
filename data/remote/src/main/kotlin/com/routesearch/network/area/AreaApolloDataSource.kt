@@ -12,7 +12,9 @@ internal class AreaApolloDataSource(
     val query = AreaQuery(Optional.present(id))
     val response = apolloClient.query(query).execute().dataAssertNoErrors
 
-    Result.success(response.area!!)
+    response.area?.let {
+      Result.success(it)
+    } ?: throw IllegalArgumentException("No area found with id $id")
   } catch (e: Exception) {
     Result.failure(e)
   }
