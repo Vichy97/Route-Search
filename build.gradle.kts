@@ -1,19 +1,38 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
   id(libs.plugins.androidApplication.get().pluginId) apply false
   id(libs.plugins.androidLibrary.get().pluginId) apply false
-  id(libs.plugins.apollo.get().pluginId).version(libs.plugins.apollo.get().version.toString()) apply false
-  id(libs.plugins.dependencyAnalysis.get().pluginId).version(libs.plugins.dependencyAnalysis.get().version.toString())
   id(libs.plugins.kotlinAndroid.get().pluginId) apply false
   id(libs.plugins.ktlint.get().pluginId).version(libs.plugins.ktlint.get().version.toString()) apply false
+  id(libs.plugins.apollo.get().pluginId).version(libs.plugins.apollo.get().version.toString()) apply false
+
+  id(libs.plugins.dependencyAnalysis.get().pluginId).version(libs.plugins.dependencyAnalysis.get().version.toString())
+  id(libs.plugins.detekt.get().pluginId).version(libs.plugins.detekt.get().version.toString())
 }
 subprojects {
   apply(plugin = "org.jlleitschuh.gradle.ktlint")
+  apply(plugin = "io.gitlab.arturbosch.detekt")
 
   configure<KtlintExtension> {
     debug.set(true)
     android.set(true)
+  }
+  @Suppress("UnstableApiUsage")
+  tasks.withType<Detekt>().configureEach {
+    reports {
+      html.required.set(true)
+      xml.required.set(true)
+      txt.required.set(true)
+      sarif.required.set(true)
+      md.required.set(true)
+    }
+    jvmTarget = JavaVersion.VERSION_17.toString()
+    buildUponDefaultConfig = true
+    allRules = false
+    parallel = true
+    config = files("$rootDir/detekt.yml")
   }
 }
 dependencyAnalysis {
