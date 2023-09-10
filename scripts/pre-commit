@@ -1,0 +1,20 @@
+#!/bin/bash
+echo "*******************************"
+echo   "Running git pre-commit hook"
+echo "*******************************"
+
+git stash -q --keep-index
+
+echo "*******************************"
+echo   "Running ktlintCheck"
+echo "*******************************"
+
+./gradlew ktlintCheck
+
+RESULT=$?
+
+git stash pop -q
+
+# return 1 exit code if running checks fails
+[ $RESULT -ne 0 ] && exit 1
+exit 0
