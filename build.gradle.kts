@@ -44,3 +44,13 @@ dependencyAnalysis {
     }
   }
 }
+tasks.register<Copy>("copyGitHooks") {
+  group = "git hooks"
+  description = "Copies the git hooks from /git-hooks to the .git folder."
+
+  from(project.layout.projectDirectory.file("scripts/pre-commit"))
+  into(project.layout.projectDirectory.dir(".git/hooks"))
+  fileMode = 777
+}
+tasks.getByPath(":app:preBuild").dependsOn(":copyGitHooks")
+
