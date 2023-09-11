@@ -2,6 +2,7 @@ package com.routesearch.network.area
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo3.exception.ApolloException
 import com.routesearch.network.AreaQuery
 
 internal class AreaApolloDataSource(
@@ -15,7 +16,9 @@ internal class AreaApolloDataSource(
     response.area?.let {
       Result.success(it)
     } ?: throw IllegalArgumentException("No area found with id $id")
-  } catch (e: Exception) {
+  } catch (e: ApolloException) {
+    Result.failure(e)
+  } catch (e: IllegalArgumentException) {
     Result.failure(e)
   }
 }
