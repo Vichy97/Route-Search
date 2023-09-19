@@ -6,5 +6,6 @@ android {
 }
 dependencies {
   api(libs.koin.core)
+  implementation(project(":data:local"))
   implementation(project(":data:remote"))
 }
