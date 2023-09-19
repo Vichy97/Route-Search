@@ -103,4 +103,5 @@ dependencies {
   testImplementation(libs.junit.jupiter)
   testImplementation(libs.junit.jupiter.api)
   testImplementation(libs.koin.test)
+  testImplementation(libs.mockito.core)
 }

@@ -10,8 +10,10 @@ dependencies {
 
   ksp(libs.room.compiler)
 
+  api(libs.koin.core)
   api(libs.room.runtime)
 
+  implementation(libs.koin.android)
   implementation(libs.collection)
   implementation(libs.logcat)
   implementation(libs.room.common)
