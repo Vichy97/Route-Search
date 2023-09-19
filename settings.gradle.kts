@@ -18,5 +18,6 @@ rootProject.name = "Route Search"
 include(
   ":app",
   ":data",
+  ":data:local",
   ":data:remote",
 )
