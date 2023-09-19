@@ -1,11 +1,18 @@
 package com.routesearch.data
 
+import com.routesearch.local.area.AreaLocalDataSource
 import com.routesearch.network.area.AreaRemoteDataSource
 
 internal class DefaultAreaRepository(
   private val remoteDataSource: AreaRemoteDataSource,
+  private val localDataSource: AreaLocalDataSource,
 ) : AreaRepository {
 
-  override suspend fun getArea(id: String) = remoteDataSource.getArea(id)
+  override suspend fun getArea(id: String) = localDataSource.getArea(id)
     .map { it.toArea() }
+    .recoverCatching { getAreaFromRemote(id) }
+
+  private suspend fun getAreaFromRemote(id: String) = remoteDataSource.getArea(id)
+    .map { it.toArea() }
+    .getOrThrow()
 }
