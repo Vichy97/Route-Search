@@ -11,6 +11,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Save Secrets into local.properties
+        env:
+          TYPE_SENSE_API_KEY: ${{secrets.TYPE_SENSE_API_KEY}}
+          TYPE_SENSE_HOST: ${{secrets.TYPE_SENSE_HOST}}
+        run: |
+          touch ./local.properties
+          echo TYPE_SENSE_API_KEY=$TYPE_SENSE_API_KEY >> ./local.properties
+          echo TYPE_SENSE_HOST=$TYPE_SENSE_HOST >> ./local.properties
+
       - name: Set JDK environment
         uses: actions/setup-java@v3
         with:

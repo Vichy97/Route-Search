@@ -18,6 +18,7 @@ logcat = "0.1"
 mockito = "5.5.0"
 room = "2.5.2"
 sqlite = "2.3.1"
+typesense = "0.4.0"
 
 [libraries]
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
@@ -48,6 +49,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 runtime = { group = "androidx.compose.runtime", name = "runtime" }
 sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqlite" }
+typesense-java = { group = "org.typesense", name = "typesense-java", version.ref = "typesense" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }

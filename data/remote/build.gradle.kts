@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import java.util.Properties
 
 plugins {
   `android-library-convention`
@@ -10,6 +11,22 @@ android {
 
   buildFeatures {
     buildConfig = true
+  }
+  defaultConfig {
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(localPropertiesFile.inputStream())
+
+    buildConfigField(
+      type = "String",
+      name = "TYPE_SENSE_API_KEY",
+      value = properties.getProperty("TYPE_SENSE_API_KEY"),
+    )
+    buildConfigField(
+      type = "String",
+      name = "TYPE_SENSE_HOST",
+      value = properties.getProperty("TYPE_SENSE_HOST"),
+    )
   }
   buildTypes {
     debug {
@@ -43,6 +60,7 @@ dependencies {
 
   implementation(libs.apollo.api)
   implementation(libs.apollo.runtime)
+  implementation(libs.typesense.java)
 
   testImplementation(libs.junit.jupiter)
 }
