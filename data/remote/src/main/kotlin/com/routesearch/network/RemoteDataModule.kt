@@ -3,6 +3,9 @@ package com.routesearch.network
 import com.apollographql.apollo3.ApolloClient
 import com.routesearch.network.area.AreaApolloDataSource
 import com.routesearch.network.area.AreaRemoteDataSource
+import com.routesearch.network.area.search.AreaSearchDataSource
+import com.routesearch.network.area.search.AreaSearchTypeSenseDataSource
+import com.squareup.moshi.Moshi
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -17,6 +20,11 @@ private const val TypeSensePort = "443"
 private val TypeSenseConnectionTimeout = 5.seconds
 
 val remoteDataModule = module {
+
+  single<Moshi> {
+    Moshi.Builder()
+      .build()
+  }
 
   single<List<TypeSenseNode>> {
     listOf(
@@ -37,6 +45,8 @@ val remoteDataModule = module {
   }
 
   singleOf(::TypeSenseClient)
+
+  singleOf(::AreaSearchTypeSenseDataSource) bind AreaSearchDataSource::class
 
   single<ApolloClient> {
     ApolloClient.Builder()

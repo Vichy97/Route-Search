@@ -16,6 +16,7 @@ leakcanary = "2.12"
 lifecycle = "2.6.1"
 logcat = "0.1"
 mockito = "5.5.0"
+moshi = "1.14.0"
 room = "2.5.2"
 sqlite = "2.3.1"
 typesense = "0.4.0"
@@ -43,6 +44,8 @@ lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmode
 logcat = { group = "com.squareup.logcat", name = "logcat", version.ref = "logcat" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 room-common = { group = "androidx.room", name = "room-common", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }

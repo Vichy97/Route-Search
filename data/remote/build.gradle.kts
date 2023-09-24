@@ -5,6 +5,7 @@ import java.util.Properties
 plugins {
   `android-library-convention`
   id(libs.plugins.apollo.get().pluginId)
+  id(libs.plugins.ksp.get().pluginId)
 }
 android {
   namespace = "com.routesearch.network"
@@ -56,7 +57,10 @@ tasks.withType<Test> {
   }
 }
 dependencies {
+  ksp(libs.moshi.kotlin.codegen)
+
   api(libs.koin.core)
+  api(libs.moshi)
 
   implementation(libs.apollo.api)
   implementation(libs.apollo.runtime)
