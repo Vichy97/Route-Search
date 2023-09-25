@@ -1,10 +1,10 @@
-package com.routesearch.network
+package com.routesearch.data.remote
 
 import com.apollographql.apollo3.ApolloClient
-import com.routesearch.network.area.AreaApolloDataSource
-import com.routesearch.network.area.AreaRemoteDataSource
-import com.routesearch.network.area.search.AreaSearchDataSource
-import com.routesearch.network.area.search.AreaSearchTypeSenseDataSource
+import com.routesearch.data.remote.area.AreaApolloDataSource
+import com.routesearch.data.remote.area.AreaRemoteDataSource
+import com.routesearch.data.remote.area.search.AreaSearchDataSource
+import com.routesearch.data.remote.area.search.AreaSearchTypeSenseDataSource
 import com.squareup.moshi.Moshi
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind

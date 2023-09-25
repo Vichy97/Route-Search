@@ -8,7 +8,7 @@ plugins {
   id(libs.plugins.ksp.get().pluginId)
 }
 android {
-  namespace = "com.routesearch.network"
+  namespace = "com.routesearch.data.remote"
 
   buildFeatures {
     buildConfig = true
@@ -40,7 +40,7 @@ android {
 }
 apollo {
   service("open_beta") {
-    packageName.set("com.routesearch.network")
+    packageName.set("com.routesearch.data.remote")
   }
   generateKotlinModels.set(true)
 }

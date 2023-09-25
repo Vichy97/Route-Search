@@ -1,6 +1,6 @@
-package com.routesearch.network.area
+package com.routesearch.data.remote.area
 
-import com.routesearch.network.AreaQuery
+import com.routesearch.data.remote.AreaQuery
 
 interface AreaRemoteDataSource {
 
