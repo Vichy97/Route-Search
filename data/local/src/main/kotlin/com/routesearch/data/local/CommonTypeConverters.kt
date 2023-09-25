@@ -1,4 +1,4 @@
-package com.routesearch.local
+package com.routesearch.data.local
 
 import androidx.room.TypeConverter
 

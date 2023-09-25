@@ -1,4 +1,4 @@
-package com.routesearch.local.area
+package com.routesearch.data.local.area
 
 import androidx.room.Dao
 import androidx.room.Insert
