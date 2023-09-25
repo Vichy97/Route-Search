@@ -31,10 +31,18 @@ android {
   }
   buildTypes {
     debug {
-      buildConfigField("String", "API_URL", "\"https://stg-api.openbeta.io/\"")
+      buildConfigField(
+        type = "String",
+        name = "API_URL",
+        value = "\"https://stg-api.openbeta.io/\"",
+      )
     }
     release {
-      buildConfigField("String", "API_URL", "\"https://api.openbeta.io/\"")
+      buildConfigField(
+        type = "String",
+        name = "API_URL",
+        value = "\"https://api.openbeta.io/\"",
+      )
     }
   }
 }
