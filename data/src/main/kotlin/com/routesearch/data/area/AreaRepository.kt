@@ -1,4 +1,4 @@
-package com.routesearch.data
+package com.routesearch.data.area
 
 interface AreaRepository {
 

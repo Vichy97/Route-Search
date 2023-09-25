@@ -1,4 +1,4 @@
-package com.routesearch.data
+package com.routesearch.data.area
 
 data class Area(
   val id: String,

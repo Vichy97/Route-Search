@@ -1,4 +1,4 @@
-package com.routesearch.data
+package com.routesearch.data.area
 
 import com.routesearch.data.local.area.AreaLocalDataSource
 import com.routesearch.data.remote.area.AreaRemoteDataSource
