@@ -1,4 +1,4 @@
-package com.routesearch.local.area
+package com.routesearch.data.local.area
 
 import android.database.SQLException
 import logcat.LogPriority.ERROR

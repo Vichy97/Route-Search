@@ -1,4 +1,4 @@
-package com.routesearch.network.area.search
+package com.routesearch.data.remote.area.search
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter

@@ -1,9 +1,9 @@
-package com.routesearch.local
+package com.routesearch.data.local
 
 import androidx.room.Room
-import com.routesearch.local.area.AreaDao
-import com.routesearch.local.area.AreaLocalDataSource
-import com.routesearch.local.area.AreaRoomDataSource
+import com.routesearch.data.local.area.AreaDao
+import com.routesearch.data.local.area.AreaLocalDataSource
+import com.routesearch.data.local.area.AreaRoomDataSource
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind

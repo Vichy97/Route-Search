@@ -1,6 +1,6 @@
 package com.routesearch.data.area.search
 
-import com.routesearch.network.area.search.AreaSearchDataSource
+import com.routesearch.data.remote.area.search.AreaSearchDataSource
 
 internal class DefaultAreaSearchService(
   private val areasSearchDataSource: AreaSearchDataSource,

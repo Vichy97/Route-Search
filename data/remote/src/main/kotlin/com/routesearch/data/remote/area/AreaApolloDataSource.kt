@@ -1,9 +1,9 @@
-package com.routesearch.network.area
+package com.routesearch.data.remote.area
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
-import com.routesearch.network.AreaQuery
+import com.routesearch.data.remote.AreaQuery
 
 internal class AreaApolloDataSource(
   private val apolloClient: ApolloClient,

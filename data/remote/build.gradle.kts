@@ -8,7 +8,7 @@ plugins {
   id(libs.plugins.ksp.get().pluginId)
 }
 android {
-  namespace = "com.routesearch.network"
+  namespace = "com.routesearch.data.remote"
 
   buildFeatures {
     buildConfig = true
@@ -31,16 +31,24 @@ android {
   }
   buildTypes {
     debug {
-      buildConfigField("String", "API_URL", "\"https://stg-api.openbeta.io/\"")
+      buildConfigField(
+        type = "String",
+        name = "API_URL",
+        value = "\"https://stg-api.openbeta.io/\"",
+      )
     }
     release {
-      buildConfigField("String", "API_URL", "\"https://api.openbeta.io/\"")
+      buildConfigField(
+        type = "String",
+        name = "API_URL",
+        value = "\"https://api.openbeta.io/\"",
+      )
     }
   }
 }
 apollo {
   service("open_beta") {
-    packageName.set("com.routesearch.network")
+    packageName.set("com.routesearch.data.remote")
   }
   generateKotlinModels.set(true)
 }

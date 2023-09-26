@@ -1,9 +1,9 @@
-package com.routesearch.data
+package com.routesearch.data.area
 
-import com.routesearch.local.area.AreaWithChildren
-import com.routesearch.local.area.Child as DbChild
-import com.routesearch.network.AreaQuery.Area as NetworkArea
-import com.routesearch.network.AreaQuery.Child as NetworkAreaChild
+import com.routesearch.data.local.area.AreaWithChildren
+import com.routesearch.data.local.area.Child as DbChild
+import com.routesearch.data.remote.AreaQuery.Area as NetworkArea
+import com.routesearch.data.remote.AreaQuery.Child as NetworkAreaChild
 
 internal fun NetworkArea.toArea() = Area(
   id = id,
