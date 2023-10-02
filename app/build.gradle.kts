@@ -85,7 +85,6 @@ dependencies {
   implementation(libs.koin.android)
   implementation(libs.koin.core)
   implementation(libs.logcat)
-  implementation(libs.lifecycle.common)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
   implementation(libs.material3)

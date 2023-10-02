@@ -4,14 +4,14 @@ apollo = "3.8.2"
 agp = "8.3.0-alpha01"
 collection = "1.2.0"
 compose-bom = "2023.09.02"
-compose-compiler = "1.4.3"
+compose-compiler = "1.5.3"
 core = "1.10.1"
 dependency-analysis = "1.23.0"
 detekt = "1.23.1"
 junit-jupiter = "5.8.1"
 koin = "3.4.3"
-kotlin = "1.8.10"
-ksp = "1.8.10-1.0.9"
+kotlin = "1.9.10"
+ksp = "1.9.10-1.0.13"
 ktlint = "11.5.1"
 leakcanary = "2.12"
 lifecycle = "2.6.1"
@@ -40,7 +40,6 @@ koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin"
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
-lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common", version.ref = "lifecycle" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycle" }
 logcat = { group = "com.squareup.logcat", name = "logcat", version.ref = "logcat" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
