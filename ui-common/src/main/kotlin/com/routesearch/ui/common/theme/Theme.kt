@@ -1,4 +1,4 @@
-package com.routesearch.ui.theme
+package com.routesearch.ui.common.theme
 
 import android.app.Activity
 import android.os.Build
@@ -30,7 +30,6 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun RouteSearchTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
-  // Dynamic color is available on Android 12+
   dynamicColor: Boolean = true,
   content: @Composable () -> Unit,
 ) {

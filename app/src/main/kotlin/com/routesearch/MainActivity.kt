@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.routesearch.ui.theme.RouteSearchTheme
+import com.routesearch.ui.common.theme.RouteSearchTheme
 
 class MainActivity : ComponentActivity() {
 

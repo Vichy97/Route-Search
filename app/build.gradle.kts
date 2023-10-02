@@ -74,25 +74,22 @@ tasks.withType<Test> {
 }
 dependencies {
   implementation(project(":data"))
+  implementation(project(":ui-common"))
 
   implementation(platform(libs.compose.bom))
 
   implementation(libs.activity)
   implementation(libs.activity.compose)
-  implementation(libs.core)
   implementation(libs.foundation.android)
   implementation(libs.foundation.layout.android)
   implementation(libs.koin.android)
   implementation(libs.koin.core)
-  implementation(libs.logcat)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
   implementation(libs.material3)
   implementation(libs.runtime.android)
   implementation(libs.ui.android)
   implementation(libs.ui.graphics.android)
-  implementation(libs.ui.text.android)
-  implementation(libs.ui.unit.android)
 
   debugImplementation(libs.leakcanary.android)
 
