@@ -20,4 +20,5 @@ include(
   ":data",
   ":data:local",
   ":data:remote",
+  ":ui-common",
 )
