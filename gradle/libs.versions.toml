@@ -18,6 +18,7 @@ lifecycle = "2.6.1"
 logcat = "0.1"
 mockito = "5.5.0"
 moshi = "1.14.0"
+navigation = "2.7.3"
 room = "2.5.2"
 sqlite = "2.3.1"
 typesense = "0.4.0"
@@ -25,6 +26,7 @@ typesense = "0.4.0"
 [libraries]
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+animation-android = { group = "androidx.compose.animation", name = "animation-android" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
@@ -46,6 +48,9 @@ material3 = { group = "androidx.compose.material3", name = "material3" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+navigation-common = { group = "androidx.navigation", name = "navigation-common", version.ref = "navigation" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime", version.ref = "navigation" }
 room-common = { group = "androidx.room", name = "room-common", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
@@ -58,6 +63,7 @@ ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-andro
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android" }
 ui-unit-android = { group = "androidx.compose.ui", name = "ui-unit-android" }
 
 [plugins]
