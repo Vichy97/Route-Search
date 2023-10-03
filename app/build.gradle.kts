@@ -84,6 +84,7 @@ dependencies {
   implementation(libs.foundation.layout.android)
   implementation(libs.koin.android)
   implementation(libs.koin.core)
+  implementation(libs.kotlinx.coroutines.core)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
   implementation(libs.material3)

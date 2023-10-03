@@ -1,6 +1,6 @@
 package com.routesearch.di
 
 import com.routesearch.data.dataModule
-import org.koin.dsl.module
+import com.routesearch.ui.common.commonUiModule
 
-internal val appModule = dataModule + module { }
+internal val appModule = dataModule + commonUiModule
