@@ -2,10 +2,12 @@
 activity = "1.7.2"
 apollo = "3.8.2"
 agp = "8.3.0-alpha01"
+annotation = "1.7.0"
 collection = "1.2.0"
 compose-bom = "2023.09.02"
 compose-compiler = "1.5.3"
 core = "1.10.1"
+coroutines = "1.6.4"
 dependency-analysis = "1.23.0"
 detekt = "1.23.1"
 junit-jupiter = "5.8.1"
@@ -27,6 +29,7 @@ typesense = "0.4.0"
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 animation-android = { group = "androidx.compose.animation", name = "animation-android" }
+annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
@@ -41,6 +44,7 @@ koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = 
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycle" }
 logcat = { group = "com.squareup.logcat", name = "logcat", version.ref = "logcat" }
