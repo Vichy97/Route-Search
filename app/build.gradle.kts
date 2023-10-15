@@ -74,6 +74,7 @@ tasks.withType<Test> {
 }
 dependencies {
   implementation(platform(libs.compose.bom))
+  implementation(platform(libs.koin.bom))
 
   implementation(project(":data"))
   implementation(project(":ui-common"))

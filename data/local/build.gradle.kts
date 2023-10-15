@@ -11,6 +11,8 @@ dependencies {
   api(libs.koin.core)
   api(libs.room.runtime)
 
+  implementation(platform(libs.koin.bom))
+
   implementation(libs.collection)
   implementation(libs.koin.android)
   implementation(libs.logcat)

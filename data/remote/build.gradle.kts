@@ -70,6 +70,8 @@ dependencies {
   api(libs.koin.core)
   api(libs.moshi)
 
+  implementation(platform(libs.koin.bom))
+
   implementation(libs.apollo.api)
   implementation(libs.apollo.runtime)
   implementation(libs.typesense.java)
