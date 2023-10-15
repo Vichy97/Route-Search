@@ -77,6 +77,7 @@ dependencies {
   implementation(platform(libs.koin.bom))
 
   implementation(project(":data"))
+  implementation(project(":navigation"))
   implementation(project(":ui-common"))
 
   implementation(libs.activity)
@@ -84,6 +85,7 @@ dependencies {
   implementation(libs.animation.android)
   implementation(libs.foundation.layout.android)
   implementation(libs.koin.android)
+  implementation(libs.koin.compose)
   implementation(libs.koin.core)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.lifecycle.viewmodel)
