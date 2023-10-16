@@ -43,6 +43,14 @@ dependencyAnalysis {
       }
     }
   }
+  structure {
+    val versionCatalogName = "libs"
+    val versionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named(versionCatalogName)
+    versionCatalog.libraryAliases.forEach { alias ->
+      val library = versionCatalog.findLibrary(alias).get()
+      map.put(library.get().toString(), "${versionCatalogName}.${alias}")
+    }
+  }
 }
 tasks.register<Copy>("copyGitHooks") {
   group = "git hooks"
