@@ -20,7 +20,6 @@ subprojects {
     debug.set(true)
     android.set(true)
   }
-  @Suppress("UnstableApiUsage")
   tasks.withType<Detekt>().configureEach {
     reports {
       html.required.set(true)
