@@ -16,6 +16,7 @@ dependencies {
   api(libs.runtime.android)
 
   implementation(platform(libs.compose.bom))
+  implementation(platform(libs.koin.bom))
 
   implementation(libs.core)
   implementation(libs.foundation.android)
