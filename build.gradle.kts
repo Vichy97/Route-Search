@@ -11,16 +11,17 @@ plugins {
 
   id(libs.plugins.dependencyAnalysis.get().pluginId).version(libs.plugins.dependencyAnalysis.get().version.toString())
   id(libs.plugins.detekt.get().pluginId).version(libs.plugins.detekt.get().version.toString())
+  id(libs.plugins.sortDependencies.get().pluginId).version(libs.plugins.sortDependencies.get().version.toString())
 }
 subprojects {
   apply(plugin = "org.jlleitschuh.gradle.ktlint")
   apply(plugin = "io.gitlab.arturbosch.detekt")
+  apply(plugin = "com.squareup.sort-dependencies")
 
   configure<KtlintExtension> {
     debug.set(true)
     android.set(true)
   }
-  @Suppress("UnstableApiUsage")
   tasks.withType<Detekt>().configureEach {
     reports {
       html.required.set(true)
@@ -42,6 +43,14 @@ dependencyAnalysis {
       onAny {
         severity("fail")
       }
+    }
+  }
+  structure {
+    val versionCatalogName = "libs"
+    val versionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named(versionCatalogName)
+    versionCatalog.libraryAliases.forEach { alias ->
+      val library = versionCatalog.findLibrary(alias).get()
+      map.put(library.get().toString(), "${versionCatalogName}.${alias}")
     }
   }
 }

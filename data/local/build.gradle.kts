@@ -6,17 +6,17 @@ android {
   namespace = "com.routesearch.data.local"
 }
 dependencies {
-  annotationProcessor(libs.room.compiler)
-
   ksp(libs.room.compiler)
 
   api(libs.koin.core)
   api(libs.room.runtime)
 
-  implementation(libs.koin.android)
   implementation(libs.collection)
+  implementation(libs.koin.android)
   implementation(libs.logcat)
   implementation(libs.room.common)
   implementation(libs.room.ktx)
   implementation(libs.sqlite)
+
+  annotationProcessor(libs.room.compiler)
 }
