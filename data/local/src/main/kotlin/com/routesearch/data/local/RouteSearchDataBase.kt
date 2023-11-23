@@ -6,9 +6,14 @@ import androidx.room.TypeConverters
 import com.routesearch.data.local.area.Area
 import com.routesearch.data.local.area.AreaDao
 import com.routesearch.data.local.area.Child
+import com.routesearch.data.local.climb.Climb
 
 @Database(
-  entities = [Area::class, Child::class],
+  entities = [
+    Area::class,
+    Child::class,
+    Climb::class,
+  ],
   version = 0,
   exportSchema = false,
 )

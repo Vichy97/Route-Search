@@ -10,11 +10,11 @@ internal interface AreaDao {
 
   @Transaction
   @Query("SELECT * FROM areas")
-  suspend fun getAll(): List<AreaWithChildren?>
+  suspend fun getAll(): List<AreaWithClimbsAndChildren?>
 
   @Transaction
   @Query("SELECT * FROM areas WHERE id = :areaId")
-  suspend fun getAreaById(areaId: String): AreaWithChildren?
+  suspend fun getAreaById(areaId: String): AreaWithClimbsAndChildren?
 
   @Insert
   suspend fun insertAllAreas(area: List<Area>)
