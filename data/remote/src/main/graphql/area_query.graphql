@@ -18,7 +18,36 @@ query AreaQuery($uuid: ID) {
       areaName
       uuid
       totalClimbs
+      children {
+        uuid
+      }
     }
     totalClimbs
+    climbs {
+      id
+      grades {
+        yds
+        vscale
+      }
+      name
+      type {
+        aid
+        bouldering
+        alpine
+        deepwatersolo
+        ice
+        mixed
+        sport
+        snow
+        tr
+        trad
+      }
+      media {
+        mediaUrl
+      }
+    }
+    media {
+      mediaUrl
+    }
   }
 }
