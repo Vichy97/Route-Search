@@ -20,6 +20,7 @@ include(
   ":data",
   ":data:local",
   ":data:remote",
+  ":features",
   ":navigation",
   ":ui-common",
   ":util",

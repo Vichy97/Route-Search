@@ -13,6 +13,7 @@ android {
 }
 dependencies {
   api(libs.annotation)
+  api(libs.foundation.android)
   api(libs.navigation.common)
   api(libs.runtime.android)
   api(libs.ui.android)
@@ -22,7 +23,6 @@ dependencies {
 
   implementation(libs.animation.android)
   implementation(libs.core)
-  implementation(libs.foundation.android)
   implementation(libs.koin.core)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.material3)
