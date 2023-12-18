@@ -1,3 +1,15 @@
 <resources>
+  <string name="area_screen_see_less">See Less</string>
+  <string name="area_screen_see_more">See More</string>
+  <string name="top_app_bar_name">Route Search</string>
+  <plurals name="area_screen_number_of_climbs">
+    <item quantity="one">%1$d Climb</item>
+    <item quantity="other">%1$d Climbs</item>
+  </plurals>
+  <plurals name="area_screen_number_of_areas">
+    <item quantity="one">%1$d Area</item>
+    <item quantity="other">%1$d Areas</item>
+  </plurals>  <string name="area_screen_share_button">Share</string>
+  <string name="area_screen_download_button">Download</string>
   <string name="area_screen_loading_error_message">Error Loading Area</string>
 </resources>
