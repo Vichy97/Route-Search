@@ -1,18 +1,12 @@
 package com.routesearch.di
 
-import android.app.Application
 import org.junit.jupiter.api.Test
-import org.koin.android.ext.koin.androidContext
-import org.koin.dsl.koinApplication
-import org.koin.test.KoinTest
-import org.koin.test.check.checkModules
-import org.mockito.Mockito.mock
+import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.test.verify.verify
 
-class AppModuleTest : KoinTest {
+class AppModuleTest {
 
+  @OptIn(KoinExperimentalAPI::class)
   @Test
-  fun checkKoinModule() = koinApplication {
-    androidContext(mock(Application::class.java))
-    modules(appModule)
-  }.checkModules()
+  fun checkKoinModule() = appModule.verify()
 }
