@@ -3,6 +3,7 @@ package com.routesearch.di
 import com.routesearch.data.dataModule
 import com.routesearch.navigation.navigationModule
 import com.routesearch.ui.common.commonUiModule
+import com.routesearch.util.utilModule
 import org.koin.dsl.module
 
 internal val appModule = module {
@@ -11,5 +12,6 @@ internal val appModule = module {
     dataModule,
     commonUiModule,
     navigationModule,
+    utilModule,
   )
 }
