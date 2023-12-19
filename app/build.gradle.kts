@@ -79,6 +79,7 @@ dependencies {
   implementation(project(":data"))
   implementation(project(":navigation"))
   implementation(project(":ui-common"))
+  implementation(project(":util"))
 
   implementation(libs.activity)
   implementation(libs.activity.compose)

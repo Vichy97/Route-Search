@@ -22,4 +22,5 @@ include(
   ":data:remote",
   ":navigation",
   ":ui-common",
+  ":util",
 )
