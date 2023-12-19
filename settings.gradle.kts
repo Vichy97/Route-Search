@@ -23,4 +23,5 @@ include(
   ":navigation",
   ":ui-common",
   ":util",
+  ":util:coroutines",
 )
