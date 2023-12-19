@@ -11,17 +11,17 @@ import org.koin.dsl.module
 
 val localDataModule = module {
 
+  single<String>(DatabaseName) { "route_search_database" }
+
   single<RouteSearchDataBase> {
     Room.databaseBuilder(
       context = androidContext(),
       klass = RouteSearchDataBase::class.java,
-      name = "route_search_database",
+      name = get<String>(DatabaseName),
     ).build()
   }
 
-  single<AreaDao> {
-    get<RouteSearchDataBase>().areaDao
-  }
+  single<AreaDao> { get<RouteSearchDataBase>().areaDao }
 
   singleOf(::AreaRoomDataSource) bind AreaLocalDataSource::class
 }

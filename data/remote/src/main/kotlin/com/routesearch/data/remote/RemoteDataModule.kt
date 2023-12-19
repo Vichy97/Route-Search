@@ -9,38 +9,49 @@ import com.squareup.moshi.Moshi
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 import org.typesense.api.Client as TypeSenseClient
 import org.typesense.api.Configuration as TypeSenseConfiguration
 import org.typesense.resources.Node as TypeSenseNode
 
-private const val TypeSenseProtocol = "https"
-private const val TypeSensePort = "443"
-private val TypeSenseConnectionTimeout = 5.seconds
-
 val remoteDataModule = module {
+
+  single<Duration>(TypeSenseTimeout) { 5.seconds.toJavaDuration() }
+
+  single<String>(TypeSensePort) { "443" }
+
+  single<String>(TypeSenseProtocol) { "http" }
+
+  single<String>(TypeSenseApiKey) { BuildConfig.TYPE_SENSE_API_KEY }
+
+  single<String>(TypeSenseApiUrl) { BuildConfig.API_URL }
+
+  single<String>(TypeSenseHost) { BuildConfig.TYPE_SENSE_HOST }
 
   single<Moshi> {
     Moshi.Builder()
       .build()
   }
 
-  single<List<TypeSenseNode>> {
-    listOf(
-      TypeSenseNode(
-        TypeSenseProtocol,
-        BuildConfig.TYPE_SENSE_HOST,
-        TypeSensePort,
-      ),
+  single<TypeSenseNode> {
+    TypeSenseNode(
+      get<String>(TypeSenseProtocol),
+      get<String>(TypeSenseHost),
+      get<String>(TypeSensePort),
     )
+  }
+
+  single<List<TypeSenseNode>>(TypeSenseNodes) {
+    getAll<TypeSenseNode>()
   }
 
   single<TypeSenseConfiguration> {
     TypeSenseConfiguration(
-      get<List<TypeSenseNode>>(),
-      TypeSenseConnectionTimeout.toJavaDuration(),
-      BuildConfig.TYPE_SENSE_API_KEY,
+      getAll<TypeSenseNode>(),
+      get<Duration>(TypeSenseTimeout),
+      get<String>(TypeSenseApiKey),
     )
   }
 
@@ -50,7 +61,7 @@ val remoteDataModule = module {
 
   single<ApolloClient> {
     ApolloClient.Builder()
-      .serverUrl(BuildConfig.API_URL)
+      .serverUrl(get<String>(TypeSenseApiUrl))
       .build()
   }
 

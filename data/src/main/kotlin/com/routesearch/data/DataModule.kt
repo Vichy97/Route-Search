@@ -8,7 +8,12 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val dataModule = remoteDataModule + localDataModule + module {
+val dataModule = module {
+
+  includes(
+    remoteDataModule,
+    localDataModule,
+  )
 
   singleOf(::DefaultAreaRepository) bind AreaRepository::class
 }
