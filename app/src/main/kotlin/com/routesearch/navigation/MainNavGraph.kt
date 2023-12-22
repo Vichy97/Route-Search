@@ -5,7 +5,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import com.routesearch.features.area.AreaScreen
+import com.routesearch.ui.common.util.screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.compose.koinInject
@@ -29,11 +30,9 @@ fun MainNavGraph(
   }
   NavHost(
     navController = navController,
-    startDestination = "home",
+    startDestination = AreaScreen.route,
     modifier = modifier,
   ) {
-    composable("home") {
-      TODO("Not implemented")
-    }
+    screen(AreaScreen)
   }
 }

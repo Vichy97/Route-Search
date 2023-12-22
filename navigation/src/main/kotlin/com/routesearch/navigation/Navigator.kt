@@ -11,20 +11,20 @@ class Navigator {
   val navEvents = _navEvents.asSharedFlow()
 
   fun navigate(
-    destination: Destination,
+    destination: String,
   ) {
     val navEvent = NavEvent.Navigate(
-      destination = destination.route,
+      destination = destination,
     )
     _navEvents.tryEmit(navEvent)
   }
 
   fun navigate(
-    destination: Destination,
+    destination: String,
     builder: NavOptionsBuilder.() -> Unit,
   ) {
     val navEvent = NavEvent.Navigate(
-      destination = destination.route,
+      destination = destination,
       navOptions = navOptions(builder),
     )
     _navEvents.tryEmit(navEvent)

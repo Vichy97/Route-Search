@@ -9,6 +9,10 @@ style:
   MagicNumber:
     ignorePropertyDeclaration: true
     ignoreExtensionFunctions: false
+  DestructuringDeclarationWithTooManyEntries:
+    ignoreAnnotated:
+      - 'Preview'
+      - 'Composable'
 naming:
   FunctionNaming:
     ignoreAnnotated:
@@ -19,3 +23,9 @@ complexity:
   LongParameterList:
     ignoreAnnotated:
       - 'Composable'
+  LongMethod:
+    ignoreAnnotated:
+      - 'Composable'
+      - 'Preview'
+  TooManyFunctions:
+    active: false

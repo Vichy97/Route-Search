@@ -11,4 +11,7 @@ dependencies {
 
   implementation(project(":data:local"))
   implementation(project(":data:remote"))
+  implementation(project(":util:coroutines"))
+
+  implementation(libs.kotlinx.coroutines.core)
 }

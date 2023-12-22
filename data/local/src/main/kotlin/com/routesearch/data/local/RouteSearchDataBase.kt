@@ -14,7 +14,7 @@ import com.routesearch.data.local.climb.Climb
     Child::class,
     Climb::class,
   ],
-  version = 0,
+  version = 1,
   exportSchema = false,
 )
 @TypeConverters(CommonTypeConverters::class)

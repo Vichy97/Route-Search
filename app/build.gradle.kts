@@ -77,13 +77,14 @@ dependencies {
   implementation(platform(libs.koin.bom))
 
   implementation(project(":data"))
+  implementation(project(":features"))
   implementation(project(":navigation"))
   implementation(project(":ui-common"))
   implementation(project(":util"))
 
   implementation(libs.activity)
   implementation(libs.activity.compose)
-  implementation(libs.animation.android)
+  implementation(libs.core)
   implementation(libs.foundation.layout.android)
   implementation(libs.koin.android)
   implementation(libs.koin.compose)
@@ -108,4 +109,5 @@ dependencies {
   testImplementation(libs.junit.jupiter)
   testImplementation(libs.junit.jupiter.api)
   testImplementation(libs.koin.test)
+  testImplementation(libs.lifecycle.viewmodel.savedstate)
 }
