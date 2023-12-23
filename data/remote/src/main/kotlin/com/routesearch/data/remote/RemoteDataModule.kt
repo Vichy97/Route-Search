@@ -66,4 +66,6 @@ val remoteDataModule = module {
   }
 
   singleOf(::AreaApolloDataSource) bind AreaRemoteDataSource::class
+
+  singleOf(::AreaSearchTypeSenseDataSource) bind AreaSearchDataSource::class
 }
