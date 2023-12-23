@@ -57,6 +57,8 @@ object AreaScreen : Screen {
 
   override val arguments = listOf(areaIdArg)
 
+  fun getDestination(areaId: String) = "area?areaId=$areaId"
+
   @Composable
   override fun Content() {
     val viewModel = koinViewModel<AreaViewModel>()
