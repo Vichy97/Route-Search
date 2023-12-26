@@ -5,6 +5,8 @@ import com.routesearch.data.remote.area.AreaApolloDataSource
 import com.routesearch.data.remote.area.AreaRemoteDataSource
 import com.routesearch.data.remote.area.search.AreaSearchDataSource
 import com.routesearch.data.remote.area.search.AreaSearchTypeSenseDataSource
+import com.routesearch.data.remote.climb.search.ClimbSearchDataSource
+import com.routesearch.data.remote.climb.search.ClimbSearchTypeSenseDataSource
 import com.squareup.moshi.Moshi
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -68,4 +70,6 @@ val remoteDataModule = module {
   singleOf(::AreaApolloDataSource) bind AreaRemoteDataSource::class
 
   singleOf(::AreaSearchTypeSenseDataSource) bind AreaSearchDataSource::class
+
+  singleOf(::ClimbSearchTypeSenseDataSource) bind ClimbSearchDataSource::class
 }
