@@ -2,8 +2,8 @@ package com.routesearch.features.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.routesearch.data.area.search.AreaSearchResult
-import com.routesearch.data.area.search.AreaSearchService
+import com.routesearch.data.search.SearchResults
+import com.routesearch.data.search.SearchService
 import com.routesearch.features.R
 import com.routesearch.features.area.AreaScreen
 import com.routesearch.navigation.Navigator
@@ -21,7 +21,7 @@ private const val SEARCH_DEBOUNCE_MS = 200L
 
 @OptIn(FlowPreview::class)
 internal class SearchViewModel(
-  private val areaSearchService: AreaSearchService,
+  private val searchService: SearchService,
   private val snackbarManager: SnackbarManager,
   private val navigator: Navigator,
 ) : ViewModel() {
@@ -54,7 +54,7 @@ internal class SearchViewModel(
   private fun search(query: String) {
     cancelOngoingSearch()
     searchJob = viewModelScope.launch {
-      areaSearchService.searchForAreas(query)
+      searchService.search(query)
         .onSuccess(::onSearchSuccess)
         .onFailure { onSearchFailure() }
     }
@@ -66,9 +66,10 @@ internal class SearchViewModel(
     it.copy(areaSearchResults = emptyList())
   }
 
-  private fun onSearchSuccess(areaSearchResults: List<AreaSearchResult>) = _viewState.update {
+  private fun onSearchSuccess(searchResults: SearchResults) = _viewState.update {
     it.copy(
-      areaSearchResults = areaSearchResults,
+      areaSearchResults = searchResults.areaSearchResults,
+      climbSearchResults = searchResults.climbSearchResults,
     )
   }
 
