@@ -50,12 +50,13 @@ object AreaScreen : Screen {
   internal val areaIdArg = navArgument("areaId") {
     nullable = false
     type = NavType.StringType
-    defaultValue = "acd5e4e7-2972-5435-a237-4cea3dffe6cb"
   }
 
   override val route = "area?${areaIdArg.name}={${areaIdArg.name}}"
 
   override val arguments = listOf(areaIdArg)
+
+  fun getDestination(areaId: String) = "area?areaId=$areaId"
 
   @Composable
   override fun Content() {

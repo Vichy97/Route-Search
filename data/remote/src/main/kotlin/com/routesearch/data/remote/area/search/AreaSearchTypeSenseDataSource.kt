@@ -26,7 +26,7 @@ internal class AreaSearchTypeSenseDataSource(
       .hits
       .mapNotNull {
         moshi.adapter<AreaSearchResult>()
-          .fromJsonValue(it)
+          .fromJsonValue(it.document)
       }.let { Result.success(it) }
   } catch (e: TypesenseError) {
     Result.failure(e)

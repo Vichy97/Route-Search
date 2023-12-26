@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.routesearch.features.area.AreaScreen
+import com.routesearch.features.search.SearchScreen
 import com.routesearch.ui.common.util.screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -30,9 +31,10 @@ fun MainNavGraph(
   }
   NavHost(
     navController = navController,
-    startDestination = AreaScreen.route,
+    startDestination = SearchScreen.route,
     modifier = modifier,
   ) {
+    screen(SearchScreen)
     screen(AreaScreen)
   }
 }

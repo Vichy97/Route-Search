@@ -22,7 +22,7 @@ val remoteDataModule = module {
 
   single<String>(TypeSensePort) { "443" }
 
-  single<String>(TypeSenseProtocol) { "http" }
+  single<String>(TypeSenseProtocol) { "https" }
 
   single<String>(TypeSenseApiKey) { BuildConfig.TYPE_SENSE_API_KEY }
 
@@ -66,4 +66,6 @@ val remoteDataModule = module {
   }
 
   singleOf(::AreaApolloDataSource) bind AreaRemoteDataSource::class
+
+  singleOf(::AreaSearchTypeSenseDataSource) bind AreaSearchDataSource::class
 }
