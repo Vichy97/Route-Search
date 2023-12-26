@@ -1,0 +1,45 @@
+query ClimbQuery($uuid: ID) {
+  climb(uuid: $uuid) {
+    uuid
+    metadata {
+      lat
+      lng
+      leftRightIndex
+    }
+    authorMetadata {
+      ...authorMetadataFragment
+    }
+    name
+    pathTokens
+    ancestors
+    content {
+      description
+      location
+      protection
+    }
+    length
+    boltsCount
+    fa
+    type {
+      ...typeFragment
+    }
+    grades {
+      ...gradesFragment
+    }
+    pitches {
+      description
+      boltsCount
+      grades {
+        ...gradesFragment
+      }
+      length
+      pitchNumber
+      type {
+        ...typeFragment
+      }
+    }
+    media {
+      ...mediaFragment
+    }
+  }
+}
