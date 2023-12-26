@@ -13,6 +13,8 @@ style:
     ignoreAnnotated:
       - 'Preview'
       - 'Composable'
+  ForbiddenComment:
+    active: false
 naming:
   FunctionNaming:
     ignoreAnnotated:
