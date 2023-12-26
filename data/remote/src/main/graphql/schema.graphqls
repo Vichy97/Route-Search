@@ -147,7 +147,12 @@ type Climb {
   """
   Number of bolts/permanent anchors, if known (-1 otherwise)
   """
-  boltsCount: Int!
+  boltsCount: Int
+
+  """
+  List of Pitch objects representing individual pitches of a multi-pitch climb
+  """
+  pitches: [Pitch]
 
   """
   The grade(s) assigned to this climb. See GradeType documentation
@@ -334,6 +339,8 @@ type GradeType {
 
   french: String
 
+  brazilianCrux: String
+
   """
   Fontainebleau grading system, the most widely used grading system in Europe.
   Mostly used for bouldering.
@@ -387,6 +394,24 @@ enum SafetyEnum {
   No protection and overall the route is extremely dangerous.
   """
   X
+}
+
+type Pitch {
+  id: ID!
+
+  parentId: ID!
+
+  pitchNumber: Int!
+
+  grades: GradeType
+
+  type: ClimbType
+
+  length: Int
+
+  boltsCount: Int
+
+  description: String
 }
 
 """
