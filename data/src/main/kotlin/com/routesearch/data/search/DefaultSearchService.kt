@@ -1,7 +1,5 @@
 package com.routesearch.data.search
 
-import com.routesearch.data.area.search.toAreaSearchResults
-import com.routesearch.data.climb.search.toClimbSearchResults
 import com.routesearch.data.remote.area.search.AreaSearchDataSource
 import com.routesearch.data.remote.climb.search.ClimbSearchDataSource
 import kotlinx.coroutines.async

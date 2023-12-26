@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.routesearch.data.area.search.AreaSearchResult
+import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.features.R
 import com.routesearch.ui.common.Screen
 import com.routesearch.ui.common.theme.RouteSearchTheme
