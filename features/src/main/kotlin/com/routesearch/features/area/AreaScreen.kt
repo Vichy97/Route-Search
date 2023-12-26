@@ -40,6 +40,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.routesearch.data.area.Area
+import com.routesearch.data.climb.Grades
+import com.routesearch.data.climb.Type
 import com.routesearch.features.R
 import com.routesearch.ui.common.Screen
 import com.routesearch.ui.common.interaction.NoOpInteractionSource
@@ -95,7 +97,7 @@ private fun Content(
     seeMoreButton,
     downloadButton,
     shareButton,
-    areaChildren,
+    areaContent,
   ) = createRefs()
 
   Text(
@@ -158,14 +160,25 @@ private fun Content(
     onClick = onShareClick,
   )
 
-  AreaList(
-    area = area,
-    modifier = Modifier
-      .constrainAs(areaChildren) {
-        top.linkTo(downloadButton.bottom)
-        bottom.linkTo(parent.bottom)
-      },
-  )
+  if (area.children.isEmpty()) {
+    ClimbList(
+      area = area,
+      modifier = Modifier
+        .constrainAs(areaContent) {
+          top.linkTo(downloadButton.bottom)
+          bottom.linkTo(parent.bottom)
+        },
+    )
+  } else {
+    AreaList(
+      area = area,
+      modifier = Modifier
+        .constrainAs(areaContent) {
+          top.linkTo(downloadButton.bottom)
+          bottom.linkTo(parent.bottom)
+        },
+    )
+  }
 }
 
 @Composable
@@ -254,6 +267,12 @@ fun AreaChildItem(areaChild: Area.Child) = ListItem(
 )
 
 @Composable
+fun AreaClimbItem(climb: Area.Climb) = ListItem(
+  headlineContent = { Text(climb.name) },
+  supportingContent = { Text(climb.type.toString()) },
+)
+
+@Composable
 private fun Area.Child.subtitle(): String {
   val climbsText = pluralStringResource(
     id = R.plurals.area_screen_number_of_climbs,
@@ -290,9 +309,31 @@ private fun AreaList(
   }
 }
 
+@Composable
+private fun ClimbList(
+  area: Area,
+  modifier: Modifier,
+) = LazyColumn(
+  modifier = modifier,
+) {
+  itemsIndexed(
+    items = area.climbs,
+    key = { _, item -> item.id },
+  ) { index, climb ->
+    AreaClimbItem(climb)
+    if (index < area.totalClimbs) {
+      Divider(
+        modifier = Modifier.padding(
+          horizontal = 16.dp,
+        ),
+      )
+    }
+  }
+}
+
 @Preview
 @Composable
-private fun AreaScreenPreview() = MaterialTheme {
+private fun AreaScreenChildrenPreview() = MaterialTheme {
   Surface {
     Content(
       Area(
@@ -348,6 +389,87 @@ private fun AreaScreenPreview() = MaterialTheme {
             numberOfChildren = 4,
           ),
         ),
+        media = emptyList(),
+      ),
+      onShareClick = { },
+      onDownloadClick = { },
+    )
+  }
+}
+
+@Preview
+@Composable
+private fun AreaScreenClimbPreview() = MaterialTheme {
+  Surface {
+    Content(
+      Area(
+        id = "1",
+        name = "fake area",
+        description = """
+       According to all known laws of aviation, there is no 
+       way a bee should be able to fly. Its wings are too 
+       small to get its fat little body off the ground. The 
+       bee, of course, flies anyway because bees don't care 
+       what humans think is impossible. Yellow, black. 
+       Yellow, black. Yellow, black. Yellow, black. Ooh, 
+       black and yellow! Let's shake it up a little. Barry! 
+       Breakfast is ready! Ooming! Hang on a second. Hello? 
+       - Barry? - Adam?
+        """.trimIndent(),
+        path = listOf(
+          "USA",
+          "Arizona",
+          "Phoenix",
+        ),
+        totalClimbs = 5,
+        climbs = listOf(
+          Area.Climb(
+            id = "1",
+            grades = Grades(
+              yds = "5.9",
+              vScale = null,
+            ),
+            name = "Billy",
+            type = Type.AID,
+          ),
+          Area.Climb(
+            id = "2",
+            grades = Grades(
+              yds = "5.9",
+              vScale = null,
+            ),
+            name = "Bobby",
+            type = Type.TRAD,
+          ),
+          Area.Climb(
+            id = "3",
+            grades = Grades(
+              yds = null,
+              vScale = "v7",
+            ),
+            name = "Jimmy",
+            type = Type.BOULDERING,
+          ),
+          Area.Climb(
+            id = "4",
+            grades = Grades(
+              yds = "5.9",
+              vScale = null,
+            ),
+            name = "Linus",
+            type = Type.SNOW,
+          ),
+          Area.Climb(
+            id = "5",
+            grades = Grades(
+              yds = "5.9",
+              vScale = null,
+            ),
+            name = "Stinky",
+            type = Type.DEEP_WATER_SOLO,
+          ),
+        ),
+        children = emptyList(),
         media = emptyList(),
       ),
       onShareClick = { },
