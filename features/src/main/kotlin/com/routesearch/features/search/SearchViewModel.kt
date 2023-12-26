@@ -77,7 +77,12 @@ internal class SearchViewModel(
     snackbarManager.showSnackbar(R.string.search_screen_search_error_message)
   }
 
-  fun onAreaClicked(id: String) {
+  fun onAreaSearchResultClick(id: String) {
     navigator.navigate(AreaScreen.getDestination(id))
+  }
+
+  @Suppress("UnusedParameter")
+  fun onClimbSearchResultClick(id: String) {
+    TODO("Not implemented")
   }
 }

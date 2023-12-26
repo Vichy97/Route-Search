@@ -17,6 +17,7 @@ dependencies {
   api(project(":data"))
   api(project(":ui-common"))
 
+  api(libs.foundation.android)
   api(libs.foundation.layout.android)
   api(libs.navigation.common)
   api(libs.runtime.android)
@@ -27,7 +28,6 @@ dependencies {
   implementation(project(":navigation"))
 
   implementation(libs.constraintlayout.compose)
-  implementation(libs.foundation.android)
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)
   implementation(libs.koin.compose)

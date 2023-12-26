@@ -1,5 +1,6 @@
 package com.routesearch.features.search
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.routesearch.data.search.AreaSearchResult
+import com.routesearch.data.search.ClimbSearchResult
 import com.routesearch.features.R
 import com.routesearch.ui.common.Screen
 import com.routesearch.ui.common.theme.RouteSearchTheme
@@ -45,7 +47,8 @@ object SearchScreen : Screen {
       viewState = viewState,
       onSearch = viewModel::onSearch,
       onSearchQueryChange = viewModel::onSearchQueryChange,
-      onResultClick = viewModel::onAreaClicked,
+      onAreaSearchResultClick = viewModel::onAreaSearchResultClick,
+      onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
     )
   }
 }
@@ -55,7 +58,8 @@ private fun SearchScreenContent(
   viewState: SearchViewState,
   onSearchQueryChange: (String) -> Unit,
   onSearch: (String) -> Unit,
-  onResultClick: (String) -> Unit,
+  onAreaSearchResultClick: (String) -> Unit,
+  onClimbSearchResultClick: (String) -> Unit,
 ) = ConstraintLayout(
   modifier = Modifier
     .fillMaxSize(),
@@ -77,8 +81,10 @@ private fun SearchScreenContent(
   ) {
     SearchResultsList(
       modifier = Modifier.fillMaxSize(),
-      searchResults = viewState.areaSearchResults,
-      onResultClicked = onResultClick,
+      areaSearchResults = viewState.areaSearchResults,
+      climbSearchResults = viewState.climbSearchResults,
+      onAreaSearchResultClick = onAreaSearchResultClick,
+      onClimbSearchResultClick = onClimbSearchResultClick,
     )
   }
 }
@@ -123,30 +129,66 @@ private fun SearchBar(
   )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SearchResultsList(
   modifier: Modifier,
-  searchResults: List<AreaSearchResult>,
-  onResultClicked: (String) -> Unit,
+  areaSearchResults: List<AreaSearchResult>,
+  climbSearchResults: List<ClimbSearchResult>,
+  onAreaSearchResultClick: (String) -> Unit,
+  onClimbSearchResultClick: (String) -> Unit,
 ) = LazyColumn(
   modifier = modifier,
 ) {
-  items(searchResults) {
+  if (climbSearchResults.isNotEmpty()) {
+    stickyHeader { ClimbSearchResultsHeader() }
+  }
+  items(climbSearchResults) {
+    ClimbSearchResult(
+      result = it,
+      onClick = onClimbSearchResultClick,
+    )
+  }
+  if (areaSearchResults.isNotEmpty()) {
+    stickyHeader { AreaSearchResultsHeader() }
+  }
+  items(areaSearchResults) {
     AreaSearchResult(
       result = it,
-      onResultClicked = onResultClicked,
+      onClick = onAreaSearchResultClick,
     )
   }
 }
 
 @Composable
+fun AreaSearchResultsHeader() = Text(
+  text = "Areas",
+  style = MaterialTheme.typography.headlineSmall,
+)
+
+@Composable
 private fun AreaSearchResult(
   result: AreaSearchResult,
-  onResultClicked: (String) -> Unit,
+  onClick: (String) -> Unit,
 ) = ListItem(
-  modifier = Modifier.clickable { onResultClicked(result.id) },
+  modifier = Modifier.clickable { onClick(result.id) },
   headlineContent = { Text(result.name) },
   supportingContent = { Text(result.pathTokens.joinToString(" / ")) },
+)
+
+@Composable
+fun ClimbSearchResultsHeader() = Text(
+  text = "Climbs",
+  style = MaterialTheme.typography.headlineSmall,
+)
+
+@Composable
+private fun ClimbSearchResult(
+  result: ClimbSearchResult,
+  onClick: (String) -> Unit,
+) = ListItem(
+  modifier = Modifier.clickable { onClick(result.id) },
+  headlineContent = { Text(result.name) },
 )
 
 @Preview
@@ -159,8 +201,9 @@ fun SearchScreenPreview() = RouteSearchTheme {
     SearchScreenContent(
       viewState = SearchViewState(),
       onSearch = { },
-      onResultClick = { },
       onSearchQueryChange = { },
+      onAreaSearchResultClick = { },
+      onClimbSearchResultClick = { },
     )
   }
 }
