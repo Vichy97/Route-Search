@@ -3,8 +3,8 @@ package com.routesearch.data.climb
 import com.routesearch.data.local.climb.Climb as LocalClimb
 import com.routesearch.data.local.climb.Grades as LocalGrades
 import com.routesearch.data.remote.AreaQuery.Climb as RemoteClimb
-import com.routesearch.data.remote.AreaQuery.Grades as RemoteGrade
-import com.routesearch.data.remote.AreaQuery.Type as RemoteType
+import com.routesearch.data.remote.fragment.GradesFragment as RemoteGrade
+import com.routesearch.data.remote.fragment.TypeFragment as RemoteType
 
 @JvmName("remoteClimbToClimb")
 internal fun List<RemoteClimb?>.toClimbs() = filterNotNull()
@@ -12,9 +12,9 @@ internal fun List<RemoteClimb?>.toClimbs() = filterNotNull()
 
 internal fun RemoteClimb.toClimb() = Climb(
   id = uuid,
-  grades = grades?.toGrade(),
+  grades = grades?.gradesFragment?.toGrade(),
   name = name,
-  type = type.toType(),
+  type = type.typeFragment.toType(),
 )
 
 internal fun RemoteGrade.toGrade() = Grades(

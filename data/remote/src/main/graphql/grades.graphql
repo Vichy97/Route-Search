@@ -1,0 +1,4 @@
+fragment gradesFragment on GradeType {
+  yds
+  vscale
+}

@@ -15,7 +15,7 @@ internal fun NetworkArea.toArea() = Area(
   children = children?.toChildren() ?: emptyList(),
   totalClimbs = totalClimbs,
   climbs = climbs?.toClimbs() ?: emptyList(),
-  media = media?.toMedia() ?: emptyList(),
+  media = media?.mapNotNull { it?.mediaFragment?.toMedia() } ?: emptyList(),
 )
 
 @JvmName("remoteChildrenToChildren")

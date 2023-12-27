@@ -7,16 +7,15 @@ query AreaQuery($uuid: ID) {
     }
     pathTokens
     authorMetadata {
-      createdAt
-      updatedAt
+      ...authorMetadataFragment
     }
     metadata {
       lng
       lat
     }
     children {
-      areaName
       uuid
+      areaName
       totalClimbs
       children {
         uuid
@@ -25,26 +24,16 @@ query AreaQuery($uuid: ID) {
     totalClimbs
     climbs {
       uuid
-      grades {
-        yds
-        vscale
-      }
       name
+      grades {
+        ...gradesFragment
+      }
       type {
-        aid
-        bouldering
-        alpine
-        deepwatersolo
-        ice
-        mixed
-        sport
-        snow
-        tr
-        trad
+        ...typeFragment
       }
     }
     media {
-      mediaUrl
+      ...mediaFragment
     }
   }
 }

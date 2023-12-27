@@ -1,0 +1,12 @@
+fragment typeFragment on ClimbType {
+  aid
+  bouldering
+  alpine
+  deepwatersolo
+  ice
+  mixed
+  sport
+  snow
+  tr
+  trad
+}
