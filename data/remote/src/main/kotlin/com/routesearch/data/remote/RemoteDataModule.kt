@@ -5,6 +5,8 @@ import com.routesearch.data.remote.area.AreaApolloDataSource
 import com.routesearch.data.remote.area.AreaRemoteDataSource
 import com.routesearch.data.remote.area.search.AreaSearchDataSource
 import com.routesearch.data.remote.area.search.AreaSearchTypeSenseDataSource
+import com.routesearch.data.remote.climb.ClimbApolloDataSource
+import com.routesearch.data.remote.climb.ClimbRemoteDataSource
 import com.routesearch.data.remote.climb.search.ClimbSearchDataSource
 import com.routesearch.data.remote.climb.search.ClimbSearchTypeSenseDataSource
 import com.squareup.moshi.Moshi
@@ -72,4 +74,6 @@ val remoteDataModule = module {
   singleOf(::AreaSearchTypeSenseDataSource) bind AreaSearchDataSource::class
 
   singleOf(::ClimbSearchTypeSenseDataSource) bind ClimbSearchDataSource::class
+
+  singleOf(::ClimbApolloDataSource) bind ClimbRemoteDataSource::class
 }
