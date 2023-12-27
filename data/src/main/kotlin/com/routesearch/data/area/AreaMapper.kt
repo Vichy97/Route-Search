@@ -1,7 +1,9 @@
 package com.routesearch.data.area
 
-import com.routesearch.data.climb.toClimbs
+import com.routesearch.data.climb.Type
+import com.routesearch.data.climb.toGrades
 import com.routesearch.data.media.toMedia
+import com.routesearch.data.local.area.Area.Climb as LocalClimb
 import com.routesearch.data.local.area.AreaWithClimbsAndChildren as LocalArea
 import com.routesearch.data.local.area.Child as LocalChild
 import com.routesearch.data.remote.AreaQuery.Area as NetworkArea
@@ -48,4 +50,14 @@ private fun LocalChild.toChild() = Area.Child(
   name = name,
   totalClimbs = totalClimbs,
   numberOfChildren = numberOfChildren,
+)
+
+@JvmName("LocalClimbsToClimbs")
+private fun List<LocalClimb>.toClimbs() = map { it.toClimb() }
+
+private fun LocalClimb.toClimb() = Area.Climb(
+  id = id,
+  name = name,
+  grades = grades.toGrades(),
+  type = Type.valueOf(type),
 )

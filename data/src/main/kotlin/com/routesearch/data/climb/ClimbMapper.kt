@@ -1,47 +1,41 @@
 package com.routesearch.data.climb
 
-import com.routesearch.data.area.Area
-import com.routesearch.data.local.climb.Climb as LocalClimb
-import com.routesearch.data.local.climb.Grades as LocalGrades
-import com.routesearch.data.remote.fragment.GradesFragment as RemoteGrade
-import com.routesearch.data.remote.fragment.TypeFragment as RemoteType
+import com.routesearch.data.location.getLocation
+import com.routesearch.data.location.toLocation
+import com.routesearch.data.media.toMedia
+import com.routesearch.data.local.climb.ClimbWithPitches as LocalClimbWithPitches
+import com.routesearch.data.remote.ClimbQuery.Climb as RemoteClimb
 
-internal fun RemoteGrade.toGrade() = Grades(
-  yds = yds,
-  vScale = vscale,
-)
-
-internal fun RemoteType.toType() = when {
-  aid == true -> Type.AID
-  bouldering == true -> Type.BOULDERING
-  alpine == true -> Type.ALPINE
-  deepwatersolo == true -> Type.DEEP_WATER_SOLO
-  ice == true -> Type.ICE
-  mixed == true -> Type.MIXED
-  sport == true -> Type.SPORT
-  snow == true -> Type.SNOW
-  tr == true -> Type.TR
-  trad == true -> Type.TRAD
-  else -> throw IllegalArgumentException("Invalid type $this")
-}
-
-internal fun Grades.toLocalGrades() = LocalGrades(
-  yds = yds,
-  vScale = vScale,
-)
-
-@JvmName("localClimbToClimb")
-internal fun List<LocalClimb>.toClimbs() = filterNotNull()
-  .map { it.toClimb() }
-
-internal fun LocalClimb.toClimb() = Area.Climb(
-  id = id,
-  grades = grades?.toGrades(),
+internal fun RemoteClimb.toClimb() = Climb(
+  id = uuid,
+  metadata = getMetadata(),
   name = name,
-  type = Type.valueOf(type),
+  pathTokens = pathTokens,
+  location = metadata.getLocation(),
+  ancestorIds = ancestors,
+  description = getDescription(),
+  length = length,
+  boltCount = boltsCount,
+  fa = fa ?: "",
+  type = type.typeFragment.toType(),
+  grades = grades?.gradesFragment?.toGrade(),
+  pitches = pitches.toPitches(),
+  media = media?.mapNotNull { it?.mediaFragment?.toMedia() } ?: emptyList(),
 )
 
-internal fun LocalGrades.toGrades() = Grades(
-  yds = yds,
-  vScale = vScale,
+internal fun LocalClimbWithPitches.toClimb() = Climb(
+  id = climb.id,
+  metadata = climb.metadata.toMetaData(),
+  name = climb.name,
+  pathTokens = climb.pathTokens,
+  location = climb.location?.toLocation(),
+  ancestorIds = climb.ancestorIds,
+  description = climb.description.toDescription(),
+  length = climb.length,
+  boltCount = climb.boltCount,
+  fa = climb.fa,
+  type = climb.type.toType(),
+  grades = climb.grades?.toGrades(),
+  pitches = pitches.toPitches(),
+  media = climb.media,
 )
