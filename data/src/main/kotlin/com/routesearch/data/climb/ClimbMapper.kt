@@ -1,6 +1,5 @@
 package com.routesearch.data.climb
 
-import com.routesearch.data.media.toMedia
 import com.routesearch.data.local.climb.Climb as LocalClimb
 import com.routesearch.data.local.climb.Grades as LocalGrades
 import com.routesearch.data.remote.AreaQuery.Climb as RemoteClimb
@@ -9,15 +8,13 @@ import com.routesearch.data.remote.AreaQuery.Type as RemoteType
 
 @JvmName("remoteClimbToClimb")
 internal fun List<RemoteClimb?>.toClimbs() = filterNotNull()
-  .map { it.toClimb(it.id) }
+  .map { it.toClimb() }
 
-internal fun RemoteClimb.toClimb(areaId: String) = Climb(
-  id = id,
-  areaId = areaId,
+internal fun RemoteClimb.toClimb() = Climb(
+  id = uuid,
   grades = grades?.toGrade(),
   name = name,
   type = type.toType(),
-  media = media?.toMedia() ?: emptyList(),
 )
 
 internal fun RemoteGrade.toGrade() = Grades(
@@ -39,13 +36,12 @@ internal fun RemoteType.toType() = when {
   else -> throw IllegalArgumentException("Invalid type $this")
 }
 
-internal fun Climb.toLocalClimb() = LocalClimb(
+internal fun Climb.toLocalClimb(areaId: String) = LocalClimb(
   id = id,
   areaId = areaId,
   name = name,
   type = type.name,
   grades = grades?.toLocalGrades(),
-  media = media,
 )
 
 internal fun Grades.toLocalGrades() = LocalGrades(
@@ -59,11 +55,9 @@ internal fun List<LocalClimb>.toClimbs() = filterNotNull()
 
 internal fun LocalClimb.toClimb() = Climb(
   id = id,
-  areaId = areaId,
   grades = grades?.toGrades(),
   name = name,
   type = Type.valueOf(type),
-  media = media,
 )
 
 internal fun LocalGrades.toGrades() = Grades(
