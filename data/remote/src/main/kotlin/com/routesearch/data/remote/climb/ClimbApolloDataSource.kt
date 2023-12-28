@@ -4,6 +4,12 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
 import com.routesearch.data.remote.ClimbQuery
+import com.routesearch.data.remote.util.toError
+import com.routesearch.util.common.error.Error
+import com.routesearch.util.common.result.Result
+import logcat.LogPriority.ERROR
+import logcat.asLog
+import logcat.logcat
 
 internal class ClimbApolloDataSource(
   private val apolloClient: ApolloClient,
@@ -13,12 +19,16 @@ internal class ClimbApolloDataSource(
     val query = ClimbQuery(Optional.present(id))
     val response = apolloClient.query(query).execute().dataAssertNoErrors
 
-    response.climb?.let {
-      Result.success(it)
-    } ?: throw IllegalArgumentException("No climb found with id $id")
+    requireNotNull(response.climb) {
+      "No climb found with id $id"
+    }.let { Result.success(it) }
   } catch (e: ApolloException) {
-    Result.failure(e)
+    logcat(ERROR) { e.asLog() }
+
+    Result.failure(e.toError())
   } catch (e: IllegalArgumentException) {
-    Result.failure(e)
+    logcat(ERROR) { e.asLog() }
+
+    Result.failure(Error.ApiError.DataNotFound)
   }
 }

@@ -1,6 +1,7 @@
 package com.routesearch.data.climb
 
 import com.routesearch.data.remote.climb.ClimbRemoteDataSource
+import com.routesearch.util.common.result.map
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
