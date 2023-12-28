@@ -1,6 +1,7 @@
 package com.routesearch.data.area
 
-import com.routesearch.data.climb.Climb
+import com.routesearch.data.climb.Grades
+import com.routesearch.data.climb.Type
 
 data class Area(
   val id: String,
@@ -18,5 +19,12 @@ data class Area(
     val name: String,
     val totalClimbs: Int,
     val numberOfChildren: Int,
+  )
+
+  data class Climb(
+    val id: String,
+    val grades: Grades?,
+    val name: String,
+    val type: Type,
   )
 }

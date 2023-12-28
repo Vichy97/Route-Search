@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.routesearch.data.local.climb.Climb
+import com.routesearch.data.local.climb.Grades
 
 @Entity(tableName = "areas")
 data class Area(
@@ -14,9 +15,18 @@ data class Area(
   val path: List<String>,
   val totalClimbs: Int,
   val media: List<String>,
-)
+) {
 
-@Entity(tableName = "children")
+  data class Climb(
+    val id: String,
+    val name: String,
+    @Embedded
+    val grades: Grades,
+    val type: String,
+  )
+}
+
+@Entity(tableName = "area_children")
 data class Child(
   @PrimaryKey val id: String,
   val areaId: String,
@@ -38,5 +48,5 @@ data class AreaWithClimbsAndChildren(
     parentColumn = "id",
     entityColumn = "areaId",
   )
-  val climbs: List<Climb>,
+  val climbs: List<Area.Climb>,
 )

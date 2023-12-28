@@ -1,0 +1,4 @@
+fragment authorMetadataFragment on AuthorMetadata {
+  createdAt
+  updatedAt
+}

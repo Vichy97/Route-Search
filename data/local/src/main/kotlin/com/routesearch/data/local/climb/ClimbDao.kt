@@ -8,15 +8,18 @@ internal interface ClimbDao {
 
   @Transaction
   @Query("SELECT * FROM climbs")
-  suspend fun getAll(): List<Climb?>
+  suspend fun getAll(): List<ClimbWithPitches?>
 
   @Transaction
   @Query("SELECT * FROM climbs WHERE id = :id")
-  suspend fun getClimbById(id: String): Climb?
+  suspend fun getClimbById(id: String): ClimbWithPitches?
 
   @Insert
   suspend fun insertAllClimbs(climb: List<Climb>)
 
   @Insert
-  suspend fun insertOneClimb(climb: Climb)
+  suspend fun insertClimb(climb: Climb)
+
+  @Insert
+  suspend fun insertPitches(pitches: List<Pitch>)
 }
