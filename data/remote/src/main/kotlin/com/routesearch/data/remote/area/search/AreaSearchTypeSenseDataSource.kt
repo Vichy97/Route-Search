@@ -1,11 +1,18 @@
 package com.routesearch.data.remote.area.search
 
+import com.routesearch.data.remote.util.toError
+import com.routesearch.util.common.error.Error
+import com.routesearch.util.common.result.Result
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
+import logcat.LogPriority.ERROR
+import logcat.asLog
+import logcat.logcat
 import org.typesense.api.Client
 import org.typesense.api.exceptions.TypesenseError
 import org.typesense.model.SearchParameters
-import java.net.SocketTimeoutException
+import org.typesense.model.SearchResultHit
+import java.io.IOException
 
 private const val AreaCollectionName = "areas"
 
@@ -18,19 +25,24 @@ internal class AreaSearchTypeSenseDataSource(
     .queryBy("name,pathTokens")
     .sortBy("_text_match:desc,totalClimbs:desc")
 
-  @OptIn(ExperimentalStdlibApi::class)
   override suspend fun searchForAreas(query: String) = try {
     typeSenseClient.collections(AreaCollectionName)
       .documents()
       .search(searchParameters.q(query))
       .hits
-      .mapNotNull {
-        moshi.adapter<AreaSearchResult>()
-          .fromJsonValue(it.document)
-      }.let { Result.success(it) }
+      .mapNotNull { it.toSearchResult() }
+      .let { Result.success(it) }
   } catch (e: TypesenseError) {
-    Result.failure(e)
-  } catch (e: SocketTimeoutException) {
-    Result.failure(e)
+    logcat(ERROR) { e.asLog() }
+
+    Result.failure(Error.ApiError.Unknown)
+  } catch (e: IOException) {
+    logcat(ERROR) { e.asLog() }
+
+    Result.failure(e.toError())
   }
+
+  @OptIn(ExperimentalStdlibApi::class)
+  private fun SearchResultHit.toSearchResult() = moshi.adapter<AreaSearchResult>()
+    .fromJsonValue(document)
 }

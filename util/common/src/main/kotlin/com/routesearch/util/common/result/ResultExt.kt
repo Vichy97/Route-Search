@@ -45,3 +45,14 @@ inline fun <R, T : R> Result<T>.recover(transform: (error: Error) -> Result<R>):
   is Result.Success -> Result.success(value)
   is Result.Failure -> transform(error)
 }
+
+@Suppress("ReturnCount")
+inline fun <T1, T2, R> Result<T1>.combine(
+  result: Result<T2>,
+  transform: (T1, T2) -> R,
+): Result<R> {
+  (this as? Result.Failure)?.let { return Result.failure(it.error) }
+  (result as? Result.Failure)?.let { return Result.failure(it.error) }
+
+  return Result.success(transform((this as Result.Success).value, (result as Result.Success).value))
+}
