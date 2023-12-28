@@ -26,6 +26,7 @@ dependencies {
   implementation(platform(libs.koin.bom))
 
   implementation(project(":navigation"))
+  implementation(project(":util:common"))
 
   implementation(libs.constraintlayout.compose)
   implementation(libs.koin.android)

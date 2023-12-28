@@ -13,6 +13,8 @@ dependencies {
 
   implementation(platform(libs.koin.bom))
 
+  implementation(project(":util:common"))
+
   implementation(libs.collection)
   implementation(libs.koin.android)
   implementation(libs.logcat)

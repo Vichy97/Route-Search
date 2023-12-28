@@ -8,7 +8,8 @@ import com.routesearch.data.area.AreaRepository
 import com.routesearch.features.R
 import com.routesearch.features.area.AreaScreen.areaIdArg
 import com.routesearch.ui.common.snackbar.SnackbarManager
-import kotlinx.coroutines.Dispatchers
+import com.routesearch.util.common.result.onFailure
+import com.routesearch.util.common.result.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,7 +29,7 @@ internal class AreaViewModel(
     fetchArea(areaId)
   }
 
-  private fun fetchArea(areaId: String) = viewModelScope.launch(Dispatchers.IO) {
+  private fun fetchArea(areaId: String) = viewModelScope.launch {
     areaRepository.getArea(areaId)
       .onSuccess(::onFetchAreaSuccess)
       .onFailure { onFetchAreaFailure() }
