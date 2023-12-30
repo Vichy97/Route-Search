@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.routesearch.features.area.AreaScreen
+import com.routesearch.features.climb.ClimbScreen
 import com.routesearch.features.search.SearchScreen
 import com.routesearch.ui.common.util.screen
 import kotlinx.coroutines.flow.launchIn
@@ -36,5 +37,6 @@ fun MainNavGraph(
   ) {
     screen(SearchScreen)
     screen(AreaScreen)
+    screen(ClimbScreen)
   }
 }
