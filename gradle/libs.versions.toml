@@ -1,6 +1,6 @@
 [versions]
 activity = "1.7.2"
-agp = "8.3.0-alpha14"
+agp = "8.3.0-alpha18"
 annotation = "1.7.0"
 apollo = "3.8.2"
 collection = "1.2.0"

@@ -2,6 +2,8 @@ package com.routesearch.data.area
 
 import com.routesearch.data.local.area.AreaLocalDataSource
 import com.routesearch.data.remote.area.AreaRemoteDataSource
+import com.routesearch.util.common.result.map
+import com.routesearch.util.common.result.recover
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
@@ -14,10 +16,9 @@ internal class DefaultAreaRepository(
   override suspend fun getArea(id: String) = withContext(coroutineContext) {
     localDataSource.getArea(id)
       .map { it.toArea() }
-      .recoverCatching { getAreaFromRemote(id) }
+      .recover { getAreaFromRemote(id) }
   }
 
   private suspend fun getAreaFromRemote(id: String) = remoteDataSource.getArea(id)
     .map { it.toArea() }
-    .getOrThrow()
 }

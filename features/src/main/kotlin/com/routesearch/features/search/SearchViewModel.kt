@@ -8,6 +8,8 @@ import com.routesearch.features.R
 import com.routesearch.features.area.AreaScreen
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.snackbar.SnackbarManager
+import com.routesearch.util.common.result.onFailure
+import com.routesearch.util.common.result.onSuccess
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

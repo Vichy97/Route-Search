@@ -72,8 +72,11 @@ dependencies {
 
   implementation(platform(libs.koin.bom))
 
+  implementation(project(":util:common"))
+
   implementation(libs.apollo.api)
   implementation(libs.apollo.runtime)
+  implementation(libs.logcat)
   implementation(libs.typesense.java)
 
   testImplementation(libs.junit.jupiter)
