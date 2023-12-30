@@ -7,6 +7,8 @@ import com.routesearch.data.area.Area
 import com.routesearch.data.area.AreaRepository
 import com.routesearch.features.R
 import com.routesearch.features.area.AreaScreen.areaIdArg
+import com.routesearch.features.climb.ClimbScreen
+import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
@@ -19,6 +21,7 @@ internal class AreaViewModel(
   savedStateHandle: SavedStateHandle,
   private val areaRepository: AreaRepository,
   private val snackbarManager: SnackbarManager,
+  private val navigator: Navigator,
 ) : ViewModel() {
 
   private val _viewState = MutableStateFlow<AreaViewState>(AreaViewState.Loading)
@@ -53,5 +56,12 @@ internal class AreaViewModel(
 
   fun onSharedClicked() {
     TODO("Not implemented")
+  }
+
+  fun onClimbClicked(id: String) {
+    navigator.navigate(ClimbScreen.getDestination(id))
+  }
+  fun onAreaClicked(id: String) {
+    navigator.navigate(AreaScreen.getDestination(id))
   }
 }
