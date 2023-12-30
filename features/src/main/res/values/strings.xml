@@ -13,6 +13,10 @@
   <string name="area_screen_download_button">Download</string>
   <string name="area_screen_loading_error_message">Error Loading Area</string>
 
+  <string name="climb_screen_description_header">Description</string>
+  <string name="climb_screen_location_header">Location</string>
+  <string name="climb_screen_protection_header">Protection</string>
+
   <string name="search_screen_search_error_message">Something went wrong</string>
   <string name="search_screen_search_placeholder">Search for areas or climbs</string>
 </resources>

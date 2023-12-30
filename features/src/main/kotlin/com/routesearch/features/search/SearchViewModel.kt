@@ -6,6 +6,7 @@ import com.routesearch.data.search.SearchResults
 import com.routesearch.data.search.SearchService
 import com.routesearch.features.R
 import com.routesearch.features.area.AreaScreen
+import com.routesearch.features.climb.ClimbScreen
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.util.common.result.onFailure
@@ -83,8 +84,7 @@ internal class SearchViewModel(
     navigator.navigate(AreaScreen.getDestination(id))
   }
 
-  @Suppress("UnusedParameter")
   fun onClimbSearchResultClick(id: String) {
-    TODO("Not implemented")
+    navigator.navigate(ClimbScreen.getDestination(id))
   }
 }

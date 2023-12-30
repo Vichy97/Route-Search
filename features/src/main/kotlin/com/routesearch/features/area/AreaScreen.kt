@@ -1,5 +1,6 @@
 package com.routesearch.features.area
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -68,6 +69,8 @@ object AreaScreen : Screen {
     when (val currentViewState = viewState) {
       is AreaViewState.Content -> Content(
         area = currentViewState.area,
+        onClimbClick = viewModel::onClimbClicked,
+        onChildClick = viewModel::onAreaClicked,
         onDownloadClick = viewModel::onDownloadClicked,
         onShareClick = viewModel::onSharedClicked,
       )
@@ -86,6 +89,8 @@ private fun Loading() = Box(
 @Composable
 private fun Content(
   area: Area,
+  onClimbClick: (String) -> Unit,
+  onChildClick: (String) -> Unit,
   onDownloadClick: () -> Unit,
   onShareClick: () -> Unit,
 ) = ConstraintLayout(
@@ -163,6 +168,7 @@ private fun Content(
   if (area.children.isEmpty()) {
     ClimbList(
       area = area,
+      onClimbClicked = onClimbClick,
       modifier = Modifier
         .constrainAs(areaContent) {
           top.linkTo(downloadButton.bottom)
@@ -172,6 +178,7 @@ private fun Content(
   } else {
     AreaList(
       area = area,
+      onChildClicked = onChildClick,
       modifier = Modifier
         .constrainAs(areaContent) {
           top.linkTo(downloadButton.bottom)
@@ -261,13 +268,21 @@ private fun ShareButton(
 }
 
 @Composable
-fun AreaChildItem(areaChild: Area.Child) = ListItem(
+fun AreaChildItem(
+  areaChild: Area.Child,
+  onChildClicked: (String) -> Unit,
+) = ListItem(
+  modifier = Modifier.clickable { onChildClicked(areaChild.id) },
   headlineContent = { Text(areaChild.name) },
   supportingContent = { Text(areaChild.subtitle()) },
 )
 
 @Composable
-fun AreaClimbItem(climb: Area.Climb) = ListItem(
+fun AreaClimbItem(
+  climb: Area.Climb,
+  onClimbClicked: (String) -> Unit,
+) = ListItem(
+  modifier = Modifier.clickable { onClimbClicked(climb.id) },
   headlineContent = { Text(climb.name) },
   supportingContent = { Text(climb.type.toString()) },
 )
@@ -291,6 +306,7 @@ private fun Area.Child.subtitle(): String {
 private fun AreaList(
   area: Area,
   modifier: Modifier,
+  onChildClicked: (String) -> Unit,
 ) = LazyColumn(
   modifier = modifier,
 ) {
@@ -298,7 +314,10 @@ private fun AreaList(
     items = area.children,
     key = { _, item -> item.id },
   ) { index, child ->
-    AreaChildItem(child)
+    AreaChildItem(
+      child,
+      onChildClicked = onChildClicked,
+    )
     if (index < area.children.size) {
       Divider(
         modifier = Modifier.padding(
@@ -313,6 +332,7 @@ private fun AreaList(
 private fun ClimbList(
   area: Area,
   modifier: Modifier,
+  onClimbClicked: (String) -> Unit,
 ) = LazyColumn(
   modifier = modifier,
 ) {
@@ -320,7 +340,10 @@ private fun ClimbList(
     items = area.climbs,
     key = { _, item -> item.id },
   ) { index, climb ->
-    AreaClimbItem(climb)
+    AreaClimbItem(
+      climb,
+      onClimbClicked = onClimbClicked,
+    )
     if (index < area.totalClimbs) {
       Divider(
         modifier = Modifier.padding(
@@ -393,6 +416,8 @@ private fun AreaScreenChildrenPreview() = MaterialTheme {
       ),
       onShareClick = { },
       onDownloadClick = { },
+      onClimbClick = { },
+      onChildClick = { },
     )
   }
 }
@@ -474,6 +499,8 @@ private fun AreaScreenClimbPreview() = MaterialTheme {
       ),
       onShareClick = { },
       onDownloadClick = { },
+      onClimbClick = { },
+      onChildClick = { },
     )
   }
 }
