@@ -27,30 +27,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
 import com.routesearch.features.R
-import com.routesearch.ui.common.Screen
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
-object SearchScreen : Screen {
+@Destination
+@RootNavGraph(start = true)
+@Composable
+fun SearchScreen() {
+  val viewModel = koinViewModel<SearchViewModel>()
+  val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  override val route = "search"
-
-  @Composable
-  override fun Content() {
-    val viewModel = koinViewModel<SearchViewModel>()
-    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
-
-    SearchScreenContent(
-      viewState = viewState,
-      onSearch = viewModel::onSearch,
-      onSearchQueryChange = viewModel::onSearchQueryChange,
-      onAreaSearchResultClick = viewModel::onAreaSearchResultClick,
-      onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
-    )
-  }
+  SearchScreenContent(
+    viewState = viewState,
+    onSearch = viewModel::onSearch,
+    onSearchQueryChange = viewModel::onSearchQueryChange,
+    onAreaSearchResultClick = viewModel::onAreaSearchResultClick,
+    onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
+  )
 }
 
 @Composable

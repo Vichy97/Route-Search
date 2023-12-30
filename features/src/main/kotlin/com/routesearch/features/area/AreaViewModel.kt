@@ -1,13 +1,12 @@
 package com.routesearch.features.area
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.area.Area
 import com.routesearch.data.area.AreaRepository
 import com.routesearch.features.R
-import com.routesearch.features.area.AreaScreen.areaIdArg
-import com.routesearch.features.climb.ClimbScreen
+import com.routesearch.features.destinations.AreaScreenDestination
+import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.util.common.result.onFailure
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class AreaViewModel(
-  savedStateHandle: SavedStateHandle,
+  args: AreaScreenArgs,
   private val areaRepository: AreaRepository,
   private val snackbarManager: SnackbarManager,
   private val navigator: Navigator,
@@ -28,8 +27,7 @@ internal class AreaViewModel(
   val viewState = _viewState.asStateFlow()
 
   init {
-    val areaId: String = checkNotNull(savedStateHandle[areaIdArg.name])
-    fetchArea(areaId)
+    fetchArea(args.id)
   }
 
   private fun fetchArea(areaId: String) = viewModelScope.launch {
@@ -58,10 +56,7 @@ internal class AreaViewModel(
     TODO("Not implemented")
   }
 
-  fun onClimbClicked(id: String) {
-    navigator.navigate(ClimbScreen.getDestination(id))
-  }
-  fun onAreaClicked(id: String) {
-    navigator.navigate(AreaScreen.getDestination(id))
-  }
+  fun onClimbClicked(id: String) = navigator.navigate(ClimbScreenDestination(id))
+
+  fun onAreaClicked(id: String) = navigator.navigate(AreaScreenDestination(id))
 }

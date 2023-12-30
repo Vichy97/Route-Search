@@ -1,5 +1,6 @@
 plugins {
   `android-library-convention`
+  id(libs.plugins.ksp.get().pluginId)
 }
 
 android {
@@ -14,20 +15,26 @@ android {
 }
 
 dependencies {
-  api(project(":data"))
-  api(project(":ui-common"))
+  ksp(libs.compose.destinations.ksp)
 
+  api(project(":data"))
+
+  api(libs.compose.destinations.core)
   api(libs.foundation.android)
   api(libs.foundation.layout.android)
+  api(libs.lifecycle.viewmodel.savedstate)
   api(libs.navigation.common)
+  api(libs.navigation.runtime)
   api(libs.runtime.android)
 
   implementation(platform(libs.compose.bom))
   implementation(platform(libs.koin.bom))
 
   implementation(project(":navigation"))
+  implementation(project(":ui-common"))
   implementation(project(":util:common"))
 
+  implementation(libs.annotation)
   implementation(libs.constraintlayout.compose)
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)
@@ -39,7 +46,6 @@ dependencies {
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.lifecycle.viewmodel.compose)
   implementation(libs.lifecycle.viewmodel.ktx)
-  implementation(libs.lifecycle.viewmodel.savedstate)
   implementation(libs.material.icons.core.android)
   implementation(libs.material3)
   implementation(libs.runtime.saveable.android)

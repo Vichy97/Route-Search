@@ -38,45 +38,33 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.Grades
 import com.routesearch.data.climb.Type
 import com.routesearch.features.R
-import com.routesearch.ui.common.Screen
 import com.routesearch.ui.common.interaction.NoOpInteractionSource
 import org.koin.androidx.compose.koinViewModel
 
-object AreaScreen : Screen {
+@Destination(
+  navArgsDelegate = AreaScreenArgs::class,
+)
+@Composable
+fun AreaScreen() {
+  val viewModel = koinViewModel<AreaViewModel>()
+  val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  internal val areaIdArg = navArgument("areaId") {
-    nullable = false
-    type = NavType.StringType
-  }
+  when (val currentViewState = viewState) {
+    is AreaViewState.Content -> Content(
+      area = currentViewState.area,
+      onClimbClick = viewModel::onClimbClicked,
+      onChildClick = viewModel::onAreaClicked,
+      onDownloadClick = viewModel::onDownloadClicked,
+      onShareClick = viewModel::onSharedClicked,
+    )
 
-  override val route = "area?${areaIdArg.name}={${areaIdArg.name}}"
-
-  override val arguments = listOf(areaIdArg)
-
-  fun getDestination(areaId: String) = "area?areaId=$areaId"
-
-  @Composable
-  override fun Content() {
-    val viewModel = koinViewModel<AreaViewModel>()
-    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
-
-    when (val currentViewState = viewState) {
-      is AreaViewState.Content -> Content(
-        area = currentViewState.area,
-        onClimbClick = viewModel::onClimbClicked,
-        onChildClick = viewModel::onAreaClicked,
-        onDownloadClick = viewModel::onDownloadClicked,
-        onShareClick = viewModel::onSharedClicked,
-      )
-      is AreaViewState.Loading -> Loading()
-      AreaViewState.Idle -> Unit
-    }
+    is AreaViewState.Loading -> Loading()
+    AreaViewState.Idle -> Unit
   }
 }
 
