@@ -97,15 +97,12 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
-  implementation(libs.material3)
   implementation(libs.navigation.common)
   implementation(libs.navigation.compose)
   implementation(libs.navigation.runtime)
   implementation(libs.runtime.android)
   implementation(libs.ui.android)
   implementation(libs.ui.graphics.android)
-  implementation(libs.ui.text.android)
-  implementation(libs.ui.tooling.preview.android)
 
   debugImplementation(libs.leakcanary.android)
 
