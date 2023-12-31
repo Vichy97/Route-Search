@@ -22,25 +22,24 @@ private val LightColorScheme = lightColorScheme(
   tertiary = Pink40,
 )
 
-@Composable
-fun RouteSearchTheme(
-  darkTheme: Boolean = isSystemInDarkTheme(),
-  dynamicColor: Boolean = true,
-  content: @Composable () -> Unit,
-) {
-  val colorScheme = when {
-    dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-      val context = LocalContext.current
-      if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-    }
+private val useDynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-    darkTheme -> DarkColorScheme
-    else -> LightColorScheme
-  }
+@Composable
+fun RouteSearchTheme(content: @Composable () -> Unit) {
+  val darkTheme = isSystemInDarkTheme()
+  val colorScheme = getColorScheme(darkTheme)
 
   MaterialTheme(
     colorScheme = colorScheme,
     typography = Typography,
     content = content,
   )
+}
+
+@Composable
+private fun getColorScheme(darkTheme: Boolean) = when {
+  useDynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
+  useDynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
+  darkTheme -> DarkColorScheme
+  else -> LightColorScheme
 }
