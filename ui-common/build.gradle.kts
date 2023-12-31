@@ -18,8 +18,6 @@ dependencies {
 
   implementation(platform(libs.compose.bom))
   implementation(platform(libs.koin.bom))
-
-  implementation(libs.core)
   implementation(libs.koin.core)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.material3)
