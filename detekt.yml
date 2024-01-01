@@ -9,6 +9,9 @@ style:
   MagicNumber:
     ignorePropertyDeclaration: true
     ignoreExtensionFunctions: false
+    ignoreAnnotated:
+      - 'Preview'
+      - 'Composable'
   DestructuringDeclarationWithTooManyEntries:
     ignoreAnnotated:
       - 'Preview'

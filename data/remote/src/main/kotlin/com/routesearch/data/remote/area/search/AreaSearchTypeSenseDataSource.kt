@@ -22,7 +22,7 @@ internal class AreaSearchTypeSenseDataSource(
 ) : AreaSearchDataSource {
 
   private val searchParameters = SearchParameters()
-    .queryBy("name,pathTokens")
+    .queryBy("name")
     .sortBy("_text_match:desc,totalClimbs:desc")
 
   override suspend fun searchForAreas(query: String) = try {

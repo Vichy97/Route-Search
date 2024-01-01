@@ -19,4 +19,8 @@
 
   <string name="search_screen_search_error_message">Something went wrong</string>
   <string name="search_screen_search_placeholder">Search for areas or climbs</string>
+  <string name="search_screen_climbs_header">Climbs</string>
+  <string name="search_screen_areas_header">Areas</string>
+  <string name="search_screen_area_filter_text">Areas</string>
+  <string name="search_screen_climb_filter_text">Climbs</string>
 </resources>
