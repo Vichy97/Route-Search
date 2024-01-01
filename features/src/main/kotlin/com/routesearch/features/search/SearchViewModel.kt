@@ -44,12 +44,19 @@ internal class SearchViewModel(
   }
 
   fun onSearchQueryChange(query: String) {
+    searchQuery.value = query
+
     if (query.isBlank()) {
       cancelOngoingSearch()
       clearSearchResults()
+      return
     }
 
-    searchQuery.value = query
+    _viewState.update {
+      it.copy(
+        searchQuery = query,
+      )
+    }
   }
 
   fun onSearch(query: String) = search(query)
@@ -66,7 +73,11 @@ internal class SearchViewModel(
   private fun cancelOngoingSearch() = searchJob?.cancel()
 
   private fun clearSearchResults() = _viewState.update {
-    it.copy(areaSearchResults = emptyList())
+    it.copy(
+      areaSearchResults = emptyList(),
+      climbSearchResults = emptyList(),
+      searchQuery = "",
+    )
   }
 
   private fun onSearchSuccess(searchResults: SearchResults) = _viewState.update {
@@ -78,6 +89,38 @@ internal class SearchViewModel(
 
   private fun onSearchFailure() {
     snackbarManager.showSnackbar(R.string.search_screen_search_error_message)
+  }
+
+  fun onSearchActiveChange(searchActive: Boolean) = _viewState.update {
+    it.copy(
+      searchActive = searchActive,
+    )
+  }
+
+  fun onBackClick() {
+    _viewState.update {
+      it.copy(
+        searchActive = false,
+      )
+    }
+    searchQuery.value = ""
+  }
+
+  fun onClearClick() {
+    clearSearchResults()
+    searchQuery.value = ""
+  }
+
+  fun onAreaFilterClick() = _viewState.update {
+    it.copy(
+      areaFilterSelected = !it.areaFilterSelected,
+    )
+  }
+
+  fun onClimbFilterClick() = _viewState.update {
+    it.copy(
+      climbFilterSelected = !it.climbFilterSelected,
+    )
   }
 
   fun onAreaSearchResultClick(id: String) = navigator.navigate(AreaScreenDestination(id))
