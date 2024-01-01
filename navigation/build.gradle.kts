@@ -5,6 +5,7 @@ android {
   namespace = "com.routesearch.navigation"
 }
 dependencies {
+  api(libs.compose.destinations.core)
   api(libs.koin.core)
   api(libs.kotlinx.coroutines.core)
   api(libs.navigation.common)

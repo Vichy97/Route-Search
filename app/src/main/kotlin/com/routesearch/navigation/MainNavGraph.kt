@@ -4,11 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import com.routesearch.features.area.AreaScreen
-import com.routesearch.features.climb.ClimbScreen
-import com.routesearch.features.search.SearchScreen
-import com.routesearch.ui.common.util.screen
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.routesearch.features.NavGraphs
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.compose.koinInject
@@ -30,13 +27,9 @@ fun MainNavGraph(
       }
     }.launchIn(this)
   }
-  NavHost(
-    navController = navController,
-    startDestination = SearchScreen.route,
+  DestinationsNavHost(
     modifier = modifier,
-  ) {
-    screen(SearchScreen)
-    screen(AreaScreen)
-    screen(ClimbScreen)
-  }
+    navGraph = NavGraphs.root,
+    navController = navController,
+  )
 }

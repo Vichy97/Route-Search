@@ -2,6 +2,7 @@ package com.routesearch.navigation
 
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navOptions
+import com.ramcosta.composedestinations.spec.Direction
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
@@ -9,6 +10,8 @@ class Navigator {
 
   private val _navEvents = MutableSharedFlow<NavEvent>(extraBufferCapacity = 1)
   val navEvents = _navEvents.asSharedFlow()
+
+  fun navigate(direction: Direction) = navigate(direction.route)
 
   fun navigate(
     destination: String,

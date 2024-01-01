@@ -1,11 +1,9 @@
 package com.routesearch.features.climb
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.climb.Climb
 import com.routesearch.data.climb.ClimbRepository
-import com.routesearch.features.climb.ClimbScreen.climbIdArg
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class ClimbViewModel(
-  savedStateHandle: SavedStateHandle,
+  args: ClimbScreenArgs,
   private val climbRepository: ClimbRepository,
 ) : ViewModel() {
 
@@ -22,8 +20,7 @@ internal class ClimbViewModel(
   val viewState = _viewState.asStateFlow()
 
   init {
-    val climbId: String = checkNotNull(savedStateHandle[climbIdArg.name])
-    fetchClimb(climbId)
+    fetchClimb(args.id)
   }
 
   private fun fetchClimb(climbId: String) = viewModelScope.launch {

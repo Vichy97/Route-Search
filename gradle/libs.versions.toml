@@ -6,6 +6,7 @@ apollo = "3.8.2"
 collection = "1.2.0"
 compose-bom = "2023.09.02"
 compose-compiler = "1.5.3"
+compose-destinations = "1.9.56"
 core = "1.10.1"
 coroutines = "1.7.1"
 dependency-analysis = "1.26.0"
@@ -36,6 +37,8 @@ apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime",
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
 constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-destinations-core = { group = "io.github.raamcosta.compose-destinations", name = "core", version.ref = "compose-destinations" }
+compose-destinations-ksp = { group = "io.github.raamcosta.compose-destinations", name = "ksp", version.ref = "compose-destinations" }
 core = { group = "androidx.core", name = "core", version.ref = "core" }
 foundation-android = { group = "androidx.compose.foundation", name = "foundation-android" }
 foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android" }

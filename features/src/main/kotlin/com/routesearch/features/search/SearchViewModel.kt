@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.routesearch.data.search.SearchResults
 import com.routesearch.data.search.SearchService
 import com.routesearch.features.R
-import com.routesearch.features.area.AreaScreen
-import com.routesearch.features.climb.ClimbScreen
+import com.routesearch.features.destinations.AreaScreenDestination
+import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.util.common.result.onFailure
@@ -80,11 +80,7 @@ internal class SearchViewModel(
     snackbarManager.showSnackbar(R.string.search_screen_search_error_message)
   }
 
-  fun onAreaSearchResultClick(id: String) {
-    navigator.navigate(AreaScreen.getDestination(id))
-  }
+  fun onAreaSearchResultClick(id: String) = navigator.navigate(AreaScreenDestination(id))
 
-  fun onClimbSearchResultClick(id: String) {
-    navigator.navigate(ClimbScreen.getDestination(id))
-  }
+  fun onClimbSearchResultClick(id: String) = navigator.navigate(ClimbScreenDestination(id))
 }

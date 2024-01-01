@@ -16,38 +16,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
 import com.routesearch.features.R
-import com.routesearch.ui.common.Screen
 import org.koin.androidx.compose.koinViewModel
 
-object ClimbScreen : Screen {
+@Destination(
+  navArgsDelegate = ClimbScreenArgs::class,
+)
+@Composable
+fun ClimbScreen() {
+  val viewModel = koinViewModel<ClimbViewModel>()
+  val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  internal val climbIdArg = navArgument("climbId") {
-    nullable = false
-    type = NavType.StringType
-  }
+  when (val currentViewState = viewState) {
+    is ClimbViewState.Content -> Content(
+      climb = currentViewState.climb,
+    )
 
-  override val route = "climb?${climbIdArg.name}={${climbIdArg.name}}"
-
-  override val arguments = listOf(climbIdArg)
-
-  fun getDestination(climbId: String) = "climb?climbId=$climbId"
-
-  @Composable
-  override fun Content() {
-    val viewModel = koinViewModel<ClimbViewModel>()
-    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
-
-    when (val currentViewState = viewState) {
-      is ClimbViewState.Content -> Content(
-        climb = currentViewState.climb,
-      )
-      is ClimbViewState.Loading -> Loading()
-      ClimbViewState.Idle -> Unit
-    }
+    is ClimbViewState.Loading -> Loading()
+    ClimbViewState.Idle -> Unit
   }
 }
 
@@ -63,7 +51,7 @@ private fun Content(
 ) = ConstraintLayout(
   modifier = Modifier.fillMaxSize(),
 ) {
-  val(
+  val (
     title,
     descriptionHeader,
     description,

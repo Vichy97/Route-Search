@@ -4,6 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
   id(libs.plugins.androidApplication.get().pluginId)
   id(libs.plugins.kotlinAndroid.get().pluginId)
+  id(libs.plugins.ksp.get().pluginId)
 }
 android {
   namespace = "com.routesearch"
@@ -73,6 +74,8 @@ tasks.withType<Test> {
   }
 }
 dependencies {
+  ksp(libs.compose.destinations.ksp)
+
   implementation(platform(libs.compose.bom))
   implementation(platform(libs.koin.bom))
 
@@ -84,6 +87,7 @@ dependencies {
 
   implementation(libs.activity)
   implementation(libs.activity.compose)
+  implementation(libs.compose.destinations.core)
   implementation(libs.core)
   implementation(libs.foundation.layout.android)
   implementation(libs.koin.android)
