@@ -84,6 +84,7 @@ dependencies {
   implementation(project(":navigation"))
   implementation(project(":ui-common"))
   implementation(project(":util"))
+  implementation(project(":util:view"))
 
   implementation(libs.activity)
   implementation(libs.activity.compose)
@@ -96,14 +97,12 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
-  implementation(libs.material3)
   implementation(libs.navigation.common)
   implementation(libs.navigation.compose)
   implementation(libs.navigation.runtime)
   implementation(libs.runtime.android)
   implementation(libs.ui.android)
-  implementation(libs.ui.text.android)
-  implementation(libs.ui.tooling.preview.android)
+  implementation(libs.ui.graphics.android)
 
   debugImplementation(libs.leakcanary.android)
 

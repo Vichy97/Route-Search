@@ -26,4 +26,5 @@ include(
   ":util",
   ":util:common",
   ":util:coroutines",
+  ":util:view",
 )
