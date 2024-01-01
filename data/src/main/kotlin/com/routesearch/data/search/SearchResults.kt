@@ -8,6 +8,9 @@ data class SearchResults(
 data class ClimbSearchResult(
   val id: String,
   val name: String,
+  val pathTokens: List<String>,
+  val grade: String,
+  val type: String,
 )
 
 data class AreaSearchResult(

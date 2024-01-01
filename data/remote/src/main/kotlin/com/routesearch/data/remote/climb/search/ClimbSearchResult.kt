@@ -9,4 +9,10 @@ data class ClimbSearchResult(
   val id: String,
   @Json(name = "climbName")
   val name: String,
+  @Json(name = "areaNames")
+  val pathTokens: List<String>,
+  @Json(name = "grade")
+  val grade: String,
+  @Json(name = "disciplines")
+  val types: List<String>,
 )
