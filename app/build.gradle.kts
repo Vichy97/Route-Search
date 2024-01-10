@@ -29,6 +29,17 @@ android {
       isMinifyEnabled = false
     }
   }
+  flavorDimensions += "environment"
+  productFlavors {
+    create("development") {
+      dimension = "environment"
+      applicationIdSuffix = ".dev"
+      versionNameSuffix = "-dev"
+    }
+    create("production") {
+      dimension = "environment"
+    }
+  }
   sourceSets.getByName("androidTest") {
     java.srcDir("src/androidTest/kotlin")
   }
