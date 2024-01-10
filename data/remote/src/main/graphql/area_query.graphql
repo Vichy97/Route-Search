@@ -1,17 +1,26 @@
 query AreaQuery($uuid: ID) {
   area(uuid: $uuid) {
-    id
+    uuid
     areaName
     content {
       description
     }
     pathTokens
+    ancestors
     authorMetadata {
       ...authorMetadataFragment
     }
     metadata {
       lng
       lat
+      isBoulder
+      leaf
+    }
+    aggregate {
+      byGrade {
+        count
+        label
+      }
     }
     children {
       uuid
@@ -34,6 +43,14 @@ query AreaQuery($uuid: ID) {
     }
     media {
       ...mediaFragment
+    }
+    organizations {
+      content {
+        description
+        website
+      }
+      displayName
+      orgId
     }
   }
 }

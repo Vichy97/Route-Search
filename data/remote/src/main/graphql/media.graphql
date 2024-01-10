@@ -1,3 +1,7 @@
 fragment mediaFragment on MediaWithTags {
   mediaUrl
+  username
+  entityTags {
+    type
+  }
 }

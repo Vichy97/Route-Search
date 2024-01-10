@@ -1,4 +1,6 @@
 fragment gradesFragment on GradeType {
-  yds
+  french
+  font
   vscale
+  yds
 }
