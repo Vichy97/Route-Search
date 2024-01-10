@@ -29,15 +29,15 @@ android {
       value = properties.getProperty("TYPE_SENSE_HOST"),
     )
   }
-  buildTypes {
-    debug {
+  productFlavors {
+    getByName("development") {
       buildConfigField(
         type = "String",
         name = "API_URL",
         value = "\"https://stg-api.openbeta.io/\"",
       )
     }
-    release {
+    getByName("production") {
       buildConfigField(
         type = "String",
         name = "API_URL",
