@@ -2,4 +2,6 @@ package com.routesearch.data.media
 
 import com.routesearch.data.remote.fragment.MediaFragment as RemoteMedia
 
-internal fun RemoteMedia.toMedia() = mediaUrl
+private const val BaseUrl = "https://media.openbeta.io/"
+
+internal fun RemoteMedia.toMedia() = "$BaseUrl$mediaUrl"
