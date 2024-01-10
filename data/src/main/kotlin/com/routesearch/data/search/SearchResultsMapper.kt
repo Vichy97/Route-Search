@@ -12,7 +12,7 @@ internal fun RemoteClimbSearchResult.toClimbSearchResult() = ClimbSearchResult(
   name = name,
   pathTokens = pathTokens,
   grade = grade,
-  type = types.first(),
+  type = types.firstOrNull() ?: "",
 )
 
 internal fun List<RemoteAreaSearchResult>.toAreaSearchResults() = map {
