@@ -4,7 +4,6 @@ import com.routesearch.data.area.AreaRepository
 import com.routesearch.data.area.DefaultAreaRepository
 import com.routesearch.data.climb.ClimbRepository
 import com.routesearch.data.climb.DefaultClimbRepository
-import com.routesearch.data.local.area.AreaLocalDataSource
 import com.routesearch.data.local.localDataModule
 import com.routesearch.data.remote.area.AreaRemoteDataSource
 import com.routesearch.data.remote.area.search.AreaSearchDataSource
@@ -28,7 +27,6 @@ val dataModule = module {
   single {
     DefaultAreaRepository(
       remoteDataSource = get<AreaRemoteDataSource>(),
-      localDataSource = get<AreaLocalDataSource>(),
       coroutineContext = get<CoroutineContext>(IoContext),
     )
   } bind AreaRepository::class
