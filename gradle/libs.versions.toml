@@ -4,6 +4,7 @@ agp = "8.3.0-alpha18"
 annotation = "1.7.0"
 apollo = "3.8.2"
 collection = "1.2.0"
+coil-bom = "2.5.0"
 compose-bom = "2023.09.02"
 compose-compiler = "1.5.3"
 compose-destinations = "1.9.56"
@@ -31,10 +32,14 @@ lifecycle-runtime-compose = "2.6.2"
 [libraries]
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+animation = { group = "androidx.compose.animation", name = "animation" }
 animation-android = { group = "androidx.compose.animation", name = "animation-android" }
+animation-core = { group = "androidx.compose.animation", name = "animation-core" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
+coil-bom = { group = "io.coil-kt", name = "coil-bom", version.ref = "coil-bom" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose" }
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
 constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }

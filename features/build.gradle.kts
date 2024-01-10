@@ -27,6 +27,7 @@ dependencies {
   api(libs.navigation.runtime)
   api(libs.runtime.android)
 
+  implementation(platform(libs.coil.bom))
   implementation(platform(libs.compose.bom))
   implementation(platform(libs.koin.bom))
 
@@ -34,7 +35,10 @@ dependencies {
   implementation(project(":ui-common"))
   implementation(project(":util:common"))
 
+  implementation(libs.animation)
+  implementation(libs.animation.core)
   implementation(libs.annotation)
+  implementation(libs.coil.compose)
   implementation(libs.constraintlayout.compose)
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)

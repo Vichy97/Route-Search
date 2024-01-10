@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.routesearch.data.area.Area
 import com.routesearch.data.area.AreaRepository
 import com.routesearch.features.R
+import com.routesearch.features.common.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.navigation.Navigator
+import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
@@ -21,6 +23,7 @@ internal class AreaViewModel(
   private val areaRepository: AreaRepository,
   private val snackbarManager: SnackbarManager,
   private val navigator: Navigator,
+  private val intentLauncher: IntentLauncher,
 ) : ViewModel() {
 
   private val _viewState = MutableStateFlow<AreaViewState>(AreaViewState.Loading)
@@ -48,15 +51,23 @@ internal class AreaViewModel(
     )
   }
 
-  fun onDownloadClicked() {
-    TODO("Not implemented")
+  fun onBackClick() = navigator.popBackStack()
+
+  fun onPathSectionClick(pathSection: String) = (viewState.value as? AreaViewState.Content)?.run {
+    val pathIndex = area.path.indexOf(pathSection)
+    val ancestorId = area.ancestorIds[pathIndex]
+    navigator.navigate(AreaScreenDestination(ancestorId))
   }
 
-  fun onSharedClicked() {
-    TODO("Not implemented")
+  fun onLocationClick() = (viewState.value as? AreaViewState.Content)?.run {
+    val intent = GeoIntent(
+      location = area.location,
+      name = area.name,
+    )
+    intentLauncher.launchIntent(intent)
   }
 
-  fun onClimbClicked(id: String) = navigator.navigate(ClimbScreenDestination(id))
+  fun onClimbClick(id: String) = navigator.navigate(ClimbScreenDestination(id))
 
-  fun onAreaClicked(id: String) = navigator.navigate(AreaScreenDestination(id))
+  fun onAreaClick(id: String) = navigator.navigate(AreaScreenDestination(id))
 }
