@@ -1,6 +1,7 @@
 package com.routesearch.data.climb
 
 import com.routesearch.data.location.Location
+import kotlinx.datetime.LocalDate
 
 data class Climb(
   val id: String,
@@ -21,8 +22,8 @@ data class Climb(
 
   data class Metadata(
     val leftRightIndex: Int?,
-    val createdAt: String?,
-    val updatedAt: String?,
+    val createdAt: LocalDate?,
+    val updatedAt: LocalDate?,
   )
 
   data class Description(

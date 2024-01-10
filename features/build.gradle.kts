@@ -41,6 +41,7 @@ dependencies {
   implementation(libs.koin.compose)
   implementation(libs.koin.core)
   implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.kotlinx.datetime)
   implementation(libs.lifecycle.common)
   implementation(libs.lifecycle.runtime.compose)
   implementation(libs.lifecycle.viewmodel)
