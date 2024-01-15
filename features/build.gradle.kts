@@ -26,6 +26,7 @@ dependencies {
   api(libs.navigation.common)
   api(libs.navigation.runtime)
   api(libs.runtime.android)
+  api(libs.ui.android)
 
   implementation(platform(libs.coil.bom))
   implementation(platform(libs.compose.bom))
@@ -53,8 +54,6 @@ dependencies {
   implementation(libs.lifecycle.viewmodel.ktx)
   implementation(libs.material.icons.core.android)
   implementation(libs.material3)
-  implementation(libs.runtime.saveable.android)
-  implementation(libs.ui.android)
   implementation(libs.ui.graphics.android)
   implementation(libs.ui.text.android)
   implementation(libs.ui.tooling.preview.android)

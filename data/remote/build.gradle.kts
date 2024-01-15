@@ -67,6 +67,7 @@ tasks.withType<Test> {
 dependencies {
   ksp(libs.moshi.kotlin.codegen)
 
+  api(libs.apollo.api)
   api(libs.koin.core)
   api(libs.moshi)
 
@@ -74,7 +75,6 @@ dependencies {
 
   implementation(project(":util:common"))
 
-  implementation(libs.apollo.api)
   implementation(libs.apollo.runtime)
   implementation(libs.logcat)
   implementation(libs.typesense.java)
