@@ -29,15 +29,15 @@ android {
       value = properties.getProperty("TYPE_SENSE_HOST"),
     )
   }
-  buildTypes {
-    debug {
+  productFlavors {
+    getByName("development") {
       buildConfigField(
         type = "String",
         name = "API_URL",
         value = "\"https://stg-api.openbeta.io/\"",
       )
     }
-    release {
+    getByName("production") {
       buildConfigField(
         type = "String",
         name = "API_URL",
@@ -67,6 +67,7 @@ tasks.withType<Test> {
 dependencies {
   ksp(libs.moshi.kotlin.codegen)
 
+  api(libs.apollo.api)
   api(libs.koin.core)
   api(libs.moshi)
 
@@ -74,7 +75,6 @@ dependencies {
 
   implementation(project(":util:common"))
 
-  implementation(libs.apollo.api)
   implementation(libs.apollo.runtime)
   implementation(libs.logcat)
   implementation(libs.typesense.java)

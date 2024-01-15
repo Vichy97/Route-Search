@@ -15,6 +15,7 @@ dependencies {
 
   implementation(project(":util:common"))
 
+  implementation(libs.annotation)
   implementation(libs.collection)
   implementation(libs.koin.android)
   implementation(libs.logcat)

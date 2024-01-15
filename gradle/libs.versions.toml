@@ -1,15 +1,17 @@
 [versions]
-activity = "1.7.2"
+activity = "1.8.2"
 agp = "8.3.0-alpha18"
-annotation = "1.7.0"
+annotation = "1.7.1"
 apollo = "3.8.2"
-collection = "1.2.0"
-compose-bom = "2023.09.02"
+collection = "1.3.0"
+coil-bom = "2.5.0"
+compose-bom = "2023.10.01"
 compose-compiler = "1.5.3"
 compose-destinations = "1.9.56"
-core = "1.10.1"
-coroutines = "1.7.1"
-dependency-analysis = "1.26.0"
+core = "1.12.0"
+coroutines = "1.7.3"
+datetime = "0.5.0"
+dependency-analysis = "1.28.0"
 detekt = "1.23.1"
 junit-jupiter = "5.8.1"
 koin = "3.5.1"
@@ -17,23 +19,27 @@ kotlin = "1.9.10"
 ksp = "1.9.10-1.0.13"
 ktlint = "11.5.1"
 leakcanary = "2.12"
-lifecycle = "2.6.1"
+lifecycle = "2.6.2"
 logcat = "0.1"
 moshi = "1.14.0"
-navigation = "2.7.3"
-room = "2.6.0"
+navigation = "2.7.6"
+room = "2.6.1"
 sort-dependencies = "0.4"
-sqlite = "2.3.1"
+sqlite = "2.4.0"
 typesense = "0.4.0"
 lifecycle-runtime-compose = "2.6.2"
 
 [libraries]
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+animation = { group = "androidx.compose.animation", name = "animation" }
 animation-android = { group = "androidx.compose.animation", name = "animation-android" }
+animation-core = { group = "androidx.compose.animation", name = "animation-core" }
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
+coil-bom = { group = "io.coil-kt", name = "coil-bom", version.ref = "coil-bom" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose" }
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
 constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -53,6 +59,7 @@ koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-test = { group = "io.insert-koin", name = "koin-test" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 lifecycle-common = { group = "androidx.lifecycle", name = "lifecycle-common", version.ref = "lifecycle" }
 lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycle" }

@@ -30,8 +30,8 @@ data class Climb(
 
   data class MetaData(
     val leftRightIndex: Int?,
-    val createdAt: String,
-    val updatedAt: String,
+    val createdAt: Long,
+    val updatedAt: Long,
   )
 
   data class Description(

@@ -6,6 +6,7 @@ android {
 }
 dependencies {
   api(libs.koin.core)
+  api(libs.kotlinx.datetime)
 
   implementation(platform(libs.koin.bom))
 

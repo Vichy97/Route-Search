@@ -1,5 +1,6 @@
 package com.routesearch.di
 
+import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import org.junit.jupiter.api.Test
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -12,6 +13,7 @@ class AppModuleTest {
   fun checkKoinModule() = appModule.verify(
     extraTypes = listOf(
       SavedStateHandle::class,
+      Context::class,
     ),
   )
 }

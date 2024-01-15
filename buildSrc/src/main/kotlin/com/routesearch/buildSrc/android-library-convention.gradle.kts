@@ -28,6 +28,16 @@ android {
       isMinifyEnabled = false
     }
   }
+  flavorDimensions += "environment"
+  productFlavors {
+    create("development") {
+      dimension = "environment"
+    }
+    create("production") {
+      dimension = "environment"
+
+    }
+  }
   kotlin {
     jvmToolchain(17)
   }
