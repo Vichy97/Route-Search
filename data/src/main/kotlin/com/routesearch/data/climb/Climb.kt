@@ -20,6 +20,8 @@ data class Climb(
   val media: List<String>,
 ) {
 
+  val hasMetadata = location != null && metadata.createdAt != null && metadata.updatedAt != null
+
   data class Metadata(
     val leftRightIndex: Int?,
     val createdAt: LocalDate?,
