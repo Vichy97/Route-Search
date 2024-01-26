@@ -12,6 +12,6 @@ internal fun LocalClimb.MetaData.toMetaData() = Climb.Metadata(
 
 internal fun RemoteClimb.getMetadata() = Climb.Metadata(
   leftRightIndex = metadata.leftRightIndex,
-  createdAt = (authorMetadata.authorMetadataFragment.createdAt as Long).toLocalDate(),
-  updatedAt = (authorMetadata.authorMetadataFragment.updatedAt as Long).toLocalDate(),
+  createdAt = (authorMetadata.authorMetadataFragment.createdAt as? Long)?.toLocalDate(),
+  updatedAt = (authorMetadata.authorMetadataFragment.updatedAt as? Long)?.toLocalDate(),
 )

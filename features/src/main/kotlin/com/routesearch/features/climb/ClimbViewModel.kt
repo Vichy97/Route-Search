@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.climb.Climb
 import com.routesearch.data.climb.ClimbRepository
+import com.routesearch.features.common.GeoIntent
+import com.routesearch.features.destinations.AreaScreenDestination
+import com.routesearch.navigation.Navigator
+import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +18,8 @@ import kotlinx.coroutines.launch
 internal class ClimbViewModel(
   args: ClimbScreenArgs,
   private val climbRepository: ClimbRepository,
+  private val navigator: Navigator,
+  private val intentLauncher: IntentLauncher,
 ) : ViewModel() {
 
   private val _viewState = MutableStateFlow<ClimbViewState>(ClimbViewState.Loading)
@@ -35,5 +41,22 @@ internal class ClimbViewModel(
 
   private fun onFetchClimbFailure() {
     _viewState.update { ClimbViewState.Idle }
+  }
+
+  fun onBackClick() = navigator.popBackStack()
+
+  fun onPathSectionClick(pathSection: String) = (viewState.value as? ClimbViewState.Content)?.run {
+    val pathIndex = climb.pathTokens.indexOf(pathSection)
+    val ancestorId = climb.ancestorIds[pathIndex]
+    navigator.navigate(AreaScreenDestination(ancestorId))
+  }
+
+  fun onLocationClick() = (viewState.value as? ClimbViewState.Content)?.run {
+    val location = climb.location ?: return@run
+    val intent = GeoIntent(
+      location = location,
+      name = climb.name,
+    )
+    intentLauncher.launchIntent(intent)
   }
 }
