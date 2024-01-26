@@ -53,6 +53,7 @@ dependencies {
   implementation(libs.lifecycle.viewmodel.compose)
   implementation(libs.lifecycle.viewmodel.ktx)
   implementation(libs.material.icons.core.android)
+  implementation(libs.material.icons.extended.android)
   implementation(libs.material3)
   implementation(libs.ui.graphics.android)
   implementation(libs.ui.text.android)

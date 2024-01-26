@@ -69,6 +69,7 @@ lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecyc
 logcat = { group = "com.squareup.logcat", name = "logcat", version.ref = "logcat" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 material-icons-core-android = { group = "androidx.compose.material", name = "material-icons-core-android" }
+material-icons-extended-android = { group = "androidx.compose.material", name = "material-icons-extended-android" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 navigation-common = { group = "androidx.navigation", name = "navigation-common", version.ref = "navigation" }
