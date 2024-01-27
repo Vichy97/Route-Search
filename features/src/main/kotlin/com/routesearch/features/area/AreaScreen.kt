@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -18,7 +17,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -62,6 +60,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ImagePlaceholder
 import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
@@ -276,34 +275,21 @@ private fun Path(
 private fun Images(
   modifier: Modifier = Modifier,
   urls: List<String>,
-) {
-  if (urls.isEmpty()) {
-    Card(
-      modifier = modifier,
-    ) {
-      Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-      ) {
-        Icon(
-          modifier = Modifier.size(48.dp),
-          imageVector = Icons.Default.AccountCircle,
-          contentDescription = null,
-        )
-      }
-    }
-  } else {
-    AsyncImage(
-      modifier = modifier
-        .clip(RoundedCornerShape(8.dp)),
-      model = urls.first(),
-      placeholder = ColorPainter(
-        color = MaterialTheme.colorScheme.surfaceVariant,
-      ),
-      contentDescription = null,
-      contentScale = ContentScale.FillWidth,
-    )
-  }
+) = if (urls.isEmpty()) {
+  ImagePlaceholder(
+    modifier = modifier,
+  )
+} else {
+  AsyncImage(
+    modifier = modifier
+      .clip(RoundedCornerShape(8.dp)),
+    model = urls.first(),
+    placeholder = ColorPainter(
+      color = MaterialTheme.colorScheme.surfaceVariant,
+    ),
+    contentDescription = null,
+    contentScale = ContentScale.FillWidth,
+  )
 }
 
 @Composable
