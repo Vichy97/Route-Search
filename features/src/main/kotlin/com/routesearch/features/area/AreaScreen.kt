@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,8 +16,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,6 +51,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
@@ -67,6 +65,7 @@ import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
+import com.routesearch.ui.common.compose.modifier.ignoreHorizontalParentPadding
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -209,8 +208,11 @@ private fun Content(
         modifier = Modifier
           .constrainAs(areaContent) {
             top.linkTo(description.bottom)
+
+            visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
           }
-          .padding(top = 16.dp),
+          .padding(top = 16.dp)
+          .ignoreHorizontalParentPadding(16.dp),
         area = area,
         onClimbClick = onClimbClick,
         onAreaClick = onAreaClick,
@@ -388,11 +390,8 @@ private fun AreaList(
   modifier: Modifier = Modifier,
   area: Area,
   onAreaClick: (String) -> Unit,
-) = Card(
+) = Column(
   modifier = modifier,
-  colors = CardDefaults.cardColors(
-    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-  ),
 ) {
   Text(
     modifier = Modifier.padding(
@@ -406,27 +405,18 @@ private fun AreaList(
     ),
     style = MaterialTheme.typography.titleLarge,
   )
-  Divider(
-    color = MaterialTheme.colorScheme.onPrimaryContainer,
-  )
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .wrapContentSize(),
-  ) {
-    area.children.forEachIndexed { index, child ->
-      AreaListItem(
-        areaChild = child,
-        onClick = onAreaClick,
+  Divider()
+  area.children.forEachIndexed { index, child ->
+    AreaListItem(
+      areaChild = child,
+      onClick = onAreaClick,
+    )
+    if (index < area.children.size - 1) {
+      Divider(
+        modifier = Modifier.padding(
+          horizontal = 16.dp,
+        ),
       )
-      if (index < area.children.size - 1) {
-        Divider(
-          modifier = Modifier.padding(
-            horizontal = 16.dp,
-          ),
-          color = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
-      }
     }
   }
 }
@@ -464,11 +454,8 @@ private fun ClimbList(
   modifier: Modifier = Modifier,
   area: Area,
   onClimbClick: (String) -> Unit,
-) = Card(
+) = Column(
   modifier = modifier,
-  colors = CardDefaults.cardColors(
-    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-  ),
 ) {
   Text(
     modifier = Modifier.padding(
@@ -482,27 +469,18 @@ private fun ClimbList(
     ),
     style = MaterialTheme.typography.titleLarge,
   )
-  Divider(
-    color = MaterialTheme.colorScheme.onSurfaceVariant,
-  )
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .wrapContentSize(),
-  ) {
-    area.climbs.forEachIndexed { index, climb ->
-      ClimbListItem(
-        climb = climb,
-        onClick = onClimbClick,
+  Divider()
+  area.climbs.forEachIndexed { index, climb ->
+    ClimbListItem(
+      climb = climb,
+      onClick = onClimbClick,
+    )
+    if (index < area.climbs.size - 1) {
+      Divider(
+        modifier = Modifier.padding(
+          horizontal = 16.dp,
+        ),
       )
-      if (index < area.children.size - 1) {
-        Divider(
-          modifier = Modifier.padding(
-            horizontal = 16.dp,
-          ),
-          color = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
-      }
     }
   }
 }
