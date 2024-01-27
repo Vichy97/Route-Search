@@ -357,7 +357,7 @@ private fun Description(
 @Composable
 private fun DescriptionHeader() = Text(
   text = stringResource(R.string.area_screen_description_header),
-  style = MaterialTheme.typography.headlineSmall,
+  style = MaterialTheme.typography.titleLarge,
 )
 
 @Composable
