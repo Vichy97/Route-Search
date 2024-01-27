@@ -19,6 +19,7 @@ private val metadata = Area.Metadata(
     month = Month.JANUARY,
     dayOfMonth = 1,
   ),
+  isLeaf = false,
 )
 private val location = Location(
   latitude = 33.27466,
@@ -38,8 +39,26 @@ internal val fakeAreas = listOf(
       "Lower Devil's Canyon",
     ),
     ancestorIds = emptyList(),
+    gradeMap = mapOf(
+      "5.4" to 1,
+      "5.5" to 3,
+      "5.6" to 8,
+      "5.7" to 21,
+      "5.8" to 35,
+      "5.9" to 7,
+      "5.10" to 92,
+      "5.11" to 23,
+      "5.12" to 6,
+      "5.13" to 1,
+    ),
     location = location,
-    totalClimbs = 247,
+    climbCount = Area.ClimbCount(
+      total = 247,
+      sport = 90,
+      trad = 177,
+      tr = 3,
+      bouldering = 0,
+    ),
     climbs = emptyList(),
     children = listOf(
       Area.Child(
@@ -67,11 +86,30 @@ internal val fakeAreas = listOf(
         numberOfChildren = 0,
       ),
     ),
+    organizations = listOf(
+      Area.Organization(
+        id = "1",
+        name = "Central Arizona Bolt Replacement Program",
+        website = "https://cabrp.org",
+      ),
+      Area.Organization(
+        id = "2",
+        name = "Climbing Association of Southern Arizona",
+        website = "https://www.theclimbershome.org",
+      ),
+      Area.Organization(
+        id = "3",
+        name = "Queen Creek Coalition",
+        website = "http://theqcc.com",
+      ),
+    ),
     media = emptyList(),
   ),
   Area(
     id = "2",
-    metadata = metadata,
+    metadata = metadata.copy(
+      isLeaf = true,
+    ),
     name = "Lion's Den",
     description = """
         This is a magical glen that seems to get little to no traffic and has a lot of potential for new route 
@@ -88,8 +126,18 @@ internal val fakeAreas = listOf(
       "Lion's Den",
     ),
     ancestorIds = emptyList(),
+    gradeMap = mapOf(
+      "5.7" to 1,
+      "5.8" to 1,
+    ),
     location = location,
-    totalClimbs = 2,
+    climbCount = Area.ClimbCount(
+      total = 2,
+      sport = 2,
+      trad = 0,
+      tr = 0,
+      bouldering = 0,
+    ),
     climbs = listOf(
       Area.Climb(
         id = "1",
@@ -111,6 +159,7 @@ internal val fakeAreas = listOf(
       ),
     ),
     children = emptyList(),
+    organizations = emptyList(),
     media = emptyList(),
   ),
 )

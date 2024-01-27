@@ -12,16 +12,29 @@ data class Area(
   val description: String,
   val path: List<String>,
   val ancestorIds: List<String>,
+  val gradeMap: Map<String, Int>,
   val location: Location,
-  val totalClimbs: Int,
+  val climbCount: ClimbCount,
   val children: List<Child>,
   val climbs: List<Climb>,
+  val organizations: List<Organization>,
   val media: List<String>,
 ) {
+
+  data class ClimbCount(
+    val total: Int,
+    val sport: Int,
+    val trad: Int,
+    val tr: Int,
+    val bouldering: Int,
+  ) {
+    val roped = sport + trad + tr
+  }
 
   data class Metadata(
     val createdAt: LocalDate,
     val updatedAt: LocalDate,
+    val isLeaf: Boolean,
   )
 
   data class Child(
@@ -36,5 +49,11 @@ data class Area(
     val grades: Grades?,
     val name: String,
     val type: Type,
+  )
+
+  data class Organization(
+    val id: String,
+    val name: String,
+    val website: String?,
   )
 }

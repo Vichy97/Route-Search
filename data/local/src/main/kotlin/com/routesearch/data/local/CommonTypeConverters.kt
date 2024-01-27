@@ -9,4 +9,18 @@ internal class CommonTypeConverters {
 
   @TypeConverter
   fun stringToList(string: String): List<String> = string.split(',')
+
+  @TypeConverter
+  fun stringIntMapToString(map: Map<String, Int>) = map.entries.joinToString(
+    separator = ",",
+  ) {
+    "${it.key}=${it.value}"
+  }
+
+  @TypeConverter
+  fun stringToIntStringMap(string: String) = string.split(",")
+    .associate {
+      val (left, right) = it.split("=")
+      left to right.toInt()
+    }
 }

@@ -17,15 +17,27 @@ data class Area(
   val description: String,
   val path: List<String>,
   val ancestorIds: List<String>,
+  val gradeMap: Map<String, Int>,
   @Embedded
   val location: Location,
+  @Embedded
+  val climbCount: ClimbCount,
   val totalClimbs: Int,
   val media: List<String>,
 ) {
 
+  data class ClimbCount(
+    val total: Int,
+    val sport: Int,
+    val trad: Int,
+    val tr: Int,
+    val bouldering: Int,
+  )
+
   data class MetaData(
     val createdAt: Long,
     val updatedAt: Long,
+    val isLeaf: Boolean,
   )
 
   data class Climb(
