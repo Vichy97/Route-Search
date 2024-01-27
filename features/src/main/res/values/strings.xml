@@ -11,6 +11,8 @@
     <item quantity="one">%1$d Area</item>
     <item quantity="other">%1$d Areas</item>
   </plurals>
+  <string name="area_screen_organizations_header">Local climbing organizations</string>
+  <string name="area_screen_updated_title">Updated:</string>
 
   <string name="climb_screen_created_title">Created:</string>
   <string name="climb_screen_description_header">Description</string>

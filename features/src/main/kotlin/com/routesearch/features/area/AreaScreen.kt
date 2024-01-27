@@ -2,14 +2,19 @@ package com.routesearch.features.area
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -17,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,6 +53,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -141,7 +148,8 @@ private fun Content(
         image,
         metadataCard,
         description,
-        areaContent,
+        organizations,
+        listContent,
       ) = createRefs()
 
       Path(
@@ -204,11 +212,29 @@ private fun Content(
         text = area.description,
       )
 
+      Organizations(
+        modifier = Modifier
+          .constrainAs(organizations) {
+            top.linkTo(description.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (area.organizations.isEmpty()) Visibility.Gone else Visibility.Visible
+          }
+          .padding(top = 8.dp)
+          .ignoreHorizontalParentPadding(16.dp),
+        organizations = area.organizations,
+      )
+
       ListContent(
         modifier = Modifier
-          .constrainAs(areaContent) {
-            top.linkTo(description.bottom)
+          .constrainAs(listContent) {
+            top.linkTo(organizations.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
 
+            width = Dimension.fillToConstraints
             visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
           }
           .padding(top = 16.dp)
@@ -364,6 +390,75 @@ private fun ExpandDescriptionButton(
   modifier = modifier,
   onClick = onClick,
 ) { Text(stringResource(R.string.area_screen_expand_description_button_label)) }
+
+@Composable
+private fun Organizations(
+  modifier: Modifier = Modifier,
+  organizations: List<Area.Organization>,
+) = Column(modifier = modifier) {
+  OrganizationsHeader(
+    modifier = Modifier.padding(
+      horizontal = 16.dp,
+    ),
+  )
+
+  LazyRow(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(top = 8.dp),
+    contentPadding = PaddingValues(
+      horizontal = 16.dp,
+    ),
+    horizontalArrangement = Arrangement.spacedBy(16.dp),
+  ) {
+    items(
+      items = organizations,
+      key = { it.id },
+    ) {
+      OrganizationCard(
+        organization = it,
+      )
+    }
+  }
+}
+
+@Composable
+private fun OrganizationsHeader(
+  modifier: Modifier = Modifier,
+) = Text(
+  modifier = modifier,
+  text = stringResource(R.string.area_screen_organizations_header),
+  style = MaterialTheme.typography.titleLarge,
+)
+
+@Composable
+private fun OrganizationCard(
+  modifier: Modifier = Modifier,
+  organization: Area.Organization,
+) = ElevatedCard(
+  modifier = modifier.widthIn(
+    max = 200.dp,
+  ),
+) {
+  ListItem(
+    headlineContent = {
+      Text(
+        text = organization.name,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+      )
+    },
+    supportingContent = {
+      organization.website?.let {
+        Text(
+          text = it,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+        )
+      }
+    },
+  )
+}
 
 @Composable
 fun ListContent(
