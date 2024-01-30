@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -44,21 +43,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import coil.compose.AsyncImage
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.CarouselSnapHelper
+import com.google.android.material.carousel.HeroCarouselStrategy
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.Grades
@@ -66,6 +67,7 @@ import com.routesearch.data.climb.Type
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.data.location.Location
 import com.routesearch.features.R
+import com.routesearch.features.common.CarouselAdapter
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
@@ -167,7 +169,7 @@ private fun Content(
         style = MaterialTheme.typography.headlineMedium,
       )
 
-      Images(
+      CarouselImages(
         modifier = Modifier
           .constrainAs(image) {
             top.linkTo(name.bottom)
@@ -273,37 +275,37 @@ private fun Path(
 }
 
 @Composable
-private fun Images(
+private fun CarouselImages(
   modifier: Modifier = Modifier,
   urls: List<String>,
-) {
-  if (urls.isEmpty()) {
-    Card(
-      modifier = modifier,
+) = if (urls.isEmpty()) {
+  Card(
+    modifier = modifier,
+  ) {
+    Box(
+      modifier = Modifier.fillMaxSize(),
+      contentAlignment = Alignment.Center,
     ) {
-      Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-      ) {
-        Icon(
-          modifier = Modifier.size(48.dp),
-          imageVector = Icons.Default.AccountCircle,
-          contentDescription = null,
-        )
-      }
+      Icon(
+        modifier = Modifier.size(48.dp),
+        imageVector = Icons.Default.AccountCircle,
+        contentDescription = null,
+      )
     }
-  } else {
-    AsyncImage(
-      modifier = modifier
-        .clip(RoundedCornerShape(8.dp)),
-      model = urls.first(),
-      placeholder = ColorPainter(
-        color = MaterialTheme.colorScheme.surfaceVariant,
-      ),
-      contentDescription = null,
-      contentScale = ContentScale.FillWidth,
-    )
   }
+} else {
+  AndroidView(
+    factory = { context ->
+      RecyclerView(context).apply {
+        layoutManager = CarouselLayoutManager(HeroCarouselStrategy())
+        adapter = CarouselAdapter(urls)
+        setItemViewCacheSize(3)
+
+        CarouselSnapHelper().attachToRecyclerView(this)
+      }
+    },
+    modifier = modifier,
+  )
 }
 
 @Composable

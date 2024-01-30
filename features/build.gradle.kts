@@ -15,6 +15,7 @@ android {
 }
 
 dependencies {
+  implementation(libs.material)
   ksp(libs.compose.destinations.ksp)
 
   api(project(":data"))
