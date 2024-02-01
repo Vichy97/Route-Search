@@ -14,10 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -92,7 +91,10 @@ fun ClimbScreen() {
 private fun Loading() = Box(
   modifier = Modifier.fillMaxSize(),
   contentAlignment = Alignment.Center,
-) { CircularProgressIndicator() }
+) {
+  // Progress Indicators are broken in the latest compose BOM
+  // CircularProgressIndicator()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -218,7 +220,7 @@ private fun NavigationButton(
   onClick = onClick,
 ) {
   Icon(
-    imageVector = Icons.Default.ArrowBack,
+    imageVector = Icons.AutoMirrored.Default.ArrowBack,
     contentDescription = null,
   )
 }
@@ -354,7 +356,6 @@ private fun LocationText(
     style = MaterialTheme.typography.titleSmall.copy(
       color = MaterialTheme.colorScheme.onSurfaceVariant,
     ),
-
   ) {
     val annotationClicked = locationString.isAnnotatedAtIndex(
       index = it,
