@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -60,18 +61,14 @@ import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.getDisplayName
-import com.routesearch.data.location.Location
 import com.routesearch.features.R
+import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
-import com.routesearch.ui.common.compose.underline
 import com.routesearch.ui.common.theme.RouteSearchTheme
-import com.routesearch.util.common.date.monthYearFormat
-import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @Destination(
@@ -189,8 +186,11 @@ private fun Content(
             start.linkTo(parent.start)
             top.linkTo(image.bottom)
           }
-          .padding(top = 16.dp),
-        area = area,
+          .padding(top = 16.dp)
+          .wrapContentWidth(),
+        location = area.location,
+        createdAt = area.metadata.createdAt,
+        updatedAt = area.metadata.updatedAt,
         onLocationClick = onLocationClick,
       )
 
@@ -304,109 +304,6 @@ private fun Images(
       contentScale = ContentScale.FillWidth,
     )
   }
-}
-
-@Composable
-private fun MetadataCard(
-  modifier: Modifier = Modifier,
-  area: Area,
-  onLocationClick: () -> Unit,
-) = Card(
-  modifier = modifier,
-) {
-  LocationText(
-    modifier = Modifier.padding(
-      top = 16.dp,
-      start = 16.dp,
-      end = 16.dp,
-    ),
-    location = area.location,
-    onClick = onLocationClick,
-  )
-  CreatedDateText(
-    modifier = Modifier.padding(
-      top = 16.dp,
-      start = 16.dp,
-      end = 16.dp,
-    ),
-    created = area.metadata.createdAt,
-  )
-  UpdatedDateText(
-    modifier = Modifier.padding(
-      top = 8.dp,
-      start = 16.dp,
-      end = 16.dp,
-      bottom = 16.dp,
-    ),
-    updated = area.metadata.updatedAt,
-  )
-}
-
-@Composable
-private fun LocationText(
-  modifier: Modifier = Modifier,
-  location: Location,
-  onClick: () -> Unit,
-) {
-  val locationAnnotation = "location"
-  val locationString = buildAnnotatedString {
-    bold { append(stringResource(R.string.area_screen_location_title)) }
-
-    append(" ")
-
-    underline {
-      annotation(locationAnnotation) {
-        append(location.displayString)
-      }
-    }
-  }
-  ClickableText(
-    modifier = modifier,
-    text = locationString,
-    style = MaterialTheme.typography.titleSmall.copy(
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    ),
-  ) {
-    val annotationClicked = locationString.isAnnotatedAtIndex(
-      index = it,
-      annotation = locationAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
-}
-
-@Composable
-private fun CreatedDateText(
-  modifier: Modifier = Modifier,
-  created: LocalDate,
-) {
-  val createdDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.area_screen_created_title)) }
-    append(" ")
-    append(created.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = createdDateText,
-    style = MaterialTheme.typography.titleSmall,
-  )
-}
-
-@Composable
-private fun UpdatedDateText(
-  modifier: Modifier = Modifier,
-  updated: LocalDate,
-) {
-  val updatedDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.area_screen_updated_title)) }
-    append(" ")
-    append(updated.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = updatedDateText,
-    style = MaterialTheme.typography.titleSmall,
-  )
 }
 
 @Composable

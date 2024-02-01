@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -52,18 +53,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
-import com.routesearch.data.location.Location
 import com.routesearch.features.R
+import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
-import com.routesearch.ui.common.compose.underline
 import com.routesearch.ui.common.theme.RouteSearchTheme
-import com.routesearch.util.common.date.monthYearFormat
-import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @Destination(
@@ -132,7 +129,7 @@ private fun Content(
         path,
         name,
         image,
-        metadetaCard,
+        metadataCard,
         description,
       ) = createRefs()
 
@@ -172,14 +169,17 @@ private fun Content(
 
       MetadataCard(
         modifier = Modifier
-          .constrainAs(metadetaCard) {
+          .constrainAs(metadataCard) {
             start.linkTo(parent.start)
             top.linkTo(image.bottom)
 
             visibility = if (climb.hasMetadata) Visibility.Visible else Visibility.Gone
           }
-          .padding(top = 16.dp),
-        climb = climb,
+          .padding(top = 16.dp)
+          .wrapContentWidth(),
+        location = climb.location,
+        createdAt = climb.metadata.createdAt,
+        updatedAt = climb.metadata.updatedAt,
         onLocationClick = onLocationClick,
       )
 
@@ -187,7 +187,7 @@ private fun Content(
         modifier = Modifier
           .constrainAs(description) {
             start.linkTo(parent.start)
-            top.linkTo(metadetaCard.bottom)
+            top.linkTo(metadataCard.bottom)
             end.linkTo(parent.end)
             width = Dimension.fillToConstraints
           }
@@ -286,117 +286,6 @@ private fun Images(
       contentScale = ContentScale.FillWidth,
     )
   }
-}
-
-@Composable
-private fun MetadataCard(
-  modifier: Modifier = Modifier,
-  climb: Climb,
-  onLocationClick: () -> Unit,
-) = Card(
-  modifier = modifier,
-) {
-  climb.location?.let {
-    LocationText(
-      modifier = Modifier.padding(
-        top = 16.dp,
-        start = 16.dp,
-        end = 16.dp,
-      ),
-      location = it,
-      onClick = onLocationClick,
-    )
-  }
-
-  climb.metadata.createdAt?.let {
-    CreatedDateText(
-      modifier = Modifier.padding(
-        top = 16.dp,
-        start = 16.dp,
-        end = 16.dp,
-      ),
-      created = it,
-    )
-  }
-
-  climb.metadata.updatedAt?.let {
-    UpdatedDateText(
-      modifier = Modifier.padding(
-        top = 8.dp,
-        start = 16.dp,
-        end = 16.dp,
-        bottom = 16.dp,
-      ),
-      updated = it,
-    )
-  }
-}
-
-@Composable
-private fun LocationText(
-  modifier: Modifier = Modifier,
-  location: Location,
-  onClick: () -> Unit,
-) {
-  val locationAnnotation = "location"
-  val locationString = buildAnnotatedString {
-    bold { append(stringResource(R.string.climb_screen_location_title)) }
-
-    append(" ")
-
-    underline {
-      annotation(locationAnnotation) {
-        append(location.displayString)
-      }
-    }
-  }
-  ClickableText(
-    modifier = modifier,
-    text = locationString,
-    style = MaterialTheme.typography.titleSmall.copy(
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    ),
-  ) {
-    val annotationClicked = locationString.isAnnotatedAtIndex(
-      index = it,
-      annotation = locationAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
-}
-
-@Composable
-private fun CreatedDateText(
-  modifier: Modifier = Modifier,
-  created: LocalDate,
-) {
-  val createdDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.climb_screen_created_title)) }
-    append(" ")
-    append(created.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = createdDateText,
-    style = MaterialTheme.typography.titleSmall,
-  )
-}
-
-@Composable
-private fun UpdatedDateText(
-  modifier: Modifier = Modifier,
-  updated: LocalDate,
-) {
-  val updatedDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.climb_screen_updated_title)) }
-    append(" ")
-    append(updated.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = updatedDateText,
-    style = MaterialTheme.typography.titleSmall,
-  )
 }
 
 @Composable

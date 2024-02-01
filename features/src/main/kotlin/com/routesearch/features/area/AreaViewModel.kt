@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.routesearch.data.area.Area
 import com.routesearch.data.area.AreaRepository
 import com.routesearch.features.R
-import com.routesearch.features.common.GeoIntent
+import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.navigation.Navigator
