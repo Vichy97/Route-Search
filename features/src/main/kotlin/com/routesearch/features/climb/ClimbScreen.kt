@@ -22,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -44,7 +43,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -62,6 +61,7 @@ import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
 import com.routesearch.ui.common.compose.underline
+import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
@@ -470,67 +470,13 @@ private fun ExpandDescriptionButton(
   onClick = onClick,
 ) { Text(stringResource(R.string.climb_screen_expand_description_button_label)) }
 
-@Preview
+@PreviewLightDark
 @Composable
-private fun ClimbScreenPreview() = MaterialTheme {
-  Surface {
-    Content(
-      Climb(
-        id = "1",
-        metadata = Climb.Metadata(
-          leftRightIndex = null,
-          createdAt = LocalDate(
-            year = 2000,
-            monthNumber = 1,
-            dayOfMonth = 1,
-          ),
-          updatedAt = LocalDate(
-            year = 2000,
-            monthNumber = 1,
-            dayOfMonth = 1,
-          ),
-        ),
-        name = "Here is a climb!",
-        pathTokens = listOf(
-          "USA",
-          "Washington",
-          "Walla Walla",
-        ),
-        location = Location(
-          latitude = 31.12,
-          longitude = 32.13,
-        ),
-        ancestorIds = emptyList(),
-        description = Climb.Description(
-          general = """
-            According to all known laws of aviation, there is no 
-            way a bee should be able to fly. Its wings are too 
-            small to get its fat little body off the ground. The 
-            bee, of course, flies anyway because bees don't care 
-            what humans think is impossible.
-          """.trimIndent(),
-          location = """
-            Yellow, black. 
-            Yellow, black. Yellow, black. Yellow, black. Ooh, 
-            black and yellow!
-          """.trimIndent(),
-          protection = """
-            Let's shake it up a little. Barry! 
-            Breakfast is ready! Ooming! Hang on a second. Hello? 
-            - Barry? - Adam?
-          """.trimIndent(),
-        ),
-        length = null,
-        boltCount = null,
-        fa = "",
-        type = null,
-        grades = null,
-        pitches = emptyList(),
-        media = emptyList(),
-      ),
-      onBackClick = { },
-      onPathSectionClick = { },
-      onLocationClick = { },
-    )
-  }
+private fun ClimbScreenPreview() = RouteSearchTheme {
+  Content(
+    climb = fakeClimbs[0],
+    onBackClick = { },
+    onPathSectionClick = { },
+    onLocationClick = { },
+  )
 }

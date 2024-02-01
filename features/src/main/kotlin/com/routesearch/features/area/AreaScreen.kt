@@ -28,7 +28,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -52,7 +51,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -60,8 +59,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
-import com.routesearch.data.climb.Grades
-import com.routesearch.data.climb.Type
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.data.location.Location
 import com.routesearch.features.R
@@ -72,6 +69,7 @@ import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
 import com.routesearch.ui.common.compose.underline
+import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
@@ -640,169 +638,28 @@ fun ClimbListItem(
   ),
 )
 
-@Preview
+@PreviewLightDark
 @Composable
-private fun AreaScreenChildrenPreview() = MaterialTheme {
-  Surface {
-    Content(
-      Area(
-        id = "1",
-        metadata = Area.Metadata(
-          createdAt = LocalDate.parse("2023-12-01"),
-          updatedAt = LocalDate.parse("2023-12-01"),
-        ),
-        name = "Atlantis",
-        description = """
-       According to all known laws of aviation, there is no 
-       way a bee should be able to fly. Its wings are too 
-       small to get its fat little body off the ground. The 
-       bee, of course, flies anyway because bees don't care 
-       what humans think is impossible. Yellow, black. 
-       Yellow, black. Yellow, black. Yellow, black. Ooh, 
-       black and yellow! Let's shake it up a little. Barry! 
-       Breakfast is ready! Ooming! Hang on a second. Hello? 
-       - Barry? - Adam?
-        """.trimIndent(),
-        path = listOf(
-          "USA",
-          "Arizona",
-          "Central Arizona",
-          "Queen Creek Canyon",
-        ),
-        ancestorIds = emptyList(),
-        location = Location(
-          latitude = 37.81176,
-          longitude = -119.64678,
-        ),
-        totalClimbs = 34,
-        climbs = emptyList(),
-        children = listOf(
-          Area.Child(
-            id = "1",
-            name = "Billy",
-            totalClimbs = 15,
-            numberOfChildren = 5,
-          ),
-          Area.Child(
-            id = "2",
-            name = "Bobby",
-            totalClimbs = 4,
-            numberOfChildren = 1,
-          ),
-          Area.Child(
-            id = "3",
-            name = "Jimmy",
-            totalClimbs = 0,
-            numberOfChildren = 1,
-          ),
-          Area.Child(
-            id = "4",
-            name = "Linus",
-            totalClimbs = 25,
-            numberOfChildren = 6,
-          ),
-          Area.Child(
-            id = "5",
-            name = "Stinky",
-            totalClimbs = 18,
-            numberOfChildren = 4,
-          ),
-        ),
-        media = emptyList(),
-      ),
-      onBackClick = { },
-      onPathSectionClick = { },
-      onLocationClick = { },
-      onClimbClick = { },
-      onAreaClick = { },
-    )
-  }
+private fun AreaWithChildrenPreview() = RouteSearchTheme {
+  Content(
+    area = fakeAreas[0],
+    onBackClick = { },
+    onPathSectionClick = { },
+    onLocationClick = { },
+    onClimbClick = { },
+    onAreaClick = { },
+  )
 }
 
-@Preview
+@PreviewLightDark
 @Composable
-private fun AreaScreenClimbPreview() = MaterialTheme {
-  Surface {
-    Content(
-      Area(
-        id = "1",
-        metadata = Area.Metadata(
-          createdAt = LocalDate.parse("2023-12-01"),
-          updatedAt = LocalDate.parse("2023-12-01"),
-        ),
-        name = "fake area",
-        description = """
-       According to all known laws of aviation, there is no 
-       way a bee should be able to fly. Its wings are too 
-       small to get its fat little body off the ground. The 
-       bee, of course, flies anyway because bees don't care 
-       what humans think is impossible. Yellow, black. 
-       Yellow, black. Yellow, black. Yellow, black. Ooh, 
-       black and yellow! Let's shake it up a little. Barry! 
-       Breakfast is ready! Ooming! Hang on a second. Hello? 
-       - Barry? - Adam?
-        """.trimIndent(),
-        path = listOf(
-          "USA",
-          "Arizona",
-          "Central Arizona",
-          "Queen Creek Canyon",
-        ),
-        ancestorIds = emptyList(),
-        location = Location(
-          latitude = 37.81176,
-          longitude = -119.64678,
-        ),
-        totalClimbs = 5,
-        climbs = listOf(
-          Area.Climb(
-            id = "1",
-            grades = Grades(
-              yds = "5.9",
-              vScale = null,
-            ),
-            name = "Billy",
-            type = Type.AID,
-          ),
-          Area.Climb(
-            id = "2",
-            grades = Grades(
-              yds = "5.9",
-              vScale = null,
-            ),
-            name = "Bobby",
-            type = Type.TRAD,
-          ),
-          Area.Climb(
-            id = "3",
-            grades = Grades(
-              yds = null,
-              vScale = "v7",
-            ),
-            name = "Jimmy",
-            type = Type.BOULDERING,
-          ),
-          Area.Climb(
-            id = "4",
-            grades = null,
-            name = "Linus",
-            type = Type.SNOW,
-          ),
-          Area.Climb(
-            id = "5",
-            grades = null,
-            name = "Stinky",
-            type = Type.DEEP_WATER_SOLO,
-          ),
-        ),
-        children = emptyList(),
-        media = emptyList(),
-      ),
-      onBackClick = { },
-      onPathSectionClick = { },
-      onLocationClick = { },
-      onClimbClick = { },
-      onAreaClick = { },
-    )
-  }
+private fun AreaWithClimbsPreview() = RouteSearchTheme {
+  Content(
+    area = fakeAreas[1],
+    onBackClick = { },
+    onPathSectionClick = { },
+    onLocationClick = { },
+    onClimbClick = { },
+    onAreaClick = { },
+  )
 }
