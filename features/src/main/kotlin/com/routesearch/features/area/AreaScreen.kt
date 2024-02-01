@@ -67,6 +67,8 @@ import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
 import com.routesearch.features.common.views.ImagePlaceholder
 import com.routesearch.features.common.views.MetadataCard
+import com.routesearch.features.common.views.VScaleGradeChart
+import com.routesearch.features.common.views.YdsGradeChart
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
@@ -138,7 +140,6 @@ private fun Content(
           top = padding.calculateTopPadding(),
           start = 16.dp,
           end = 16.dp,
-          bottom = 16.dp,
         )
         .verticalScroll(scrollState),
     ) {
@@ -147,6 +148,10 @@ private fun Content(
         name,
         image,
         metadataCard,
+        ydsChartHeader,
+        ydsChart,
+        vScaleChartHeader,
+        vScaleChart,
         description,
         organizations,
         listContent,
@@ -200,12 +205,85 @@ private fun Content(
         onLocationClick = onLocationClick,
       )
 
+      Text(
+        modifier = Modifier.constrainAs(ydsChartHeader) {
+          top.linkTo(
+            anchor = metadataCard.bottom,
+            margin = 16.dp,
+          )
+          start.linkTo(parent.start)
+
+          visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
+        },
+        text = stringResource(
+          id = R.string.area_screen_yds_header,
+          formatArgs = arrayOf(area.climbCount.roped),
+        ),
+        style = MaterialTheme.typography.titleMedium,
+      )
+
+      YdsGradeChart(
+        modifier = Modifier
+          .constrainAs(ydsChart) {
+            top.linkTo(
+              anchor = ydsChartHeader.bottom,
+              margin = 4.dp,
+            )
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
+          }
+          .heightIn(
+            max = 100.dp,
+          ),
+        gradeMap = area.gradeMap,
+      )
+
+      Text(
+        modifier = Modifier.constrainAs(vScaleChartHeader) {
+          top.linkTo(
+            anchor = ydsChart.bottom,
+            margin = 16.dp,
+          )
+          start.linkTo(parent.start)
+
+          visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
+        },
+        text = stringResource(
+          id = R.string.area_screen_v_scale_header,
+          formatArgs = arrayOf(area.climbCount.bouldering),
+        ),
+        style = MaterialTheme.typography.titleMedium,
+      )
+
+      VScaleGradeChart(
+        modifier = Modifier
+          .constrainAs(vScaleChart) {
+            top.linkTo(
+              anchor = vScaleChartHeader.bottom,
+              margin = 4.dp,
+            )
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
+          }
+          .heightIn(
+            max = 100.dp,
+          ),
+        gradeMap = area.gradeMap,
+      )
+
       Description(
         modifier = Modifier
           .constrainAs(description) {
-            top.linkTo(metadataCard.bottom)
+            top.linkTo(vScaleChart.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
+
             width = Dimension.fillToConstraints
           }
           .padding(top = 8.dp),

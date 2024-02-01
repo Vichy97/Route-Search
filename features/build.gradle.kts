@@ -59,6 +59,8 @@ dependencies {
   implementation(libs.ui.text.android)
   implementation(libs.ui.tooling.preview.android)
   implementation(libs.ui.unit.android)
+  implementation(libs.vico.compose.m3)
+  implementation(libs.vico.core)
 
   debugRuntimeOnly(libs.ui.test.manifest)
   debugRuntimeOnly(libs.ui.tooling)

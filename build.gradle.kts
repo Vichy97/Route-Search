@@ -46,6 +46,11 @@ dependencyAnalysis {
     }
   }
   structure {
+    bundle("vico") {
+      includeGroup("com.patrykandpatrick.vico")
+    }
+  }
+  structure {
     val versionCatalogName = "libs"
     val versionCatalog = project.extensions.getByType<VersionCatalogsExtension>().named(versionCatalogName)
     versionCatalog.libraryAliases.forEach { alias ->

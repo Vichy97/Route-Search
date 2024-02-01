@@ -27,6 +27,7 @@ room = "2.6.1"
 sort-dependencies = "0.4"
 sqlite = "2.4.0"
 typesense = "0.4.0"
+vico = "1.13.1"
 
 [libraries]
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
@@ -90,6 +91,8 @@ ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling-preview-android" }
 ui-unit-android = { group = "androidx.compose.ui", name = "ui-unit-android" }
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
