@@ -1,10 +1,8 @@
 <resources>
-  <string name="area_screen_created_title">Created:</string>
   <string name="area_screen_description_header">Description</string>
   <string name="area_screen_description_placeholder">No description available. Consider contributing to this area at openbeta.io!</string>
   <string name="area_screen_expand_description_button_label">See More</string>
   <string name="area_screen_loading_error_message">Error Loading Area</string>
-  <string name="area_screen_location_title">Lat, Lng:</string>
   <plurals name="area_screen_number_of_climbs">
     <item quantity="one">%1$d Climb</item>
     <item quantity="other">%1$d Climbs</item>
@@ -13,7 +11,10 @@
     <item quantity="one">%1$d Area</item>
     <item quantity="other">%1$d Areas</item>
   </plurals>
+  <string name="area_screen_organizations_header">Local climbing organizations</string>
   <string name="area_screen_updated_title">Updated:</string>
+  <string name="area_screen_v_scale_header">%1$d Boulders</string>
+  <string name="area_screen_yds_header">%1$d Routes</string>
 
   <string name="climb_screen_created_title">Created:</string>
   <string name="climb_screen_description_header">Description</string>
@@ -22,6 +23,10 @@
   <string name="climb_screen_location_title">Lat, Lng:</string>
   <string name="climb_screen_protection_header">Protection</string>
   <string name="climb_screen_updated_title">Updated:</string>
+
+  <string name="metadata_card_created_title">Created:</string>
+  <string name="metadata_card_location_title">Lat, Lng:</string>
+  <string name="metadata_card_updated_title">Updated:</string>
 
   <string name="search_screen_search_error_message">Something went wrong</string>
   <string name="search_screen_search_placeholder">Search for areas or climbs</string>

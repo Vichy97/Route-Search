@@ -1,4 +1,4 @@
-package com.routesearch.features.common
+package com.routesearch.features.common.intent
 
 import android.content.Intent
 import com.routesearch.data.location.Location

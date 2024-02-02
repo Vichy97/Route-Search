@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.climb.Climb
 import com.routesearch.data.climb.ClimbRepository
-import com.routesearch.features.common.GeoIntent
+import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher

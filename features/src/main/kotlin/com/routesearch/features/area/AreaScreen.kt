@@ -2,26 +2,27 @@ package com.routesearch.features.area
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +30,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -53,28 +53,29 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
-import com.routesearch.data.climb.Grades
-import com.routesearch.data.climb.Type
 import com.routesearch.data.climb.getDisplayName
-import com.routesearch.data.location.Location
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ImagePlaceholder
+import com.routesearch.features.common.views.MetadataCard
+import com.routesearch.features.common.views.VScaleGradeChart
+import com.routesearch.features.common.views.YdsGradeChart
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
-import com.routesearch.ui.common.compose.underline
-import com.routesearch.util.common.date.monthYearFormat
-import kotlinx.datetime.LocalDate
+import com.routesearch.ui.common.compose.modifier.ignoreHorizontalParentPadding
+import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Destination(
@@ -104,7 +105,10 @@ fun AreaScreen() {
 private fun Loading() = Box(
   modifier = Modifier.fillMaxSize(),
   contentAlignment = Alignment.Center,
-) { CircularProgressIndicator() }
+) {
+  // Progress Indicators are broken in the latest compose BOM
+  // CircularProgressIndicator()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,7 +140,6 @@ private fun Content(
           top = padding.calculateTopPadding(),
           start = 16.dp,
           end = 16.dp,
-          bottom = 16.dp,
         )
         .verticalScroll(scrollState),
     ) {
@@ -145,8 +148,13 @@ private fun Content(
         name,
         image,
         metadataCard,
+        ydsChartHeader,
+        ydsChart,
+        vScaleChartHeader,
+        vScaleChart,
         description,
-        areaContent,
+        organizations,
+        listContent,
       ) = createRefs()
 
       Path(
@@ -189,29 +197,126 @@ private fun Content(
             start.linkTo(parent.start)
             top.linkTo(image.bottom)
           }
-          .padding(top = 16.dp),
-        area = area,
+          .padding(top = 16.dp)
+          .wrapContentWidth(),
+        location = area.location,
+        createdAt = area.metadata.createdAt,
+        updatedAt = area.metadata.updatedAt,
         onLocationClick = onLocationClick,
+      )
+
+      Text(
+        modifier = Modifier.constrainAs(ydsChartHeader) {
+          top.linkTo(
+            anchor = metadataCard.bottom,
+            margin = 16.dp,
+          )
+          start.linkTo(parent.start)
+
+          visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
+        },
+        text = stringResource(
+          id = R.string.area_screen_yds_header,
+          formatArgs = arrayOf(area.climbCount.roped),
+        ),
+        style = MaterialTheme.typography.titleMedium,
+      )
+
+      YdsGradeChart(
+        modifier = Modifier
+          .constrainAs(ydsChart) {
+            top.linkTo(
+              anchor = ydsChartHeader.bottom,
+              margin = 4.dp,
+            )
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
+          }
+          .heightIn(
+            max = 100.dp,
+          ),
+        gradeMap = area.gradeMap,
+      )
+
+      Text(
+        modifier = Modifier.constrainAs(vScaleChartHeader) {
+          top.linkTo(
+            anchor = ydsChart.bottom,
+            margin = 16.dp,
+          )
+          start.linkTo(parent.start)
+
+          visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
+        },
+        text = stringResource(
+          id = R.string.area_screen_v_scale_header,
+          formatArgs = arrayOf(area.climbCount.bouldering),
+        ),
+        style = MaterialTheme.typography.titleMedium,
+      )
+
+      VScaleGradeChart(
+        modifier = Modifier
+          .constrainAs(vScaleChart) {
+            top.linkTo(
+              anchor = vScaleChartHeader.bottom,
+              margin = 4.dp,
+            )
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
+          }
+          .heightIn(
+            max = 100.dp,
+          ),
+        gradeMap = area.gradeMap,
       )
 
       Description(
         modifier = Modifier
           .constrainAs(description) {
-            top.linkTo(metadataCard.bottom)
+            top.linkTo(vScaleChart.bottom)
             start.linkTo(parent.start)
             end.linkTo(parent.end)
+
             width = Dimension.fillToConstraints
           }
           .padding(top = 8.dp),
         text = area.description,
       )
 
+      Organizations(
+        modifier = Modifier
+          .constrainAs(organizations) {
+            top.linkTo(description.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (area.organizations.isEmpty()) Visibility.Gone else Visibility.Visible
+          }
+          .padding(top = 8.dp)
+          .ignoreHorizontalParentPadding(16.dp),
+        organizations = area.organizations,
+      )
+
       ListContent(
         modifier = Modifier
-          .constrainAs(areaContent) {
-            top.linkTo(description.bottom)
+          .constrainAs(listContent) {
+            top.linkTo(organizations.bottom)
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
           }
-          .padding(top = 16.dp),
+          .padding(top = 16.dp)
+          .ignoreHorizontalParentPadding(16.dp),
         area = area,
         onClimbClick = onClimbClick,
         onAreaClick = onAreaClick,
@@ -242,7 +347,7 @@ private fun NavigationButton(
   onClick = onClick,
 ) {
   Icon(
-    imageVector = Icons.Default.ArrowBack,
+    imageVector = Icons.AutoMirrored.Default.ArrowBack,
     contentDescription = null,
   )
 }
@@ -276,136 +381,20 @@ private fun Path(
 private fun Images(
   modifier: Modifier = Modifier,
   urls: List<String>,
-) {
-  if (urls.isEmpty()) {
-    Card(
-      modifier = modifier,
-    ) {
-      Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-      ) {
-        Icon(
-          modifier = Modifier.size(48.dp),
-          imageVector = Icons.Default.AccountCircle,
-          contentDescription = null,
-        )
-      }
-    }
-  } else {
-    AsyncImage(
-      modifier = modifier
-        .clip(RoundedCornerShape(8.dp)),
-      model = urls.first(),
-      placeholder = ColorPainter(
-        color = MaterialTheme.colorScheme.surfaceVariant,
-      ),
-      contentDescription = null,
-      contentScale = ContentScale.FillWidth,
-    )
-  }
-}
-
-@Composable
-private fun MetadataCard(
-  modifier: Modifier = Modifier,
-  area: Area,
-  onLocationClick: () -> Unit,
-) = Card(
-  modifier = modifier,
-) {
-  LocationText(
-    modifier = Modifier.padding(
-      top = 16.dp,
-      start = 16.dp,
-      end = 16.dp,
-    ),
-    location = area.location,
-    onClick = onLocationClick,
-  )
-  CreatedDateText(
-    modifier = Modifier.padding(
-      top = 16.dp,
-      start = 16.dp,
-      end = 16.dp,
-    ),
-    created = area.metadata.createdAt,
-  )
-  UpdatedDateText(
-    modifier = Modifier.padding(
-      top = 8.dp,
-      start = 16.dp,
-      end = 16.dp,
-      bottom = 16.dp,
-    ),
-    updated = area.metadata.updatedAt,
-  )
-}
-
-@Composable
-private fun LocationText(
-  modifier: Modifier = Modifier,
-  location: Location,
-  onClick: () -> Unit,
-) {
-  val locationAnnotation = "location"
-  val locationString = buildAnnotatedString {
-    bold { append(stringResource(R.string.area_screen_location_title)) }
-
-    append(" ")
-
-    underline {
-      annotation(locationAnnotation) {
-        append(location.displayString)
-      }
-    }
-  }
-  ClickableText(
+) = if (urls.isEmpty()) {
+  ImagePlaceholder(
     modifier = modifier,
-    text = locationString,
-    style = MaterialTheme.typography.titleSmall.copy(
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    ),
-  ) {
-    val annotationClicked = locationString.isAnnotatedAtIndex(
-      index = it,
-      annotation = locationAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
-}
-
-@Composable
-private fun CreatedDateText(
-  modifier: Modifier = Modifier,
-  created: LocalDate,
-) {
-  val createdDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.area_screen_created_title)) }
-    append(" ")
-    append(created.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = createdDateText,
-    style = MaterialTheme.typography.titleSmall,
   )
-}
-
-@Composable
-private fun UpdatedDateText(
-  modifier: Modifier = Modifier,
-  updated: LocalDate,
-) {
-  val updatedDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.area_screen_updated_title)) }
-    append(" ")
-    append(updated.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = updatedDateText,
-    style = MaterialTheme.typography.titleSmall,
+} else {
+  AsyncImage(
+    modifier = modifier
+      .clip(RoundedCornerShape(8.dp)),
+    model = urls.first(),
+    placeholder = ColorPainter(
+      color = MaterialTheme.colorScheme.surfaceVariant,
+    ),
+    contentDescription = null,
+    contentScale = ContentScale.FillWidth,
   )
 }
 
@@ -446,7 +435,7 @@ private fun Description(
 @Composable
 private fun DescriptionHeader() = Text(
   text = stringResource(R.string.area_screen_description_header),
-  style = MaterialTheme.typography.headlineSmall,
+  style = MaterialTheme.typography.titleLarge,
 )
 
 @Composable
@@ -481,6 +470,75 @@ private fun ExpandDescriptionButton(
 ) { Text(stringResource(R.string.area_screen_expand_description_button_label)) }
 
 @Composable
+private fun Organizations(
+  modifier: Modifier = Modifier,
+  organizations: List<Area.Organization>,
+) = Column(modifier = modifier) {
+  OrganizationsHeader(
+    modifier = Modifier.padding(
+      horizontal = 16.dp,
+    ),
+  )
+
+  LazyRow(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(top = 8.dp),
+    contentPadding = PaddingValues(
+      horizontal = 16.dp,
+    ),
+    horizontalArrangement = Arrangement.spacedBy(16.dp),
+  ) {
+    items(
+      items = organizations,
+      key = { it.id },
+    ) {
+      OrganizationCard(
+        organization = it,
+      )
+    }
+  }
+}
+
+@Composable
+private fun OrganizationsHeader(
+  modifier: Modifier = Modifier,
+) = Text(
+  modifier = modifier,
+  text = stringResource(R.string.area_screen_organizations_header),
+  style = MaterialTheme.typography.titleLarge,
+)
+
+@Composable
+private fun OrganizationCard(
+  modifier: Modifier = Modifier,
+  organization: Area.Organization,
+) = ElevatedCard(
+  modifier = modifier.widthIn(
+    max = 200.dp,
+  ),
+) {
+  ListItem(
+    headlineContent = {
+      Text(
+        text = organization.name,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+      )
+    },
+    supportingContent = {
+      organization.website?.let {
+        Text(
+          text = it,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+        )
+      }
+    },
+  )
+}
+
+@Composable
 fun ListContent(
   modifier: Modifier = Modifier,
   area: Area,
@@ -505,11 +563,8 @@ private fun AreaList(
   modifier: Modifier = Modifier,
   area: Area,
   onAreaClick: (String) -> Unit,
-) = Card(
+) = Column(
   modifier = modifier,
-  colors = CardDefaults.cardColors(
-    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-  ),
 ) {
   Text(
     modifier = Modifier.padding(
@@ -523,27 +578,18 @@ private fun AreaList(
     ),
     style = MaterialTheme.typography.titleLarge,
   )
-  Divider(
-    color = MaterialTheme.colorScheme.onPrimaryContainer,
-  )
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .wrapContentSize(),
-  ) {
-    area.children.forEachIndexed { index, child ->
-      AreaListItem(
-        areaChild = child,
-        onClick = onAreaClick,
+  Divider()
+  area.children.forEachIndexed { index, child ->
+    AreaListItem(
+      areaChild = child,
+      onClick = onAreaClick,
+    )
+    if (index < area.children.size - 1) {
+      Divider(
+        modifier = Modifier.padding(
+          horizontal = 16.dp,
+        ),
       )
-      if (index < area.children.size - 1) {
-        Divider(
-          modifier = Modifier.padding(
-            horizontal = 16.dp,
-          ),
-          color = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
-      }
     }
   }
 }
@@ -581,11 +627,8 @@ private fun ClimbList(
   modifier: Modifier = Modifier,
   area: Area,
   onClimbClick: (String) -> Unit,
-) = Card(
+) = Column(
   modifier = modifier,
-  colors = CardDefaults.cardColors(
-    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-  ),
 ) {
   Text(
     modifier = Modifier.padding(
@@ -599,27 +642,18 @@ private fun ClimbList(
     ),
     style = MaterialTheme.typography.titleLarge,
   )
-  Divider(
-    color = MaterialTheme.colorScheme.onSurfaceVariant,
-  )
-  Column(
-    modifier = Modifier
-      .fillMaxWidth()
-      .wrapContentSize(),
-  ) {
-    area.climbs.forEachIndexed { index, climb ->
-      ClimbListItem(
-        climb = climb,
-        onClick = onClimbClick,
+  Divider()
+  area.climbs.forEachIndexed { index, climb ->
+    ClimbListItem(
+      climb = climb,
+      onClick = onClimbClick,
+    )
+    if (index < area.climbs.size - 1) {
+      Divider(
+        modifier = Modifier.padding(
+          horizontal = 16.dp,
+        ),
       )
-      if (index < area.children.size - 1) {
-        Divider(
-          modifier = Modifier.padding(
-            horizontal = 16.dp,
-          ),
-          color = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
-      }
     }
   }
 }
@@ -638,169 +672,28 @@ fun ClimbListItem(
   ),
 )
 
-@Preview
+@PreviewLightDark
 @Composable
-private fun AreaScreenChildrenPreview() = MaterialTheme {
-  Surface {
-    Content(
-      Area(
-        id = "1",
-        metadata = Area.Metadata(
-          createdAt = LocalDate.parse("2023-12-01"),
-          updatedAt = LocalDate.parse("2023-12-01"),
-        ),
-        name = "Atlantis",
-        description = """
-       According to all known laws of aviation, there is no 
-       way a bee should be able to fly. Its wings are too 
-       small to get its fat little body off the ground. The 
-       bee, of course, flies anyway because bees don't care 
-       what humans think is impossible. Yellow, black. 
-       Yellow, black. Yellow, black. Yellow, black. Ooh, 
-       black and yellow! Let's shake it up a little. Barry! 
-       Breakfast is ready! Ooming! Hang on a second. Hello? 
-       - Barry? - Adam?
-        """.trimIndent(),
-        path = listOf(
-          "USA",
-          "Arizona",
-          "Central Arizona",
-          "Queen Creek Canyon",
-        ),
-        ancestorIds = emptyList(),
-        location = Location(
-          latitude = 37.81176,
-          longitude = -119.64678,
-        ),
-        totalClimbs = 34,
-        climbs = emptyList(),
-        children = listOf(
-          Area.Child(
-            id = "1",
-            name = "Billy",
-            totalClimbs = 15,
-            numberOfChildren = 5,
-          ),
-          Area.Child(
-            id = "2",
-            name = "Bobby",
-            totalClimbs = 4,
-            numberOfChildren = 1,
-          ),
-          Area.Child(
-            id = "3",
-            name = "Jimmy",
-            totalClimbs = 0,
-            numberOfChildren = 1,
-          ),
-          Area.Child(
-            id = "4",
-            name = "Linus",
-            totalClimbs = 25,
-            numberOfChildren = 6,
-          ),
-          Area.Child(
-            id = "5",
-            name = "Stinky",
-            totalClimbs = 18,
-            numberOfChildren = 4,
-          ),
-        ),
-        media = emptyList(),
-      ),
-      onBackClick = { },
-      onPathSectionClick = { },
-      onLocationClick = { },
-      onClimbClick = { },
-      onAreaClick = { },
-    )
-  }
+private fun AreaWithChildrenPreview() = RouteSearchTheme {
+  Content(
+    area = fakeAreas[0],
+    onBackClick = { },
+    onPathSectionClick = { },
+    onLocationClick = { },
+    onClimbClick = { },
+    onAreaClick = { },
+  )
 }
 
-@Preview
+@PreviewLightDark
 @Composable
-private fun AreaScreenClimbPreview() = MaterialTheme {
-  Surface {
-    Content(
-      Area(
-        id = "1",
-        metadata = Area.Metadata(
-          createdAt = LocalDate.parse("2023-12-01"),
-          updatedAt = LocalDate.parse("2023-12-01"),
-        ),
-        name = "fake area",
-        description = """
-       According to all known laws of aviation, there is no 
-       way a bee should be able to fly. Its wings are too 
-       small to get its fat little body off the ground. The 
-       bee, of course, flies anyway because bees don't care 
-       what humans think is impossible. Yellow, black. 
-       Yellow, black. Yellow, black. Yellow, black. Ooh, 
-       black and yellow! Let's shake it up a little. Barry! 
-       Breakfast is ready! Ooming! Hang on a second. Hello? 
-       - Barry? - Adam?
-        """.trimIndent(),
-        path = listOf(
-          "USA",
-          "Arizona",
-          "Central Arizona",
-          "Queen Creek Canyon",
-        ),
-        ancestorIds = emptyList(),
-        location = Location(
-          latitude = 37.81176,
-          longitude = -119.64678,
-        ),
-        totalClimbs = 5,
-        climbs = listOf(
-          Area.Climb(
-            id = "1",
-            grades = Grades(
-              yds = "5.9",
-              vScale = null,
-            ),
-            name = "Billy",
-            type = Type.AID,
-          ),
-          Area.Climb(
-            id = "2",
-            grades = Grades(
-              yds = "5.9",
-              vScale = null,
-            ),
-            name = "Bobby",
-            type = Type.TRAD,
-          ),
-          Area.Climb(
-            id = "3",
-            grades = Grades(
-              yds = null,
-              vScale = "v7",
-            ),
-            name = "Jimmy",
-            type = Type.BOULDERING,
-          ),
-          Area.Climb(
-            id = "4",
-            grades = null,
-            name = "Linus",
-            type = Type.SNOW,
-          ),
-          Area.Climb(
-            id = "5",
-            grades = null,
-            name = "Stinky",
-            type = Type.DEEP_WATER_SOLO,
-          ),
-        ),
-        children = emptyList(),
-        media = emptyList(),
-      ),
-      onBackClick = { },
-      onPathSectionClick = { },
-      onLocationClick = { },
-      onClimbClick = { },
-      onAreaClick = { },
-    )
-  }
+private fun AreaWithClimbsPreview() = RouteSearchTheme {
+  Content(
+    area = fakeAreas[1],
+    onBackClick = { },
+    onPathSectionClick = { },
+    onLocationClick = { },
+    onClimbClick = { },
+    onAreaClick = { },
+  )
 }

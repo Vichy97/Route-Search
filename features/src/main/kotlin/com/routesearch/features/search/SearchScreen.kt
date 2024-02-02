@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -23,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,7 +32,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -156,7 +155,7 @@ private fun SearchBarLeadingIcon(
     modifier = Modifier.clickable(
       onClick = onBackClick,
     ),
-    imageVector = Icons.Default.ArrowBack,
+    imageVector = Icons.AutoMirrored.Default.ArrowBack,
     contentDescription = null,
   )
 } else {
@@ -359,72 +358,62 @@ private fun ClimbSearchResult(
   )
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun InactivePreview() = RouteSearchTheme {
-  Surface(
-    modifier = Modifier.fillMaxSize(),
-    color = MaterialTheme.colorScheme.background,
-  ) {
-    SearchScreenContent(
-      viewState = SearchViewState(),
-      onSearchQueryChange = { },
-      onSearchActiveChange = { },
-      onBackClick = { },
-      onClearClick = { },
-      onSearch = { },
-      onAreaFilterClick = { },
-      onClimbFilterClick = { },
-      onAreaSearchResultClick = { },
-      onClimbSearchResultClick = { },
-    )
-  }
+  SearchScreenContent(
+    viewState = SearchViewState(),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+  )
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun ActivePreview() = RouteSearchTheme {
-  Surface(
-    modifier = Modifier.fillMaxSize(),
-    color = MaterialTheme.colorScheme.background,
-  ) {
-    SearchScreenContent(
-      viewState = SearchViewState(
-        searchActive = true,
-        searchQuery = "Atlantis",
-        climbSearchResults = listOf(
-          ClimbSearchResult(
-            id = "c1",
-            name = "Atlantis",
-            pathTokens = listOf("USA", "Utah", "Southwest Utah", "Saint George", "Black Rocks", "Shady Side"),
-            grade = "5.10b",
-            type = "sport",
-          ),
-        ),
-        areaSearchResults = listOf(
-          AreaSearchResult(
-            id = "a1",
-            name = "Atlantis",
-            pathTokens = listOf("USA", "Arizona", "Central Arizona", "Queen Creek Canyon", "Atlantis"),
-            totalClimbs = 50,
-          ),
-          AreaSearchResult(
-            id = "a2",
-            name = "Atlantis Area",
-            pathTokens = listOf("USA", "California", "Joshua Tree National Park", "Lost Horse Area", "Atlantis Area"),
-            totalClimbs = 50,
-          ),
+  SearchScreenContent(
+    viewState = SearchViewState(
+      searchActive = true,
+      searchQuery = "Atlantis",
+      climbSearchResults = listOf(
+        ClimbSearchResult(
+          id = "c1",
+          name = "Atlantis",
+          pathTokens = listOf("USA", "Utah", "Southwest Utah", "Saint George", "Black Rocks", "Shady Side"),
+          grade = "5.10b",
+          type = "sport",
         ),
       ),
-      onSearchQueryChange = { },
-      onSearchActiveChange = { },
-      onBackClick = { },
-      onClearClick = { },
-      onSearch = { },
-      onAreaFilterClick = { },
-      onClimbFilterClick = { },
-      onAreaSearchResultClick = { },
-      onClimbSearchResultClick = { },
-    )
-  }
+      areaSearchResults = listOf(
+        AreaSearchResult(
+          id = "a1",
+          name = "Atlantis",
+          pathTokens = listOf("USA", "Arizona", "Central Arizona", "Queen Creek Canyon", "Atlantis"),
+          totalClimbs = 50,
+        ),
+        AreaSearchResult(
+          id = "a2",
+          name = "Atlantis Area",
+          pathTokens = listOf("USA", "California", "Joshua Tree National Park", "Lost Horse Area", "Atlantis Area"),
+          totalClimbs = 50,
+        ),
+      ),
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+  )
 }

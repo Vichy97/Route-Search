@@ -6,15 +6,18 @@ style:
   UnusedPrivateMember:
     ignoreAnnotated:
       - 'Preview'
+      - 'PreviewLightDark'
   MagicNumber:
     ignorePropertyDeclaration: true
     ignoreExtensionFunctions: false
     ignoreAnnotated:
       - 'Preview'
+      - 'PreviewLightDark'
       - 'Composable'
   DestructuringDeclarationWithTooManyEntries:
     ignoreAnnotated:
       - 'Preview'
+      - 'PreviewLightDark'
       - 'Composable'
   ForbiddenComment:
     active: false
@@ -32,5 +35,6 @@ complexity:
     ignoreAnnotated:
       - 'Composable'
       - 'Preview'
+      - 'PreviewLightDark'
   TooManyFunctions:
     active: false

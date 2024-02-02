@@ -21,6 +21,20 @@ query AreaQuery($uuid: ID) {
         count
         label
       }
+      byDiscipline {
+        sport {
+          total
+        }
+        tr {
+          total
+        }
+        trad {
+          total
+        }
+        bouldering {
+          total
+        }
+      }
     }
     children {
       uuid

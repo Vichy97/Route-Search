@@ -8,28 +8,30 @@ import com.routesearch.data.media.toMedia
 import com.routesearch.data.local.area.Area.Climb as LocalClimb
 import com.routesearch.data.local.area.AreaWithClimbsAndChildren as LocalArea
 import com.routesearch.data.local.area.Child as LocalChild
-import com.routesearch.data.remote.AreaQuery.Area as NetworkArea
-import com.routesearch.data.remote.AreaQuery.Child as NetworkAreaChild
+import com.routesearch.data.remote.AreaQuery.Area as RemoteArea
+import com.routesearch.data.remote.AreaQuery.Child as RemoteAreaChild
 
-internal fun NetworkArea.toArea() = Area(
+internal fun RemoteArea.toArea() = Area(
   id = uuid,
   metadata = getMetadata(),
   name = areaName,
   description = content?.description ?: "",
   path = pathTokens.filterNotNull(),
   ancestorIds = ancestors.filterNotNull(),
+  gradeMap = getGradeMap(),
   location = metadata.getLocation(),
   children = children?.toChildren() ?: emptyList(),
-  totalClimbs = totalClimbs,
+  climbCount = getClimbCount(),
   climbs = climbs?.toClimbs() ?: emptyList(),
+  organizations = organizations?.toOrganizations() ?: emptyList(),
   media = media?.mapNotNull { it?.mediaFragment?.toMedia() } ?: emptyList(),
 )
 
 @JvmName("remoteChildrenToChildren")
-private fun List<NetworkAreaChild?>.toChildren() = filterNotNull()
+private fun List<RemoteAreaChild?>.toChildren() = filterNotNull()
   .map { it.toChild() }
 
-private fun NetworkAreaChild.toChild() = Area.Child(
+private fun RemoteAreaChild.toChild() = Area.Child(
   id = uuid,
   name = areaName,
   totalClimbs = totalClimbs,
@@ -43,10 +45,12 @@ internal fun LocalArea.toArea() = Area(
   description = area.description,
   path = area.path,
   ancestorIds = area.ancestorIds,
+  gradeMap = area.gradeMap,
   location = area.location.toLocation(),
   children = children.toChildren(),
-  totalClimbs = area.totalClimbs,
+  climbCount = area.climbCount.toClimbCount(),
   climbs = climbs.toClimbs(),
+  organizations = emptyList(), // Organizations aren't important to save for offline use.
   media = area.media,
 )
 
@@ -60,7 +64,7 @@ private fun LocalChild.toChild() = Area.Child(
   numberOfChildren = numberOfChildren,
 )
 
-@JvmName("LocalClimbsToClimbs")
+@JvmName("localClimbsToClimbs")
 private fun List<LocalClimb>.toClimbs() = map { it.toClimb() }
 
 private fun LocalClimb.toClimb() = Area.Climb(

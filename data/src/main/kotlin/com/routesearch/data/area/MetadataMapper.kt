@@ -7,9 +7,11 @@ import com.routesearch.data.remote.AreaQuery.Area as RemoteArea
 internal fun RemoteArea.getMetadata() = Area.Metadata(
   createdAt = (authorMetadata.authorMetadataFragment.createdAt as Long).toLocalDate(),
   updatedAt = (authorMetadata.authorMetadataFragment.updatedAt as Long).toLocalDate(),
+  isLeaf = metadata.leaf,
 )
 
 internal fun LocalArea.MetaData.toMetaData() = Area.Metadata(
   createdAt = createdAt.toLocalDate(),
   updatedAt = updatedAt.toLocalDate(),
+  isLeaf = isLeaf,
 )

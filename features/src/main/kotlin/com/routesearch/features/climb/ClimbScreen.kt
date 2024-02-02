@@ -8,22 +8,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -45,7 +41,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -54,17 +50,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
-import com.routesearch.data.location.Location
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ImagePlaceholder
+import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
-import com.routesearch.ui.common.compose.underline
-import com.routesearch.util.common.date.monthYearFormat
-import kotlinx.datetime.LocalDate
+import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Destination(
@@ -92,7 +86,10 @@ fun ClimbScreen() {
 private fun Loading() = Box(
   modifier = Modifier.fillMaxSize(),
   contentAlignment = Alignment.Center,
-) { CircularProgressIndicator() }
+) {
+  // Progress Indicators are broken in the latest compose BOM
+  // CircularProgressIndicator()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -130,7 +127,7 @@ private fun Content(
         path,
         name,
         image,
-        metadetaCard,
+        metadataCard,
         description,
       ) = createRefs()
 
@@ -170,14 +167,17 @@ private fun Content(
 
       MetadataCard(
         modifier = Modifier
-          .constrainAs(metadetaCard) {
+          .constrainAs(metadataCard) {
             start.linkTo(parent.start)
             top.linkTo(image.bottom)
 
             visibility = if (climb.hasMetadata) Visibility.Visible else Visibility.Gone
           }
-          .padding(top = 16.dp),
-        climb = climb,
+          .padding(top = 16.dp)
+          .wrapContentWidth(),
+        location = climb.location,
+        createdAt = climb.metadata.createdAt,
+        updatedAt = climb.metadata.updatedAt,
         onLocationClick = onLocationClick,
       )
 
@@ -185,7 +185,7 @@ private fun Content(
         modifier = Modifier
           .constrainAs(description) {
             start.linkTo(parent.start)
-            top.linkTo(metadetaCard.bottom)
+            top.linkTo(metadataCard.bottom)
             end.linkTo(parent.end)
             width = Dimension.fillToConstraints
           }
@@ -218,7 +218,7 @@ private fun NavigationButton(
   onClick = onClick,
 ) {
   Icon(
-    imageVector = Icons.Default.ArrowBack,
+    imageVector = Icons.AutoMirrored.Default.ArrowBack,
     contentDescription = null,
   )
 }
@@ -256,145 +256,20 @@ private fun Path(
 private fun Images(
   modifier: Modifier = Modifier,
   urls: List<String>,
-) {
-  if (urls.isEmpty()) {
-    Card(
-      modifier = modifier,
-    ) {
-      Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-      ) {
-        Icon(
-          modifier = Modifier.size(48.dp),
-          imageVector = Icons.Default.AccountCircle,
-          contentDescription = null,
-        )
-      }
-    }
-  } else {
-    AsyncImage(
-      modifier = modifier
-        .clip(RoundedCornerShape(8.dp)),
-      model = urls.first(),
-      placeholder = ColorPainter(
-        color = MaterialTheme.colorScheme.surfaceVariant,
-      ),
-      contentDescription = null,
-      contentScale = ContentScale.FillWidth,
-    )
-  }
-}
-
-@Composable
-private fun MetadataCard(
-  modifier: Modifier = Modifier,
-  climb: Climb,
-  onLocationClick: () -> Unit,
-) = Card(
-  modifier = modifier,
-) {
-  climb.location?.let {
-    LocationText(
-      modifier = Modifier.padding(
-        top = 16.dp,
-        start = 16.dp,
-        end = 16.dp,
-      ),
-      location = it,
-      onClick = onLocationClick,
-    )
-  }
-
-  climb.metadata.createdAt?.let {
-    CreatedDateText(
-      modifier = Modifier.padding(
-        top = 16.dp,
-        start = 16.dp,
-        end = 16.dp,
-      ),
-      created = it,
-    )
-  }
-
-  climb.metadata.updatedAt?.let {
-    UpdatedDateText(
-      modifier = Modifier.padding(
-        top = 8.dp,
-        start = 16.dp,
-        end = 16.dp,
-        bottom = 16.dp,
-      ),
-      updated = it,
-    )
-  }
-}
-
-@Composable
-private fun LocationText(
-  modifier: Modifier = Modifier,
-  location: Location,
-  onClick: () -> Unit,
-) {
-  val locationAnnotation = "location"
-  val locationString = buildAnnotatedString {
-    bold { append(stringResource(R.string.climb_screen_location_title)) }
-
-    append(" ")
-
-    underline {
-      annotation(locationAnnotation) {
-        append(location.displayString)
-      }
-    }
-  }
-  ClickableText(
+) = if (urls.isEmpty()) {
+  ImagePlaceholder(
     modifier = modifier,
-    text = locationString,
-    style = MaterialTheme.typography.titleSmall.copy(
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    ),
-
-  ) {
-    val annotationClicked = locationString.isAnnotatedAtIndex(
-      index = it,
-      annotation = locationAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
-}
-
-@Composable
-private fun CreatedDateText(
-  modifier: Modifier = Modifier,
-  created: LocalDate,
-) {
-  val createdDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.climb_screen_created_title)) }
-    append(" ")
-    append(created.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = createdDateText,
-    style = MaterialTheme.typography.titleSmall,
   )
-}
-
-@Composable
-private fun UpdatedDateText(
-  modifier: Modifier = Modifier,
-  updated: LocalDate,
-) {
-  val updatedDateText = buildAnnotatedString {
-    bold { append(stringResource(R.string.climb_screen_updated_title)) }
-    append(" ")
-    append(updated.monthYearFormat())
-  }
-  Text(
-    modifier = modifier,
-    text = updatedDateText,
-    style = MaterialTheme.typography.titleSmall,
+} else {
+  AsyncImage(
+    modifier = modifier
+      .clip(RoundedCornerShape(8.dp)),
+    model = urls.first(),
+    placeholder = ColorPainter(
+      color = MaterialTheme.colorScheme.surfaceVariant,
+    ),
+    contentDescription = null,
+    contentScale = ContentScale.FillWidth,
   )
 }
 
@@ -435,7 +310,7 @@ private fun Description(
 @Composable
 private fun DescriptionHeader() = Text(
   text = stringResource(R.string.climb_screen_description_header),
-  style = MaterialTheme.typography.headlineSmall,
+  style = MaterialTheme.typography.titleLarge,
 )
 
 @Composable
@@ -469,67 +344,13 @@ private fun ExpandDescriptionButton(
   onClick = onClick,
 ) { Text(stringResource(R.string.climb_screen_expand_description_button_label)) }
 
-@Preview
+@PreviewLightDark
 @Composable
-private fun ClimbScreenPreview() = MaterialTheme {
-  Surface {
-    Content(
-      Climb(
-        id = "1",
-        metadata = Climb.Metadata(
-          leftRightIndex = null,
-          createdAt = LocalDate(
-            year = 2000,
-            monthNumber = 1,
-            dayOfMonth = 1,
-          ),
-          updatedAt = LocalDate(
-            year = 2000,
-            monthNumber = 1,
-            dayOfMonth = 1,
-          ),
-        ),
-        name = "Here is a climb!",
-        pathTokens = listOf(
-          "USA",
-          "Washington",
-          "Walla Walla",
-        ),
-        location = Location(
-          latitude = 31.12,
-          longitude = 32.13,
-        ),
-        ancestorIds = emptyList(),
-        description = Climb.Description(
-          general = """
-            According to all known laws of aviation, there is no 
-            way a bee should be able to fly. Its wings are too 
-            small to get its fat little body off the ground. The 
-            bee, of course, flies anyway because bees don't care 
-            what humans think is impossible.
-          """.trimIndent(),
-          location = """
-            Yellow, black. 
-            Yellow, black. Yellow, black. Yellow, black. Ooh, 
-            black and yellow!
-          """.trimIndent(),
-          protection = """
-            Let's shake it up a little. Barry! 
-            Breakfast is ready! Ooming! Hang on a second. Hello? 
-            - Barry? - Adam?
-          """.trimIndent(),
-        ),
-        length = null,
-        boltCount = null,
-        fa = "",
-        type = null,
-        grades = null,
-        pitches = emptyList(),
-        media = emptyList(),
-      ),
-      onBackClick = { },
-      onPathSectionClick = { },
-      onLocationClick = { },
-    )
-  }
+private fun ClimbScreenPreview() = RouteSearchTheme {
+  Content(
+    climb = fakeClimbs[0],
+    onBackClick = { },
+    onPathSectionClick = { },
+    onLocationClick = { },
+  )
 }
