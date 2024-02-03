@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.Card
@@ -22,6 +23,7 @@ fun ImagePlaceholder(
   modifier: Modifier = Modifier,
 ) = Card(
   modifier = modifier,
+  shape = RoundedCornerShape(32.dp),
 ) {
   Box(
     modifier = Modifier.fillMaxSize(),
