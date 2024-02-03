@@ -21,8 +21,10 @@ ktlint = "11.5.1"
 leakcanary = "2.12"
 lifecycle = "2.7.0"
 logcat = "0.1"
+material = "1.11.0"
 moshi = "1.14.0"
 navigation = "2.7.6"
+recyclerview = "1.1.0"
 room = "2.6.1"
 sort-dependencies = "0.4"
 sqlite = "2.4.0"
@@ -39,6 +41,8 @@ annotation = { group = "androidx.annotation", name = "annotation", version.ref =
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 coil-bom = { group = "io.coil-kt", name = "coil-bom", version.ref = "coil-bom" }
+coil = { group = "io.coil-kt", name = "coil" }
+coil-base = { group = "io.coil-kt", name = "coil-base" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose" }
 collection = { group = "androidx.collection", name = "collection", version.ref = "collection" }
 constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.0.1" }
@@ -68,6 +72,7 @@ lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
 logcat = { group = "com.squareup.logcat", name = "logcat", version.ref = "logcat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 material3 = { group = "androidx.compose.material3", name = "material3" }
 material-icons-core-android = { group = "androidx.compose.material", name = "material-icons-core-android" }
 material-icons-extended-android = { group = "androidx.compose.material", name = "material-icons-extended-android" }
@@ -76,6 +81,7 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 navigation-common = { group = "androidx.navigation", name = "navigation-common", version.ref = "navigation" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime", version.ref = "navigation" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 room-common = { group = "androidx.room", name = "room-common", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }

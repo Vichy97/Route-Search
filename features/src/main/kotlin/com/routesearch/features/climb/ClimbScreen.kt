@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,10 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
@@ -47,11 +43,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
 import com.routesearch.features.R
-import com.routesearch.features.common.views.ImagePlaceholder
+import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
@@ -117,8 +112,6 @@ private fun Content(
         .fillMaxWidth()
         .padding(
           top = padding.calculateTopPadding(),
-          start = 16.dp,
-          end = 16.dp,
           bottom = 16.dp,
         )
         .verticalScroll(scrollState),
@@ -132,19 +125,23 @@ private fun Content(
       ) = createRefs()
 
       Path(
-        modifier = Modifier.constrainAs(path) {
-          start.linkTo(parent.start)
-          top.linkTo(parent.top)
-        },
+        modifier = Modifier
+          .constrainAs(path) {
+            start.linkTo(parent.start)
+            top.linkTo(parent.top)
+          }
+          .padding(horizontal = 16.dp),
         path = climb.pathTokens,
         onPathSectionClick = onPathSectionClick,
       )
 
       Text(
-        modifier = Modifier.constrainAs(name) {
-          start.linkTo(parent.start)
-          top.linkTo(path.bottom)
-        },
+        modifier = Modifier
+          .constrainAs(name) {
+            start.linkTo(parent.start)
+            top.linkTo(path.bottom)
+          }
+          .padding(horizontal = 16.dp),
         text = climb.name,
         style = MaterialTheme.typography.headlineMedium,
       )
@@ -152,8 +149,11 @@ private fun Content(
       Images(
         modifier = Modifier
           .constrainAs(image) {
+            top.linkTo(
+              anchor = name.bottom,
+              margin = 16.dp,
+            )
             start.linkTo(parent.start)
-            top.linkTo(name.bottom)
             end.linkTo(parent.end)
             width = Dimension.fillToConstraints
           }
@@ -161,19 +161,22 @@ private fun Content(
             min = 250.dp,
             max = 250.dp,
           )
-          .padding(top = 16.dp),
+          .padding(horizontal = 8.dp),
         urls = climb.media,
       )
 
       MetadataCard(
         modifier = Modifier
           .constrainAs(metadataCard) {
+            top.linkTo(
+              anchor = image.bottom,
+              margin = 16.dp,
+            )
             start.linkTo(parent.start)
-            top.linkTo(image.bottom)
 
             visibility = if (climb.hasMetadata) Visibility.Visible else Visibility.Gone
           }
-          .padding(top = 16.dp)
+          .padding(start = 16.dp)
           .wrapContentWidth(),
         location = climb.location,
         createdAt = climb.metadata.createdAt,
@@ -184,12 +187,16 @@ private fun Content(
       Description(
         modifier = Modifier
           .constrainAs(description) {
+            top.linkTo(
+              anchor = metadataCard.bottom,
+              margin = 8.dp,
+            )
             start.linkTo(parent.start)
-            top.linkTo(metadataCard.bottom)
             end.linkTo(parent.end)
+
             width = Dimension.fillToConstraints
           }
-          .padding(top = 8.dp),
+          .padding(horizontal = 16.dp),
         text = climb.description.general,
       )
     }
@@ -250,27 +257,6 @@ private fun Path(
     pathString.getAnnotationAt(index)
       ?.let { onPathSectionClick(it) }
   }
-}
-
-@Composable
-private fun Images(
-  modifier: Modifier = Modifier,
-  urls: List<String>,
-) = if (urls.isEmpty()) {
-  ImagePlaceholder(
-    modifier = modifier,
-  )
-} else {
-  AsyncImage(
-    modifier = modifier
-      .clip(RoundedCornerShape(8.dp)),
-    model = urls.first(),
-    placeholder = ColorPainter(
-      color = MaterialTheme.colorScheme.surfaceVariant,
-    ),
-    contentDescription = null,
-    contentScale = ContentScale.FillWidth,
-  )
 }
 
 @Composable

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -44,11 +43,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
@@ -60,12 +56,11 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
-import com.routesearch.features.common.views.ImagePlaceholder
+import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.features.common.views.VScaleGradeChart
 import com.routesearch.features.common.views.YdsGradeChart
@@ -74,7 +69,6 @@ import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
 import com.routesearch.ui.common.compose.modifier.Edge
 import com.routesearch.ui.common.compose.modifier.fadingEdges
-import com.routesearch.ui.common.compose.modifier.ignoreHorizontalParentPadding
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -138,8 +132,6 @@ private fun Content(
         .fillMaxWidth()
         .padding(
           top = padding.calculateTopPadding(),
-          start = 16.dp,
-          end = 16.dp,
         )
         .verticalScroll(scrollState),
     ) {
@@ -158,19 +150,27 @@ private fun Content(
       ) = createRefs()
 
       Path(
-        modifier = Modifier.constrainAs(path) {
-          start.linkTo(parent.start)
-          top.linkTo(parent.top)
-        },
+        modifier = Modifier
+          .constrainAs(path) {
+            start.linkTo(parent.start)
+            top.linkTo(parent.top)
+          }
+          .padding(
+            horizontal = 16.dp,
+          ),
         path = area.path,
         onPathSectionClick = onPathSectionClick,
       )
 
       Text(
-        modifier = Modifier.constrainAs(name) {
-          start.linkTo(parent.start)
-          top.linkTo(path.bottom)
-        },
+        modifier = Modifier
+          .constrainAs(name) {
+            start.linkTo(parent.start)
+            top.linkTo(path.bottom)
+          }
+          .padding(
+            horizontal = 16.dp,
+          ),
         text = area.name,
         style = MaterialTheme.typography.headlineMedium,
       )
@@ -178,7 +178,10 @@ private fun Content(
       Images(
         modifier = Modifier
           .constrainAs(image) {
-            top.linkTo(name.bottom)
+            top.linkTo(
+              anchor = name.bottom,
+              margin = 16.dp,
+            )
             start.linkTo(parent.start)
             end.linkTo(parent.end)
             width = Dimension.fillToConstraints
@@ -187,7 +190,7 @@ private fun Content(
             min = 250.dp,
             max = 250.dp,
           )
-          .padding(top = 16.dp),
+          .padding(horizontal = 8.dp),
         urls = area.media,
       )
 
@@ -197,7 +200,11 @@ private fun Content(
             start.linkTo(parent.start)
             top.linkTo(image.bottom)
           }
-          .padding(top = 16.dp)
+          .padding(
+            top = 16.dp,
+            start = 16.dp,
+            end = 16.dp,
+          )
           .wrapContentWidth(),
         location = area.location,
         createdAt = area.metadata.createdAt,
@@ -206,15 +213,19 @@ private fun Content(
       )
 
       Text(
-        modifier = Modifier.constrainAs(ydsChartHeader) {
-          top.linkTo(
-            anchor = metadataCard.bottom,
-            margin = 16.dp,
-          )
-          start.linkTo(parent.start)
+        modifier = Modifier
+          .constrainAs(ydsChartHeader) {
+            top.linkTo(
+              anchor = metadataCard.bottom,
+              margin = 16.dp,
+            )
+            start.linkTo(parent.start)
 
-          visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
-        },
+            visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
+          }
+          .padding(
+            start = 16.dp,
+          ),
         text = stringResource(
           id = R.string.area_screen_yds_header,
           formatArgs = arrayOf(area.climbCount.roped),
@@ -237,20 +248,27 @@ private fun Content(
           }
           .heightIn(
             max = 100.dp,
+          )
+          .padding(
+            horizontal = 16.dp,
           ),
         gradeMap = area.gradeMap,
       )
 
       Text(
-        modifier = Modifier.constrainAs(vScaleChartHeader) {
-          top.linkTo(
-            anchor = ydsChart.bottom,
-            margin = 16.dp,
-          )
-          start.linkTo(parent.start)
+        modifier = Modifier
+          .constrainAs(vScaleChartHeader) {
+            top.linkTo(
+              anchor = ydsChart.bottom,
+              margin = 16.dp,
+            )
+            start.linkTo(parent.start)
 
-          visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
-        },
+            visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
+          }
+          .padding(
+            start = 16.dp,
+          ),
         text = stringResource(
           id = R.string.area_screen_v_scale_header,
           formatArgs = arrayOf(area.climbCount.bouldering),
@@ -273,7 +291,11 @@ private fun Content(
           }
           .heightIn(
             max = 100.dp,
+          )
+          .padding(
+            horizontal = 16.dp,
           ),
+
         gradeMap = area.gradeMap,
       )
 
@@ -286,7 +308,11 @@ private fun Content(
 
             width = Dimension.fillToConstraints
           }
-          .padding(top = 8.dp),
+          .padding(
+            top = 8.dp,
+            start = 16.dp,
+            end = 16.dp,
+          ),
         text = area.description,
       )
 
@@ -300,8 +326,7 @@ private fun Content(
             width = Dimension.fillToConstraints
             visibility = if (area.organizations.isEmpty()) Visibility.Gone else Visibility.Visible
           }
-          .padding(top = 8.dp)
-          .ignoreHorizontalParentPadding(16.dp),
+          .padding(top = 8.dp),
         organizations = area.organizations,
       )
 
@@ -315,8 +340,7 @@ private fun Content(
             width = Dimension.fillToConstraints
             visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
           }
-          .padding(top = 16.dp)
-          .ignoreHorizontalParentPadding(16.dp),
+          .padding(top = 16.dp),
         area = area,
         onClimbClick = onClimbClick,
         onAreaClick = onAreaClick,
@@ -375,27 +399,6 @@ private fun Path(
     pathString.getAnnotationAt(index)
       ?.let { onPathSectionClick(it) }
   }
-}
-
-@Composable
-private fun Images(
-  modifier: Modifier = Modifier,
-  urls: List<String>,
-) = if (urls.isEmpty()) {
-  ImagePlaceholder(
-    modifier = modifier,
-  )
-} else {
-  AsyncImage(
-    modifier = modifier
-      .clip(RoundedCornerShape(8.dp)),
-    model = urls.first(),
-    placeholder = ColorPainter(
-      color = MaterialTheme.colorScheme.surfaceVariant,
-    ),
-    contentDescription = null,
-    contentScale = ContentScale.FillWidth,
-  )
 }
 
 @Composable
