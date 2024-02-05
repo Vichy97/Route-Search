@@ -1,6 +1,5 @@
 package com.routesearch.features.area
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -29,24 +27,18 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -60,6 +52,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ExpandableText
 import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.features.common.views.VScaleGradeChart
@@ -67,8 +60,6 @@ import com.routesearch.features.common.views.YdsGradeChart
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
-import com.routesearch.ui.common.compose.modifier.Edge
-import com.routesearch.ui.common.compose.modifier.fadingEdges
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -408,30 +399,15 @@ private fun Description(
 ) = Column(
   modifier = modifier,
 ) {
-  var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
-  val canExpand by remember { derivedStateOf { textLayoutResult?.didOverflowHeight ?: false } }
-  var expanded by remember { mutableStateOf(false) }
-
   DescriptionHeader()
 
   if (text.isNotBlank()) {
-    DescriptionContent(
-      canExpand = canExpand,
-      expanded = expanded,
+    ExpandableText(
       text = text,
-      onTextLayout = { textLayoutResult = it },
+      maxLinesBeforeExpandable = 5,
     )
   } else {
     DescriptionPlaceholder()
-  }
-
-  if (canExpand && !expanded) {
-    ExpandDescriptionButton(
-      modifier = Modifier.offset(
-        x = (-8).dp,
-      ),
-      onClick = { expanded = true },
-    )
   }
 }
 
@@ -442,35 +418,10 @@ private fun DescriptionHeader() = Text(
 )
 
 @Composable
-private fun DescriptionContent(
-  modifier: Modifier = Modifier,
-  canExpand: Boolean,
-  expanded: Boolean,
-  text: String,
-  onTextLayout: (TextLayoutResult) -> Unit,
-) = Text(
-  modifier = modifier
-    .animateContentSize()
-    .fadingEdges(if (canExpand && !expanded) Edge.Bottom else Edge.None),
-  text = text,
-  maxLines = if (expanded) Int.MAX_VALUE else 5,
-  onTextLayout = onTextLayout,
-)
-
-@Composable
 private fun DescriptionPlaceholder(modifier: Modifier = Modifier) = Text(
   modifier = modifier,
   text = stringResource(R.string.area_screen_description_placeholder),
 )
-
-@Composable
-private fun ExpandDescriptionButton(
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit,
-) = TextButton(
-  modifier = modifier,
-  onClick = onClick,
-) { Text(stringResource(R.string.area_screen_expand_description_button_label)) }
 
 @Composable
 private fun Organizations(
