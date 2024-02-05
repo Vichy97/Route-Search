@@ -49,6 +49,7 @@ data class Area(
     val grades: Grades?,
     val name: String,
     val type: Type,
+    val numberOfPitches: Int,
   )
 
   data class Organization(

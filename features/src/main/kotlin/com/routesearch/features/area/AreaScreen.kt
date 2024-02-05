@@ -26,7 +26,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,12 +42,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -542,7 +542,7 @@ private fun OrganizationCard(
 }
 
 @Composable
-fun ListContent(
+private fun ListContent(
   modifier: Modifier = Modifier,
   area: Area,
   onClimbClick: (String) -> Unit,
@@ -598,31 +598,36 @@ private fun AreaList(
 }
 
 @Composable
-fun AreaListItem(
+private fun AreaListItem(
   areaChild: Area.Child,
   onClick: (String) -> Unit,
 ) = ListItem(
   modifier = Modifier.clickable { onClick(areaChild.id) },
   headlineContent = { Text(areaChild.name) },
-  supportingContent = { Text(areaChild.subtitle()) },
-  colors = ListItemDefaults.colors(
-    containerColor = Color.Transparent,
-  ),
+  supportingContent = { AreaListItemSubtitle(areaChild) },
 )
 
 @Composable
-private fun Area.Child.subtitle(): String {
+private fun AreaListItemSubtitle(area: Area.Child) {
   val climbsText = pluralStringResource(
     id = R.plurals.area_screen_number_of_climbs,
-    count = totalClimbs,
-    formatArgs = arrayOf(totalClimbs),
+    count = area.totalClimbs,
+    formatArgs = arrayOf(area.totalClimbs),
   )
   val areasText = pluralStringResource(
     id = R.plurals.area_screen_number_of_areas,
-    count = numberOfChildren,
-    formatArgs = arrayOf(numberOfChildren),
+    count = area.numberOfChildren,
+    formatArgs = arrayOf(area.numberOfChildren),
   )
-  return "$climbsText - $areasText"
+  val subtitle = StringBuilder().apply {
+    append(climbsText)
+    if (area.numberOfChildren > 0) {
+      append(" • ")
+      append(areasText)
+    }
+  }.toString()
+
+  Text(subtitle)
 }
 
 @Composable
@@ -662,18 +667,33 @@ private fun ClimbList(
 }
 
 @Composable
-fun ClimbListItem(
+private fun ClimbListItem(
   climb: Area.Climb,
   onClick: (String) -> Unit,
 ) = ListItem(
   modifier = Modifier.clickable { onClick(climb.id) },
   headlineContent = { Text(climb.name) },
-  supportingContent = { Text(climb.type.toString()) },
-  trailingContent = { climb.grades?.getDisplayName(climb.type)?.let { Text(it) } },
-  colors = ListItemDefaults.colors(
-    containerColor = Color.Transparent,
-  ),
+  supportingContent = { ClimbListItemSubtitle(climb) },
+  trailingContent = {
+    climb.grades?.getDisplayName(climb.type)?.let {
+      Text(
+        text = it,
+        fontWeight = FontWeight.Bold,
+      )
+    }
+  },
 )
+
+@Composable
+private fun ClimbListItemSubtitle(climb: Area.Climb) {
+  val type = stringArrayResource(R.array.climb_types)[climb.type.ordinal]
+  val pitches = pluralStringResource(
+    id = R.plurals.area_screen_number_of_pitches,
+    count = climb.numberOfPitches,
+    formatArgs = arrayOf(climb.numberOfPitches),
+  )
+  Text("$type • $pitches")
+}
 
 @PreviewLightDark
 @Composable

@@ -147,6 +147,7 @@ internal val fakeAreas = listOf(
           vScale = null,
         ),
         type = Type.SPORT,
+        numberOfPitches = 1,
       ),
       Area.Climb(
         id = "2",
@@ -156,6 +157,7 @@ internal val fakeAreas = listOf(
           vScale = null,
         ),
         type = Type.SPORT,
+        numberOfPitches = 1,
       ),
     ),
     children = emptyList(),

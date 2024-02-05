@@ -25,6 +25,7 @@ data class Climb(
   val type: String,
   @Embedded
   val grades: Grades?,
+  val numberOfPitches: Int,
   val media: List<String>,
 ) {
 
