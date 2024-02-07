@@ -1,5 +1,6 @@
 package com.routesearch.features.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -78,7 +79,8 @@ private fun SearchScreenContent(
   onAreaSearchResultClick: (String) -> Unit,
   onClimbSearchResultClick: (String) -> Unit,
 ) = ConstraintLayout(
-  modifier = Modifier.fillMaxSize(),
+  modifier = Modifier.fillMaxSize()
+    .background(MaterialTheme.colorScheme.surface),
 ) {
   val (searchBar) = createRefs()
 
