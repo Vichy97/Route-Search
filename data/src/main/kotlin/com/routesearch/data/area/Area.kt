@@ -56,5 +56,8 @@ data class Area(
     val id: String,
     val name: String,
     val website: String?,
+    val description: String?,
+    val facebookUrl: String?,
+    val instagramUrl: String?,
   )
 }
