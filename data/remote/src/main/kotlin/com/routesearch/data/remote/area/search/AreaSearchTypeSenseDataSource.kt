@@ -43,6 +43,7 @@ internal class AreaSearchTypeSenseDataSource(
   }
 
   private fun List<SearchResultHit>.toSearchResults() = mapNotNull { it.toSearchResult() }
+    .distinct()
 
   @OptIn(ExperimentalStdlibApi::class)
   private fun SearchResultHit.toSearchResult() = moshi.adapter<AreaSearchResult>()
