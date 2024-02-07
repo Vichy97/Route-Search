@@ -8,6 +8,7 @@ import com.routesearch.features.R
 import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
+import com.routesearch.features.destinations.OrganizationDialogDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.ui.common.snackbar.SnackbarManager
@@ -66,6 +67,16 @@ internal class AreaViewModel(
     )
     intentLauncher.launchIntent(intent)
   }
+
+  fun onOrganizationClick(organization: Area.Organization) = navigator.navigate(
+    OrganizationDialogDestination(
+      name = organization.name,
+      websiteUrl = organization.website,
+      description = organization.description,
+      facebookUrl = organization.facebookUrl,
+      instagramUrl = organization.instagramUrl,
+    ),
+  )
 
   fun onClimbClick(id: String) = navigator.navigate(ClimbScreenDestination(id))
 
