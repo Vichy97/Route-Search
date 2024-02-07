@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -209,22 +209,32 @@ private fun SearchResultsList(
     item { ClimbSearchResultsHeader() }
   }
   if (viewState.climbFilterSelected) {
-    items(viewState.climbSearchResults) {
+    itemsIndexed(viewState.climbSearchResults) { index, searchResult ->
       ClimbSearchResult(
-        result = it,
+        result = searchResult,
         onClick = onClimbSearchResultClick,
       )
+      if (index < viewState.climbSearchResults.size - 1) {
+        Divider(
+          modifier = Modifier.padding(horizontal = 16.dp),
+        )
+      }
     }
   }
   if (viewState.areaSearchResults.isNotEmpty() && viewState.allFiltersSelected) {
     item { AreaSearchResultsHeader() }
   }
   if (viewState.areaFilterSelected) {
-    items(viewState.areaSearchResults) {
+    itemsIndexed(viewState.areaSearchResults) { index, areaSearchResult ->
       AreaSearchResult(
-        result = it,
+        result = areaSearchResult,
         onClick = onAreaSearchResultClick,
       )
+      if (index < viewState.areaSearchResults.size - 1) {
+        Divider(
+          modifier = Modifier.padding(horizontal = 16.dp),
+        )
+      }
     }
   }
 }
@@ -289,41 +299,34 @@ fun AreaSearchResultsHeader() = Text(
 private fun AreaSearchResult(
   result: AreaSearchResult,
   onClick: (String) -> Unit,
-) {
-  ListItem(
-    modifier = Modifier.clickable { onClick(result.id) },
-    headlineContent = {
-      Text(
-        text = result.title,
-        overflow = TextOverflow.Ellipsis,
-      )
-    },
-  )
-  Divider(
-    modifier = Modifier.padding(
-      horizontal = 16.dp,
+) = ListItem(
+  modifier = Modifier.clickable { onClick(result.id) },
+  headlineContent = { AreaSearchResultTitle(result) },
+)
+
+@Composable
+private fun AreaSearchResultTitle(result: AreaSearchResult) {
+  val lastPathTokenStartIndex = result.pathText.length - result.pathTokens.last().length
+  val spanStyles = listOf(
+    AnnotatedString.Range(
+      SpanStyle(
+        fontWeight = FontWeight.Bold,
+      ),
+      start = lastPathTokenStartIndex,
+      end = result.pathText.length,
     ),
   )
+
+  val titleString = AnnotatedString(
+    text = result.pathText,
+    spanStyles = spanStyles,
+  )
+
+  Text(
+    text = titleString,
+    overflow = TextOverflow.Ellipsis,
+  )
 }
-
-private val AreaSearchResult.title: AnnotatedString
-  get() {
-    val lastPathTokenStartIndex = pathText.length - pathTokens.last().length
-    val spanStyles = listOf(
-      AnnotatedString.Range(
-        SpanStyle(
-          fontWeight = FontWeight.Bold,
-        ),
-        start = lastPathTokenStartIndex,
-        end = pathText.length,
-      ),
-    )
-
-    return AnnotatedString(
-      text = pathText,
-      spanStyles = spanStyles,
-    )
-  }
 
 @Composable
 fun ClimbSearchResultsHeader() = Text(
@@ -340,29 +343,18 @@ fun ClimbSearchResultsHeader() = Text(
 private fun ClimbSearchResult(
   result: ClimbSearchResult,
   onClick: (String) -> Unit,
-) {
-  ListItem(
-    modifier = Modifier.clickable { onClick(result.id) },
-    overlineContent = {
-      Text(
-        text = result.pathText,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-      )
-    },
-    headlineContent = {
-      Text(result.name)
-    },
-    supportingContent = {
-      Text(result.subtitle)
-    },
-  )
-  Divider(
-    modifier = Modifier.padding(
-      horizontal = 16.dp,
-    ),
-  )
-}
+) = ListItem(
+  modifier = Modifier.clickable { onClick(result.id) },
+  overlineContent = {
+    Text(
+      text = result.pathText,
+      maxLines = 1,
+      overflow = TextOverflow.Ellipsis,
+    )
+  },
+  headlineContent = { Text(result.name) },
+  supportingContent = { Text(result.subtitle) },
+)
 
 @PreviewLightDark
 @Composable
