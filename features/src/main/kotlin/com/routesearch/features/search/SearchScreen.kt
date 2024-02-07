@@ -277,8 +277,9 @@ private fun FilterRow(
 @Composable
 fun AreaSearchResultsHeader() = Text(
   modifier = Modifier.padding(
-    horizontal = 16.dp,
-    vertical = 8.dp,
+    top = 8.dp,
+    start = 16.dp,
+    end = 16.dp,
   ),
   text = stringResource(R.string.search_screen_areas_header),
   style = MaterialTheme.typography.titleLarge,
@@ -327,8 +328,9 @@ private val AreaSearchResult.title: AnnotatedString
 @Composable
 fun ClimbSearchResultsHeader() = Text(
   modifier = Modifier.padding(
-    vertical = 8.dp,
-    horizontal = 16.dp,
+    top = 8.dp,
+    start = 16.dp,
+    end = 16.dp,
   ),
   text = stringResource(R.string.search_screen_climbs_header),
   style = MaterialTheme.typography.headlineSmall,
