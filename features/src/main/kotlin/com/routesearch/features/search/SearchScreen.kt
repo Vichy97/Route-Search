@@ -3,6 +3,7 @@ package com.routesearch.features.search
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -194,6 +195,7 @@ private fun SearchResultsList(
   onClimbSearchResultClick: (String) -> Unit,
 ) = LazyColumn(
   modifier = modifier,
+  contentPadding = PaddingValues(bottom = 16.dp),
 ) {
   item {
     FilterRow(
