@@ -54,6 +54,9 @@ query AreaQuery($uuid: ID) {
       type {
         ...typeFragment
       }
+      pitches {
+        id
+      }
     }
     media {
       ...mediaFragment

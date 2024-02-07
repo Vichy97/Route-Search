@@ -13,4 +13,5 @@ internal fun RemoteArea.Climb.toClimb() = Area.Climb(
   grades = grades?.gradesFragment?.toGrade(),
   name = name,
   type = type.typeFragment.toType(),
+  numberOfPitches = pitches?.count() ?: 1,
 )

@@ -46,6 +46,7 @@ data class Area(
     @Embedded
     val grades: Grades,
     val type: String,
+    val numberOfPitches: Int,
   )
 }
 

@@ -72,4 +72,5 @@ private fun LocalClimb.toClimb() = Area.Climb(
   name = name,
   grades = grades.toGrades(),
   type = Type.valueOf(type),
+  numberOfPitches = numberOfPitches,
 )

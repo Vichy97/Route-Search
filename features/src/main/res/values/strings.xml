@@ -12,6 +12,10 @@
     <item quantity="other">%1$d Areas</item>
   </plurals>
   <string name="area_screen_organizations_header">Local climbing organizations</string>
+  <plurals name="area_screen_number_of_pitches">
+    <item quantity="one">%1$d Pitch</item>
+    <item quantity="other">%1$d Pitches</item>
+  </plurals>
   <string name="area_screen_updated_title">Updated:</string>
   <string name="area_screen_v_scale_header">%1$d Boulders</string>
   <string name="area_screen_yds_header">%1$d Routes</string>
@@ -34,4 +38,17 @@
   <string name="search_screen_areas_header">Areas</string>
   <string name="search_screen_area_filter_text">Areas</string>
   <string name="search_screen_climb_filter_text">Climbs</string>
+
+  <string-array name="climb_types">
+    <item>Aid</item>
+    <item>Boulder</item>
+    <item>Alpine</item>
+    <item>Deep Water Solo</item>
+    <item>Ice</item>
+    <item>Mixed</item>
+    <item>Sport</item>
+    <item>Snow</item>
+    <item>Top Rope</item>
+    <item>Trad</item>
+  </string-array>
 </resources>
