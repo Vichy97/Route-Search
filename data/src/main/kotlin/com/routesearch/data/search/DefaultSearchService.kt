@@ -20,8 +20,8 @@ internal class DefaultSearchService(
 
     return@withContext areas.combine(climbs) { areasSearchResults, climbSearchResults ->
       SearchResults(
-        areaSearchResults = areasSearchResults.map { it.toAreaSearchResult() },
-        climbSearchResults = climbSearchResults.map { it.toClimbSearchResult() },
+        areaSearchResults = areasSearchResults.toAreaSearchResults(),
+        climbSearchResults = climbSearchResults.toClimbSearchResults(),
       )
     }
   }
