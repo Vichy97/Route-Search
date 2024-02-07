@@ -32,6 +32,9 @@
   <string name="metadata_card_location_title">Lat, Lng:</string>
   <string name="metadata_card_updated_title">Updated:</string>
 
+  <string name="organization_dialog_facebook_button_title">Facebook</string>
+  <string name="organization_dialog_instagram_button_title">Instagram</string>
+
   <string name="search_screen_search_error_message">Something went wrong</string>
   <string name="search_screen_search_placeholder">Search for areas or climbs</string>
   <string name="search_screen_climbs_header">Climbs</string>

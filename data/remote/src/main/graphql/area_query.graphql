@@ -65,6 +65,8 @@ query AreaQuery($uuid: ID) {
       content {
         description
         website
+        facebookLink
+        instagramLink
       }
       displayName
       orgId

@@ -77,6 +77,7 @@ fun AreaScreen() {
       onBackClick = viewModel::onBackClick,
       onPathSectionClick = viewModel::onPathSectionClick,
       onLocationClick = viewModel::onLocationClick,
+      onOrganizationClick = viewModel::onOrganizationClick,
       onClimbClick = viewModel::onClimbClick,
       onAreaClick = viewModel::onAreaClick,
     )
@@ -102,6 +103,7 @@ private fun Content(
   onBackClick: () -> Unit,
   onPathSectionClick: (String) -> Unit,
   onLocationClick: () -> Unit,
+  onOrganizationClick: (Area.Organization) -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
 ) {
@@ -319,6 +321,7 @@ private fun Content(
           }
           .padding(top = 8.dp),
         organizations = area.organizations,
+        onOrganizationClick = onOrganizationClick,
       )
 
       ListContent(
@@ -427,6 +430,7 @@ private fun DescriptionPlaceholder(modifier: Modifier = Modifier) = Text(
 private fun Organizations(
   modifier: Modifier = Modifier,
   organizations: List<Area.Organization>,
+  onOrganizationClick: (Area.Organization) -> Unit,
 ) = Column(modifier = modifier) {
   OrganizationsHeader(
     modifier = Modifier.padding(
@@ -449,6 +453,7 @@ private fun Organizations(
     ) {
       OrganizationCard(
         organization = it,
+        onClick = { onOrganizationClick(it) },
       )
     }
   }
@@ -463,14 +468,17 @@ private fun OrganizationsHeader(
   style = MaterialTheme.typography.titleLarge,
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun OrganizationCard(
   modifier: Modifier = Modifier,
   organization: Area.Organization,
+  onClick: () -> Unit,
 ) = ElevatedCard(
   modifier = modifier.widthIn(
     max = 200.dp,
   ),
+  onClick = onClick,
 ) {
   ListItem(
     headlineContent = {
@@ -654,6 +662,7 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
     onBackClick = { },
     onPathSectionClick = { },
     onLocationClick = { },
+    onOrganizationClick = { },
     onClimbClick = { },
     onAreaClick = { },
   )
@@ -667,6 +676,7 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
     onBackClick = { },
     onPathSectionClick = { },
     onLocationClick = { },
+    onOrganizationClick = { },
     onClimbClick = { },
     onAreaClick = { },
   )

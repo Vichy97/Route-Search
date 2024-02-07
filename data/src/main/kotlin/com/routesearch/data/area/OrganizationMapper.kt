@@ -9,4 +9,7 @@ private fun AreaQuery.Organization.toOrganization() = Area.Organization(
   id = orgId.toString(),
   name = displayName,
   website = content?.website,
+  description = content?.description,
+  facebookUrl = content?.facebookLink,
+  instagramUrl = content?.instagramLink,
 )
