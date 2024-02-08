@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -64,6 +67,7 @@ fun SearchScreen() {
     onClimbFilterClick = viewModel::onClimbFilterClick,
     onAreaSearchResultClick = viewModel::onAreaSearchResultClick,
     onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
+    onSearchHistoryEntryClick = viewModel::onSearchHistoryEntryClick,
   )
 }
 
@@ -79,8 +83,10 @@ private fun SearchScreenContent(
   onClimbFilterClick: () -> Unit,
   onAreaSearchResultClick: (String) -> Unit,
   onClimbSearchResultClick: (String) -> Unit,
+  onSearchHistoryEntryClick: (String) -> Unit,
 ) = ConstraintLayout(
-  modifier = Modifier.fillMaxSize()
+  modifier = Modifier
+    .fillMaxSize()
     .background(MaterialTheme.colorScheme.surface),
 ) {
   val (searchBar) = createRefs()
@@ -100,14 +106,22 @@ private fun SearchScreenContent(
     onClearClick = onClearClick,
     onSearch = onSearch,
   ) {
-    SearchResultsList(
-      modifier = Modifier.fillMaxSize(),
-      viewState = viewState,
-      onAreaFilterClick = onAreaFilterClick,
-      onClimbFilterClick = onClimbFilterClick,
-      onAreaSearchResultClick = onAreaSearchResultClick,
-      onClimbSearchResultClick = onClimbSearchResultClick,
-    )
+    if (viewState.searchQuery.isEmpty()) {
+      SearchHistoryList(
+        modifier = Modifier.fillMaxSize(),
+        history = viewState.searchHistory,
+        onSearchHistoryEntryClick = onSearchHistoryEntryClick,
+      )
+    } else {
+      SearchResultsList(
+        modifier = Modifier.fillMaxSize(),
+        viewState = viewState,
+        onAreaFilterClick = onAreaFilterClick,
+        onClimbFilterClick = onClimbFilterClick,
+        onAreaSearchResultClick = onAreaSearchResultClick,
+        onClimbSearchResultClick = onClimbSearchResultClick,
+      )
+    }
   }
 }
 
@@ -122,29 +136,35 @@ private fun SearchBar(
   onClearClick: () -> Unit,
   onSearch: (String) -> Unit,
   content: @Composable ColumnScope.() -> Unit,
-) = SearchBar(
-  modifier = modifier,
-  query = viewState.searchQuery,
-  onQueryChange = onSearchQueryChange,
-  onSearch = onSearch,
-  active = viewState.searchActive,
-  onActiveChange = onSearchActiveChange,
-  placeholder = { SearchPlaceholder() },
-  leadingIcon = {
-    SearchBarLeadingIcon(
-      searchActive = viewState.searchActive,
-      onBackClick = onBackClick,
-    )
-  },
-  trailingIcon = {
-    SearchBarTrailingIcon(
-      searchActive = viewState.searchActive,
-      searchQuery = viewState.searchQuery,
-      onClick = onClearClick,
-    )
-  },
-  content = content,
-)
+) {
+  val keyboardController = LocalSoftwareKeyboardController.current
+  SearchBar(
+    modifier = modifier,
+    query = viewState.searchQuery,
+    onQueryChange = onSearchQueryChange,
+    onSearch = {
+      onSearch(it)
+      keyboardController?.hide()
+    },
+    active = viewState.searchActive,
+    onActiveChange = onSearchActiveChange,
+    placeholder = { SearchPlaceholder() },
+    leadingIcon = {
+      SearchBarLeadingIcon(
+        searchActive = viewState.searchActive,
+        onBackClick = onBackClick,
+      )
+    },
+    trailingIcon = {
+      SearchBarTrailingIcon(
+        searchActive = viewState.searchActive,
+        searchQuery = viewState.searchQuery,
+        onClick = onClearClick,
+      )
+    },
+    content = content,
+  )
+}
 
 @Composable
 private fun SearchPlaceholder() = Text(stringResource(R.string.search_screen_search_placeholder))
@@ -238,6 +258,39 @@ private fun SearchResultsList(
     }
   }
 }
+
+@Composable
+private fun SearchHistoryList(
+  modifier: Modifier,
+  history: List<String>,
+  onSearchHistoryEntryClick: (String) -> Unit,
+) = LazyColumn(
+  modifier = modifier,
+) {
+  items(history) {
+    SearchHistoryEntry(
+      text = it,
+      onClick = { onSearchHistoryEntryClick(it) },
+    )
+  }
+}
+
+@Composable
+private fun SearchHistoryEntry(
+  modifier: Modifier = Modifier,
+  text: String,
+  onClick: () -> Unit,
+) = ListItem(
+  modifier = modifier
+    .clickable { onClick() },
+  leadingContent = {
+    Icon(
+      imageVector = Icons.Default.History,
+      contentDescription = null,
+    )
+  },
+  headlineContent = { Text(text) },
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -370,6 +423,7 @@ private fun InactivePreview() = RouteSearchTheme {
     onClimbFilterClick = { },
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
   )
 }
 
@@ -413,5 +467,33 @@ private fun ActivePreview() = RouteSearchTheme {
     onClimbFilterClick = { },
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun ActivePreviewEmptyQuery() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState(
+      searchActive = true,
+      searchQuery = "",
+      climbSearchResults = emptyList(),
+      searchHistory = listOf(
+        "Atlantis",
+        "The Pond",
+        "Yosemite",
+      ),
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
   )
 }

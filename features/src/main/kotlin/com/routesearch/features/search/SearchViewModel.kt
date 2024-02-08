@@ -2,6 +2,7 @@ package com.routesearch.features.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.routesearch.data.search.SearchHistoryRepository
 import com.routesearch.data.search.SearchResults
 import com.routesearch.data.search.SearchService
 import com.routesearch.features.R
@@ -25,6 +26,7 @@ private const val SEARCH_DEBOUNCE_MS = 200L
 @OptIn(FlowPreview::class)
 internal class SearchViewModel(
   private val searchService: SearchService,
+  private val searchHistoryRepository: SearchHistoryRepository,
   private val snackbarManager: SnackbarManager,
   private val navigator: Navigator,
 ) : ViewModel() {
@@ -41,6 +43,19 @@ internal class SearchViewModel(
         .filter { it.isNotBlank() }
         .collect { search(it) }
     }
+
+    collectSearchHistory()
+  }
+
+  private fun collectSearchHistory() = viewModelScope.launch {
+    searchHistoryRepository.searchHistory()
+      .collect { onSearchHistoryChange(it) }
+  }
+
+  private fun onSearchHistoryChange(searchHistory: List<String>) = _viewState.update {
+    it.copy(
+      searchHistory = searchHistory,
+    )
   }
 
   fun onSearchQueryChange(query: String) {
@@ -59,7 +74,10 @@ internal class SearchViewModel(
     }
   }
 
-  fun onSearch(query: String) = search(query)
+  fun onSearch(query: String) {
+    search(query)
+    saveSearchQuery(query)
+  }
 
   private fun search(query: String) {
     cancelOngoingSearch()
@@ -68,6 +86,10 @@ internal class SearchViewModel(
         .onSuccess(::onSearchSuccess)
         .onFailure { onSearchFailure() }
     }
+  }
+
+  private fun saveSearchQuery(query: String) = viewModelScope.launch {
+    searchHistoryRepository.addSearchQuery(query)
   }
 
   private fun cancelOngoingSearch() = searchJob?.cancel()
@@ -91,16 +113,21 @@ internal class SearchViewModel(
     snackbarManager.showSnackbar(R.string.search_screen_search_error_message)
   }
 
-  fun onSearchActiveChange(searchActive: Boolean) = _viewState.update {
-    it.copy(
-      searchActive = searchActive,
-    )
+  fun onSearchActiveChange(searchActive: Boolean) {
+    _viewState.update {
+      it.copy(
+        searchQuery = "",
+        searchActive = searchActive,
+      )
+    }
+    searchQuery.value = ""
   }
 
   fun onBackClick() {
     _viewState.update {
       it.copy(
         searchActive = false,
+        searchQuery = "",
       )
     }
     searchQuery.value = ""
@@ -123,7 +150,25 @@ internal class SearchViewModel(
     )
   }
 
-  fun onAreaSearchResultClick(id: String) = navigator.navigate(AreaScreenDestination(id))
+  fun onAreaSearchResultClick(id: String) {
+    saveSearchQuery(viewState.value.searchQuery)
 
-  fun onClimbSearchResultClick(id: String) = navigator.navigate(ClimbScreenDestination(id))
+    navigator.navigate(AreaScreenDestination(id))
+  }
+
+  fun onClimbSearchResultClick(id: String) {
+    saveSearchQuery(viewState.value.searchQuery)
+
+    navigator.navigate(ClimbScreenDestination(id))
+  }
+
+  fun onSearchHistoryEntryClick(entry: String) {
+    searchQuery.value = entry
+
+    _viewState.update {
+      it.copy(
+        searchQuery = entry,
+      )
+    }
+  }
 }
