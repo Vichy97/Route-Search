@@ -19,6 +19,7 @@ dependencies {
 
   api(project(":data"))
 
+  api(libs.coil.compose.base)
   api(libs.compose.destinations.core)
   api(libs.foundation.android)
   api(libs.foundation.layout.android)

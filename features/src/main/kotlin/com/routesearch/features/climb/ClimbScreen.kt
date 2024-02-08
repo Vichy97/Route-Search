@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -48,8 +49,11 @@ import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
 import org.koin.androidx.compose.koinViewModel
 
+private const val MIN_GALLERY_IMAGE = 6
+
 @Destination(
   navArgsDelegate = ClimbScreenArgs::class,
+  style = ClimbTransitions::class,
 )
 @Composable
 fun ClimbScreen() {
@@ -62,6 +66,7 @@ fun ClimbScreen() {
       onBackClick = viewModel::onBackClick,
       onPathSectionClick = viewModel::onPathSectionClick,
       onLocationClick = viewModel::onLocationClick,
+      onShowAllImagesClick = viewModel::onShowAllImagesClick,
     )
 
     is ClimbViewState.Loading -> Loading()
@@ -85,6 +90,7 @@ private fun Content(
   onBackClick: () -> Unit,
   onPathSectionClick: (String) -> Unit,
   onLocationClick: () -> Unit,
+  onShowAllImagesClick: () -> Unit,
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -113,6 +119,7 @@ private fun Content(
         name,
         image,
         metadataCard,
+        showAllImages,
         description,
       ) = createRefs()
 
@@ -156,6 +163,24 @@ private fun Content(
           .padding(horizontal = 8.dp),
         urls = climb.media,
       )
+
+      TextButton(
+        modifier = Modifier
+          .constrainAs(showAllImages) {
+            top.linkTo(image.bottom)
+            end.linkTo(parent.end)
+
+            visibility = if (climb.media.size >= MIN_GALLERY_IMAGE) Visibility.Visible else Visibility.Gone
+          }
+          .padding(
+            end = 8.dp,
+          ),
+        onClick = { onShowAllImagesClick() },
+      ) {
+        Text(
+          text = stringResource(R.string.climb_screen_show_all_images_button_label),
+        )
+      }
 
       MetadataCard(
         modifier = Modifier
@@ -290,5 +315,6 @@ private fun ClimbScreenPreview() = RouteSearchTheme {
     onBackClick = { },
     onPathSectionClick = { },
     onLocationClick = { },
+    onShowAllImagesClick = { },
   )
 }
