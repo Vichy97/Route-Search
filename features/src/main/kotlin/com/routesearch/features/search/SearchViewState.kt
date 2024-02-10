@@ -10,6 +10,7 @@ internal data class SearchViewState(
   val climbFilterSelected: Boolean = true,
   val areaSearchResults: List<AreaSearchResult> = emptyList(),
   val climbSearchResults: List<ClimbSearchResult> = emptyList(),
+  val searchHistory: List<String> = emptyList(),
 ) {
 
   val allFiltersSelected = areaFilterSelected && climbFilterSelected

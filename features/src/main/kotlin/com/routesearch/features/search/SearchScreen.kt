@@ -1,7 +1,9 @@
 package com.routesearch.features.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +13,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -62,6 +67,7 @@ fun SearchScreen() {
     onClimbFilterClick = viewModel::onClimbFilterClick,
     onAreaSearchResultClick = viewModel::onAreaSearchResultClick,
     onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
+    onSearchHistoryEntryClick = viewModel::onSearchHistoryEntryClick,
   )
 }
 
@@ -77,8 +83,11 @@ private fun SearchScreenContent(
   onClimbFilterClick: () -> Unit,
   onAreaSearchResultClick: (String) -> Unit,
   onClimbSearchResultClick: (String) -> Unit,
+  onSearchHistoryEntryClick: (String) -> Unit,
 ) = ConstraintLayout(
-  modifier = Modifier.fillMaxSize(),
+  modifier = Modifier
+    .fillMaxSize()
+    .background(MaterialTheme.colorScheme.surface),
 ) {
   val (searchBar) = createRefs()
 
@@ -97,14 +106,22 @@ private fun SearchScreenContent(
     onClearClick = onClearClick,
     onSearch = onSearch,
   ) {
-    SearchResultsList(
-      modifier = Modifier.fillMaxSize(),
-      viewState = viewState,
-      onAreaFilterClick = onAreaFilterClick,
-      onClimbFilterClick = onClimbFilterClick,
-      onAreaSearchResultClick = onAreaSearchResultClick,
-      onClimbSearchResultClick = onClimbSearchResultClick,
-    )
+    if (viewState.searchQuery.isEmpty()) {
+      SearchHistoryList(
+        modifier = Modifier.fillMaxSize(),
+        history = viewState.searchHistory,
+        onSearchHistoryEntryClick = onSearchHistoryEntryClick,
+      )
+    } else {
+      SearchResultsList(
+        modifier = Modifier.fillMaxSize(),
+        viewState = viewState,
+        onAreaFilterClick = onAreaFilterClick,
+        onClimbFilterClick = onClimbFilterClick,
+        onAreaSearchResultClick = onAreaSearchResultClick,
+        onClimbSearchResultClick = onClimbSearchResultClick,
+      )
+    }
   }
 }
 
@@ -119,29 +136,35 @@ private fun SearchBar(
   onClearClick: () -> Unit,
   onSearch: (String) -> Unit,
   content: @Composable ColumnScope.() -> Unit,
-) = SearchBar(
-  modifier = modifier,
-  query = viewState.searchQuery,
-  onQueryChange = onSearchQueryChange,
-  onSearch = onSearch,
-  active = viewState.searchActive,
-  onActiveChange = onSearchActiveChange,
-  placeholder = { SearchPlaceholder() },
-  leadingIcon = {
-    SearchBarLeadingIcon(
-      searchActive = viewState.searchActive,
-      onBackClick = onBackClick,
-    )
-  },
-  trailingIcon = {
-    SearchBarTrailingIcon(
-      searchActive = viewState.searchActive,
-      searchQuery = viewState.searchQuery,
-      onClick = onClearClick,
-    )
-  },
-  content = content,
-)
+) {
+  val keyboardController = LocalSoftwareKeyboardController.current
+  SearchBar(
+    modifier = modifier,
+    query = viewState.searchQuery,
+    onQueryChange = onSearchQueryChange,
+    onSearch = {
+      onSearch(it)
+      keyboardController?.hide()
+    },
+    active = viewState.searchActive,
+    onActiveChange = onSearchActiveChange,
+    placeholder = { SearchPlaceholder() },
+    leadingIcon = {
+      SearchBarLeadingIcon(
+        searchActive = viewState.searchActive,
+        onBackClick = onBackClick,
+      )
+    },
+    trailingIcon = {
+      SearchBarTrailingIcon(
+        searchActive = viewState.searchActive,
+        searchQuery = viewState.searchQuery,
+        onClick = onClearClick,
+      )
+    },
+    content = content,
+  )
+}
 
 @Composable
 private fun SearchPlaceholder() = Text(stringResource(R.string.search_screen_search_placeholder))
@@ -192,6 +215,7 @@ private fun SearchResultsList(
   onClimbSearchResultClick: (String) -> Unit,
 ) = LazyColumn(
   modifier = modifier,
+  contentPadding = PaddingValues(bottom = 16.dp),
 ) {
   item {
     FilterRow(
@@ -205,25 +229,68 @@ private fun SearchResultsList(
     item { ClimbSearchResultsHeader() }
   }
   if (viewState.climbFilterSelected) {
-    items(viewState.climbSearchResults) {
+    itemsIndexed(viewState.climbSearchResults) { index, searchResult ->
       ClimbSearchResult(
-        result = it,
+        result = searchResult,
         onClick = onClimbSearchResultClick,
       )
+      if (index < viewState.climbSearchResults.size - 1) {
+        Divider(
+          modifier = Modifier.padding(horizontal = 16.dp),
+        )
+      }
     }
   }
   if (viewState.areaSearchResults.isNotEmpty() && viewState.allFiltersSelected) {
     item { AreaSearchResultsHeader() }
   }
   if (viewState.areaFilterSelected) {
-    items(viewState.areaSearchResults) {
+    itemsIndexed(viewState.areaSearchResults) { index, areaSearchResult ->
       AreaSearchResult(
-        result = it,
+        result = areaSearchResult,
         onClick = onAreaSearchResultClick,
       )
+      if (index < viewState.areaSearchResults.size - 1) {
+        Divider(
+          modifier = Modifier.padding(horizontal = 16.dp),
+        )
+      }
     }
   }
 }
+
+@Composable
+private fun SearchHistoryList(
+  modifier: Modifier,
+  history: List<String>,
+  onSearchHistoryEntryClick: (String) -> Unit,
+) = LazyColumn(
+  modifier = modifier,
+) {
+  items(history) {
+    SearchHistoryEntry(
+      text = it,
+      onClick = { onSearchHistoryEntryClick(it) },
+    )
+  }
+}
+
+@Composable
+private fun SearchHistoryEntry(
+  modifier: Modifier = Modifier,
+  text: String,
+  onClick: () -> Unit,
+) = ListItem(
+  modifier = modifier
+    .clickable { onClick() },
+  leadingContent = {
+    Icon(
+      imageVector = Icons.Default.History,
+      contentDescription = null,
+    )
+  },
+  headlineContent = { Text(text) },
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -273,8 +340,9 @@ private fun FilterRow(
 @Composable
 fun AreaSearchResultsHeader() = Text(
   modifier = Modifier.padding(
-    horizontal = 16.dp,
-    vertical = 8.dp,
+    top = 8.dp,
+    start = 16.dp,
+    end = 16.dp,
   ),
   text = stringResource(R.string.search_screen_areas_header),
   style = MaterialTheme.typography.titleLarge,
@@ -284,47 +352,41 @@ fun AreaSearchResultsHeader() = Text(
 private fun AreaSearchResult(
   result: AreaSearchResult,
   onClick: (String) -> Unit,
-) {
-  ListItem(
-    modifier = Modifier.clickable { onClick(result.id) },
-    headlineContent = {
-      Text(
-        text = result.title,
-        overflow = TextOverflow.Ellipsis,
-      )
-    },
-  )
-  Divider(
-    modifier = Modifier.padding(
-      horizontal = 16.dp,
+) = ListItem(
+  modifier = Modifier.clickable { onClick(result.id) },
+  headlineContent = { AreaSearchResultTitle(result) },
+)
+
+@Composable
+private fun AreaSearchResultTitle(result: AreaSearchResult) {
+  val lastPathTokenStartIndex = result.pathText.length - result.pathTokens.last().length
+  val spanStyles = listOf(
+    AnnotatedString.Range(
+      SpanStyle(
+        fontWeight = FontWeight.Bold,
+      ),
+      start = lastPathTokenStartIndex,
+      end = result.pathText.length,
     ),
   )
+
+  val titleString = AnnotatedString(
+    text = result.pathText,
+    spanStyles = spanStyles,
+  )
+
+  Text(
+    text = titleString,
+    overflow = TextOverflow.Ellipsis,
+  )
 }
-
-private val AreaSearchResult.title: AnnotatedString
-  get() {
-    val lastPathTokenStartIndex = pathText.length - pathTokens.last().length
-    val spanStyles = listOf(
-      AnnotatedString.Range(
-        SpanStyle(
-          fontWeight = FontWeight.Bold,
-        ),
-        start = lastPathTokenStartIndex,
-        end = pathText.length,
-      ),
-    )
-
-    return AnnotatedString(
-      text = pathText,
-      spanStyles = spanStyles,
-    )
-  }
 
 @Composable
 fun ClimbSearchResultsHeader() = Text(
   modifier = Modifier.padding(
-    vertical = 8.dp,
-    horizontal = 16.dp,
+    top = 8.dp,
+    start = 16.dp,
+    end = 16.dp,
   ),
   text = stringResource(R.string.search_screen_climbs_header),
   style = MaterialTheme.typography.headlineSmall,
@@ -334,29 +396,18 @@ fun ClimbSearchResultsHeader() = Text(
 private fun ClimbSearchResult(
   result: ClimbSearchResult,
   onClick: (String) -> Unit,
-) {
-  ListItem(
-    modifier = Modifier.clickable { onClick(result.id) },
-    overlineContent = {
-      Text(
-        text = result.pathText,
-        maxLines = 1,
-        overflow = TextOverflow.Ellipsis,
-      )
-    },
-    headlineContent = {
-      Text(result.name)
-    },
-    supportingContent = {
-      Text(result.subtitle)
-    },
-  )
-  Divider(
-    modifier = Modifier.padding(
-      horizontal = 16.dp,
-    ),
-  )
-}
+) = ListItem(
+  modifier = Modifier.clickable { onClick(result.id) },
+  overlineContent = {
+    Text(
+      text = result.pathText,
+      maxLines = 1,
+      overflow = TextOverflow.Ellipsis,
+    )
+  },
+  headlineContent = { Text(result.name) },
+  supportingContent = { Text(result.subtitle) },
+)
 
 @PreviewLightDark
 @Composable
@@ -372,6 +423,7 @@ private fun InactivePreview() = RouteSearchTheme {
     onClimbFilterClick = { },
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
   )
 }
 
@@ -415,5 +467,33 @@ private fun ActivePreview() = RouteSearchTheme {
     onClimbFilterClick = { },
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun ActivePreviewEmptyQuery() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState(
+      searchActive = true,
+      searchQuery = "",
+      climbSearchResults = emptyList(),
+      searchHistory = listOf(
+        "Atlantis",
+        "The Pond",
+        "Yosemite",
+      ),
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
   )
 }

@@ -30,7 +30,7 @@ internal class AreaSearchTypeSenseDataSource(
       .documents()
       .search(searchParameters.q(query))
       .hits
-      .mapNotNull { it.toSearchResult() }
+      .toSearchResults()
       .let { Result.success(it) }
   } catch (e: TypesenseError) {
     logcat(ERROR) { e.asLog() }
@@ -41,6 +41,9 @@ internal class AreaSearchTypeSenseDataSource(
 
     Result.failure(e.toError())
   }
+
+  private fun List<SearchResultHit>.toSearchResults() = mapNotNull { it.toSearchResult() }
+    .distinct()
 
   @OptIn(ExperimentalStdlibApi::class)
   private fun SearchResultHit.toSearchResult() = moshi.adapter<AreaSearchResult>()

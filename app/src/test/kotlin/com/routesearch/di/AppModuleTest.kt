@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import org.junit.jupiter.api.Test
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.test.verify.verify
+import java.net.URI
 
 class AppModuleTest {
 
@@ -14,6 +15,7 @@ class AppModuleTest {
     extraTypes = listOf(
       SavedStateHandle::class,
       Context::class,
+      URI::class,
     ),
   )
 }

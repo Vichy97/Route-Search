@@ -17,7 +17,11 @@ dependencies {
 
   implementation(libs.annotation)
   implementation(libs.collection)
+  implementation(libs.datastore.core)
+  implementation(libs.datastore.preferences)
+  implementation(libs.datastore.preferences.core)
   implementation(libs.koin.android)
+  implementation(libs.kotlinx.coroutines.core)
   implementation(libs.logcat)
   implementation(libs.room.common)
   implementation(libs.room.ktx)
