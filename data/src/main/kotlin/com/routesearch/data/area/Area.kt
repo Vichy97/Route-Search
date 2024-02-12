@@ -1,10 +1,12 @@
 package com.routesearch.data.area
 
+import androidx.compose.runtime.Immutable
 import com.routesearch.data.climb.Grades
 import com.routesearch.data.climb.Type
 import com.routesearch.data.location.Location
 import kotlinx.datetime.LocalDate
 
+@Immutable
 data class Area(
   val id: String,
   val metadata: Metadata,
@@ -21,6 +23,7 @@ data class Area(
   val media: List<String>,
 ) {
 
+  @Immutable
   data class ClimbCount(
     val total: Int,
     val sport: Int,
@@ -31,12 +34,14 @@ data class Area(
     val roped = sport + trad + tr
   }
 
+  @Immutable
   data class Metadata(
     val createdAt: LocalDate,
     val updatedAt: LocalDate,
     val isLeaf: Boolean,
   )
 
+  @Immutable
   data class Child(
     val id: String,
     val name: String,
@@ -44,6 +49,7 @@ data class Area(
     val numberOfChildren: Int,
   )
 
+  @Immutable
   data class Climb(
     val id: String,
     val grades: Grades?,
@@ -52,6 +58,7 @@ data class Area(
     val numberOfPitches: Int,
   )
 
+  @Immutable
   data class Organization(
     val id: String,
     val name: String,

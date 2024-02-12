@@ -1,8 +1,10 @@
 package com.routesearch.data.climb
 
+import androidx.compose.runtime.Immutable
 import com.routesearch.data.location.Location
 import kotlinx.datetime.LocalDate
 
+@Immutable
 data class Climb(
   val id: String,
   val metadata: Metadata,
@@ -22,12 +24,14 @@ data class Climb(
 
   val hasMetadata = location != null && metadata.createdAt != null && metadata.updatedAt != null
 
+  @Immutable
   data class Metadata(
     val leftRightIndex: Int?,
     val createdAt: LocalDate?,
     val updatedAt: LocalDate?,
   )
 
+  @Immutable
   data class Description(
     val general: String,
     val location: String,

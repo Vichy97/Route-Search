@@ -1,10 +1,14 @@
 package com.routesearch.data.search
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class SearchResults(
   val areaSearchResults: List<AreaSearchResult>,
   val climbSearchResults: List<ClimbSearchResult>,
 )
 
+@Immutable
 data class ClimbSearchResult(
   val id: String,
   val name: String,
@@ -20,6 +24,7 @@ data class ClimbSearchResult(
     .joinToString(" - ")
 }
 
+@Immutable
 data class AreaSearchResult(
   val id: String,
   val name: String,
