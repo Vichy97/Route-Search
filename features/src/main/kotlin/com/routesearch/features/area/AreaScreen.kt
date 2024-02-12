@@ -95,7 +95,6 @@ fun AreaScreen() {
         onClimbClick = viewModel::onClimbClick,
         onAreaClick = viewModel::onAreaClick,
       )
-
       is AreaViewState.Loading -> Loading()
       AreaViewState.Idle -> Unit
     }
@@ -148,7 +147,7 @@ private fun Content(
         horizontal = 16.dp,
       ),
     path = area.path,
-    onPathSectionClick = onPathSectionClick,
+    onPathSectionClick = { onPathSectionClick(it) },
   )
 
   Text(
@@ -198,7 +197,7 @@ private fun Content(
     location = area.location,
     createdAt = area.metadata.createdAt,
     updatedAt = area.metadata.updatedAt,
-    onLocationClick = onLocationClick,
+    onLocationClick = { onLocationClick() },
   )
 
   Text(
@@ -284,7 +283,6 @@ private fun Content(
       .padding(
         horizontal = 16.dp,
       ),
-
     gradeMap = area.gradeMap,
   )
 
@@ -317,7 +315,7 @@ private fun Content(
       }
       .padding(top = 8.dp),
     organizations = area.organizations,
-    onOrganizationClick = onOrganizationClick,
+    onOrganizationClick = { onOrganizationClick(it) },
   )
 
   ListContent(
@@ -332,8 +330,8 @@ private fun Content(
       }
       .padding(top = 16.dp),
     area = area,
-    onClimbClick = onClimbClick,
-    onAreaClick = onAreaClick,
+    onClimbClick = { onClimbClick(it) },
+    onAreaClick = { onAreaClick(it) },
   )
 }
 
@@ -346,7 +344,7 @@ private fun TopAppBar(
   title = { },
   navigationIcon = {
     NavigationButton(
-      onClick = onBackClick,
+      onClick = { onBackClick() },
     )
   },
   scrollBehavior = scrollBehavior,
@@ -356,7 +354,7 @@ private fun TopAppBar(
 private fun NavigationButton(
   onClick: () -> Unit,
 ) = IconButton(
-  onClick = onClick,
+  onClick = { onClick() },
 ) {
   Icon(
     imageVector = Icons.AutoMirrored.Default.ArrowBack,
@@ -472,7 +470,7 @@ private fun OrganizationCard(
   modifier = modifier.widthIn(
     max = 200.dp,
   ),
-  onClick = onClick,
+  onClick = { onClick() },
 ) {
   ListItem(
     headlineContent = {
@@ -504,13 +502,13 @@ private fun ListContent(
   ClimbList(
     modifier = modifier,
     area = area,
-    onClimbClick = onClimbClick,
+    onClimbClick = { onClimbClick(it) },
   )
 } else {
   AreaList(
     modifier = modifier,
     area = area,
-    onAreaClick = onAreaClick,
+    onAreaClick = { onAreaClick(it) },
   )
 }
 
@@ -538,7 +536,7 @@ private fun AreaList(
   area.children.forEachIndexed { index, child ->
     AreaListItem(
       areaChild = child,
-      onClick = onAreaClick,
+      onClick = { onAreaClick(it) },
     )
     if (index < area.children.size - 1) {
       Divider(
@@ -607,7 +605,7 @@ private fun ClimbList(
   area.climbs.forEachIndexed { index, climb ->
     ClimbListItem(
       climb = climb,
-      onClick = onClimbClick,
+      onClick = { onClimbClick(it) },
     )
     if (index < area.climbs.size - 1) {
       Divider(
