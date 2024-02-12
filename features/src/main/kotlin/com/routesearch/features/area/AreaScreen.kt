@@ -63,27 +63,42 @@ import com.routesearch.ui.common.compose.getAnnotationAt
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination(
   navArgsDelegate = AreaScreenArgs::class,
 )
 @Composable
 fun AreaScreen() {
   val viewModel = koinViewModel<AreaViewModel>()
-  val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  when (val currentViewState = viewState) {
-    is AreaViewState.Content -> Content(
-      area = currentViewState.area,
-      onBackClick = viewModel::onBackClick,
-      onPathSectionClick = viewModel::onPathSectionClick,
-      onLocationClick = viewModel::onLocationClick,
-      onOrganizationClick = viewModel::onOrganizationClick,
-      onClimbClick = viewModel::onClimbClick,
-      onAreaClick = viewModel::onAreaClick,
-    )
+  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+  Scaffold(
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      TopAppBar(
+        onBackClick = { viewModel.onBackClick() },
+        scrollBehavior = scrollBehavior,
+      )
+    },
+  ) { padding ->
 
-    is AreaViewState.Loading -> Loading()
-    AreaViewState.Idle -> Unit
+    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
+    when (val currentViewState = viewState) {
+      is AreaViewState.Content -> Content(
+        modifier = Modifier
+          .padding(top = padding.calculateTopPadding())
+          .verticalScroll(rememberScrollState()),
+        area = currentViewState.area,
+        onPathSectionClick = viewModel::onPathSectionClick,
+        onLocationClick = viewModel::onLocationClick,
+        onOrganizationClick = viewModel::onOrganizationClick,
+        onClimbClick = viewModel::onClimbClick,
+        onAreaClick = viewModel::onAreaClick,
+      )
+
+      is AreaViewState.Loading -> Loading()
+      AreaViewState.Idle -> Unit
+    }
   }
 }
 
@@ -96,251 +111,230 @@ private fun Loading() = Box(
   // CircularProgressIndicator()
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Content(
+  modifier: Modifier = Modifier,
   area: Area,
-  onBackClick: () -> Unit,
   onPathSectionClick: (String) -> Unit,
   onLocationClick: () -> Unit,
   onOrganizationClick: (Area.Organization) -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
+) = ConstraintLayout(
+  modifier = modifier
+    .fillMaxWidth(),
 ) {
-  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+  val (
+    path,
+    name,
+    image,
+    metadataCard,
+    ydsChartHeader,
+    ydsChart,
+    vScaleChartHeader,
+    vScaleChart,
+    description,
+    organizations,
+    listContent,
+  ) = createRefs()
 
-  Scaffold(
-    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-    topBar = {
-      TopAppBar(
-        onBackClick = onBackClick,
-        scrollBehavior = scrollBehavior,
-      )
-    },
-  ) { padding ->
-    val scrollState = rememberScrollState()
+  Path(
+    modifier = Modifier
+      .constrainAs(path) {
+        start.linkTo(parent.start)
+        top.linkTo(parent.top)
+      }
+      .padding(
+        horizontal = 16.dp,
+      ),
+    path = area.path,
+    onPathSectionClick = onPathSectionClick,
+  )
 
-    ConstraintLayout(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(
-          top = padding.calculateTopPadding(),
+  Text(
+    modifier = Modifier
+      .constrainAs(name) {
+        start.linkTo(parent.start)
+        top.linkTo(path.bottom)
+      }
+      .padding(
+        horizontal = 16.dp,
+      ),
+    text = area.name,
+    style = MaterialTheme.typography.headlineMedium,
+  )
+
+  Images(
+    modifier = Modifier
+      .constrainAs(image) {
+        top.linkTo(
+          anchor = name.bottom,
+          margin = 16.dp,
         )
-        .verticalScroll(scrollState),
-    ) {
-      val (
-        path,
-        name,
-        image,
-        metadataCard,
-        ydsChartHeader,
-        ydsChart,
-        vScaleChartHeader,
-        vScaleChart,
-        description,
-        organizations,
-        listContent,
-      ) = createRefs()
-
-      Path(
-        modifier = Modifier
-          .constrainAs(path) {
-            start.linkTo(parent.start)
-            top.linkTo(parent.top)
-          }
-          .padding(
-            horizontal = 16.dp,
-          ),
-        path = area.path,
-        onPathSectionClick = onPathSectionClick,
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        width = Dimension.fillToConstraints
+      }
+      .heightIn(
+        min = 250.dp,
+        max = 250.dp,
       )
+      .padding(horizontal = 8.dp),
+    urls = area.media,
+  )
 
-      Text(
-        modifier = Modifier
-          .constrainAs(name) {
-            start.linkTo(parent.start)
-            top.linkTo(path.bottom)
-          }
-          .padding(
-            horizontal = 16.dp,
-          ),
-        text = area.name,
-        style = MaterialTheme.typography.headlineMedium,
+  MetadataCard(
+    modifier = Modifier
+      .constrainAs(metadataCard) {
+        start.linkTo(parent.start)
+        top.linkTo(image.bottom)
+      }
+      .padding(
+        top = 16.dp,
+        start = 16.dp,
+        end = 16.dp,
       )
+      .wrapContentWidth(),
+    location = area.location,
+    createdAt = area.metadata.createdAt,
+    updatedAt = area.metadata.updatedAt,
+    onLocationClick = onLocationClick,
+  )
 
-      Images(
-        modifier = Modifier
-          .constrainAs(image) {
-            top.linkTo(
-              anchor = name.bottom,
-              margin = 16.dp,
-            )
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            width = Dimension.fillToConstraints
-          }
-          .heightIn(
-            min = 250.dp,
-            max = 250.dp,
-          )
-          .padding(horizontal = 8.dp),
-        urls = area.media,
+  Text(
+    modifier = Modifier
+      .constrainAs(ydsChartHeader) {
+        top.linkTo(
+          anchor = metadataCard.bottom,
+          margin = 16.dp,
+        )
+        start.linkTo(parent.start)
+
+        visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
+      }
+      .padding(
+        start = 16.dp,
+      ),
+    text = stringResource(
+      id = R.string.area_screen_yds_header,
+      formatArgs = arrayOf(area.climbCount.roped),
+    ),
+    style = MaterialTheme.typography.titleMedium,
+  )
+
+  YdsGradeChart(
+    modifier = Modifier
+      .constrainAs(ydsChart) {
+        top.linkTo(
+          anchor = ydsChartHeader.bottom,
+          margin = 4.dp,
+        )
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+
+        width = Dimension.fillToConstraints
+        visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
+      }
+      .heightIn(
+        max = 100.dp,
       )
+      .padding(
+        horizontal = 16.dp,
+      ),
+    gradeMap = area.gradeMap,
+  )
 
-      MetadataCard(
-        modifier = Modifier
-          .constrainAs(metadataCard) {
-            start.linkTo(parent.start)
-            top.linkTo(image.bottom)
-          }
-          .padding(
-            top = 16.dp,
-            start = 16.dp,
-            end = 16.dp,
-          )
-          .wrapContentWidth(),
-        location = area.location,
-        createdAt = area.metadata.createdAt,
-        updatedAt = area.metadata.updatedAt,
-        onLocationClick = onLocationClick,
+  Text(
+    modifier = Modifier
+      .constrainAs(vScaleChartHeader) {
+        top.linkTo(
+          anchor = ydsChart.bottom,
+          margin = 16.dp,
+        )
+        start.linkTo(parent.start)
+
+        visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
+      }
+      .padding(
+        start = 16.dp,
+      ),
+    text = stringResource(
+      id = R.string.area_screen_v_scale_header,
+      formatArgs = arrayOf(area.climbCount.bouldering),
+    ),
+    style = MaterialTheme.typography.titleMedium,
+  )
+
+  VScaleGradeChart(
+    modifier = Modifier
+      .constrainAs(vScaleChart) {
+        top.linkTo(
+          anchor = vScaleChartHeader.bottom,
+          margin = 4.dp,
+        )
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+
+        width = Dimension.fillToConstraints
+        visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
+      }
+      .heightIn(
+        max = 100.dp,
       )
+      .padding(
+        horizontal = 16.dp,
+      ),
 
-      Text(
-        modifier = Modifier
-          .constrainAs(ydsChartHeader) {
-            top.linkTo(
-              anchor = metadataCard.bottom,
-              margin = 16.dp,
-            )
-            start.linkTo(parent.start)
+    gradeMap = area.gradeMap,
+  )
 
-            visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
-          }
-          .padding(
-            start = 16.dp,
-          ),
-        text = stringResource(
-          id = R.string.area_screen_yds_header,
-          formatArgs = arrayOf(area.climbCount.roped),
-        ),
-        style = MaterialTheme.typography.titleMedium,
-      )
+  Description(
+    modifier = Modifier
+      .constrainAs(description) {
+        top.linkTo(vScaleChart.bottom)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
 
-      YdsGradeChart(
-        modifier = Modifier
-          .constrainAs(ydsChart) {
-            top.linkTo(
-              anchor = ydsChartHeader.bottom,
-              margin = 4.dp,
-            )
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
+        width = Dimension.fillToConstraints
+      }
+      .padding(
+        top = 8.dp,
+        start = 16.dp,
+        end = 16.dp,
+      ),
+    text = area.description,
+  )
 
-            width = Dimension.fillToConstraints
-            visibility = if (area.climbCount.roped >= 10) Visibility.Visible else Visibility.Gone
-          }
-          .heightIn(
-            max = 100.dp,
-          )
-          .padding(
-            horizontal = 16.dp,
-          ),
-        gradeMap = area.gradeMap,
-      )
+  Organizations(
+    modifier = Modifier
+      .constrainAs(organizations) {
+        top.linkTo(description.bottom)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
 
-      Text(
-        modifier = Modifier
-          .constrainAs(vScaleChartHeader) {
-            top.linkTo(
-              anchor = ydsChart.bottom,
-              margin = 16.dp,
-            )
-            start.linkTo(parent.start)
+        width = Dimension.fillToConstraints
+        visibility = if (area.organizations.isEmpty()) Visibility.Gone else Visibility.Visible
+      }
+      .padding(top = 8.dp),
+    organizations = area.organizations,
+    onOrganizationClick = onOrganizationClick,
+  )
 
-            visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
-          }
-          .padding(
-            start = 16.dp,
-          ),
-        text = stringResource(
-          id = R.string.area_screen_v_scale_header,
-          formatArgs = arrayOf(area.climbCount.bouldering),
-        ),
-        style = MaterialTheme.typography.titleMedium,
-      )
+  ListContent(
+    modifier = Modifier
+      .constrainAs(listContent) {
+        top.linkTo(organizations.bottom)
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
 
-      VScaleGradeChart(
-        modifier = Modifier
-          .constrainAs(vScaleChart) {
-            top.linkTo(
-              anchor = vScaleChartHeader.bottom,
-              margin = 4.dp,
-            )
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-
-            width = Dimension.fillToConstraints
-            visibility = if (area.climbCount.bouldering >= 10) Visibility.Visible else Visibility.Gone
-          }
-          .heightIn(
-            max = 100.dp,
-          )
-          .padding(
-            horizontal = 16.dp,
-          ),
-
-        gradeMap = area.gradeMap,
-      )
-
-      Description(
-        modifier = Modifier
-          .constrainAs(description) {
-            top.linkTo(vScaleChart.bottom)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-
-            width = Dimension.fillToConstraints
-          }
-          .padding(
-            top = 8.dp,
-            start = 16.dp,
-            end = 16.dp,
-          ),
-        text = area.description,
-      )
-
-      Organizations(
-        modifier = Modifier
-          .constrainAs(organizations) {
-            top.linkTo(description.bottom)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-
-            width = Dimension.fillToConstraints
-            visibility = if (area.organizations.isEmpty()) Visibility.Gone else Visibility.Visible
-          }
-          .padding(top = 8.dp),
-        organizations = area.organizations,
-        onOrganizationClick = onOrganizationClick,
-      )
-
-      ListContent(
-        modifier = Modifier
-          .constrainAs(listContent) {
-            top.linkTo(organizations.bottom)
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-
-            width = Dimension.fillToConstraints
-            visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
-          }
-          .padding(top = 16.dp),
-        area = area,
-        onClimbClick = onClimbClick,
-        onAreaClick = onAreaClick,
-      )
-    }
-  }
+        width = Dimension.fillToConstraints
+        visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
+      }
+      .padding(top = 16.dp),
+    area = area,
+    onClimbClick = onClimbClick,
+    onAreaClick = onAreaClick,
+  )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -659,7 +653,6 @@ private fun ClimbListItemSubtitle(climb: Area.Climb) {
 private fun AreaWithChildrenPreview() = RouteSearchTheme {
   Content(
     area = fakeAreas[0],
-    onBackClick = { },
     onPathSectionClick = { },
     onLocationClick = { },
     onOrganizationClick = { },
@@ -673,7 +666,6 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
 private fun AreaWithClimbsPreview() = RouteSearchTheme {
   Content(
     area = fakeAreas[1],
-    onBackClick = { },
     onPathSectionClick = { },
     onLocationClick = { },
     onOrganizationClick = { },
