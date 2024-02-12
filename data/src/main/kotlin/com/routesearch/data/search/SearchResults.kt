@@ -1,18 +1,19 @@
 package com.routesearch.data.search
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 data class SearchResults(
-  val areaSearchResults: List<AreaSearchResult>,
-  val climbSearchResults: List<ClimbSearchResult>,
+  val areaSearchResults: ImmutableList<AreaSearchResult>,
+  val climbSearchResults: ImmutableList<ClimbSearchResult>,
 )
 
 @Immutable
 data class ClimbSearchResult(
   val id: String,
   val name: String,
-  val pathTokens: List<String>,
+  val pathTokens: ImmutableList<String>,
   val grade: String,
   val type: String,
 ) {
@@ -28,7 +29,7 @@ data class ClimbSearchResult(
 data class AreaSearchResult(
   val id: String,
   val name: String,
-  val pathTokens: List<String>,
+  val pathTokens: ImmutableList<String>,
   val totalClimbs: Int,
 ) {
 

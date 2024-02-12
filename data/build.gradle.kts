@@ -13,6 +13,7 @@ android {
 }
 dependencies {
   api(libs.koin.core)
+  api(libs.kotlinx.collections.immutable)
   api(libs.kotlinx.datetime)
 
   implementation(platform(libs.compose.bom))

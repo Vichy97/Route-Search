@@ -61,6 +61,7 @@ import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
 import com.routesearch.ui.common.theme.RouteSearchTheme
+import kotlinx.collections.immutable.ImmutableList
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -365,7 +366,7 @@ private fun NavigationButton(
 @Composable
 private fun Path(
   modifier: Modifier = Modifier,
-  path: List<String>,
+  path: ImmutableList<String>,
   onPathSectionClick: (String) -> Unit,
 ) {
   val pathString = buildAnnotatedString {
@@ -421,7 +422,7 @@ private fun DescriptionPlaceholder(modifier: Modifier = Modifier) = Text(
 @Composable
 private fun Organizations(
   modifier: Modifier = Modifier,
-  organizations: List<Area.Organization>,
+  organizations: ImmutableList<Area.Organization>,
   onOrganizationClick: (Area.Organization) -> Unit,
 ) = Column(modifier = modifier) {
   OrganizationsHeader(

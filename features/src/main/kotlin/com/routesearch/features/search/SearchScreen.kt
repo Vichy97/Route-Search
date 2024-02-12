@@ -47,6 +47,7 @@ import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
 import com.routesearch.features.R
 import com.routesearch.ui.common.theme.RouteSearchTheme
+import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
 @Destination
@@ -438,7 +439,7 @@ private fun ActivePreview() = RouteSearchTheme {
         ClimbSearchResult(
           id = "c1",
           name = "Atlantis",
-          pathTokens = listOf("USA", "Utah", "Southwest Utah", "Saint George", "Black Rocks", "Shady Side"),
+          pathTokens = persistentListOf("USA", "Utah", "Southwest Utah", "Saint George", "Black Rocks", "Shady Side"),
           grade = "5.10b",
           type = "sport",
         ),
@@ -447,13 +448,19 @@ private fun ActivePreview() = RouteSearchTheme {
         AreaSearchResult(
           id = "a1",
           name = "Atlantis",
-          pathTokens = listOf("USA", "Arizona", "Central Arizona", "Queen Creek Canyon", "Atlantis"),
+          pathTokens = persistentListOf("USA", "Arizona", "Central Arizona", "Queen Creek Canyon", "Atlantis"),
           totalClimbs = 50,
         ),
         AreaSearchResult(
           id = "a2",
           name = "Atlantis Area",
-          pathTokens = listOf("USA", "California", "Joshua Tree National Park", "Lost Horse Area", "Atlantis Area"),
+          pathTokens = persistentListOf(
+            "USA",
+            "California",
+            "Joshua Tree National Park",
+            "Lost Horse Area",
+            "Atlantis Area",
+          ),
           totalClimbs = 50,
         ),
       ),

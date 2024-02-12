@@ -24,11 +24,13 @@ import com.patrykandpatrick.vico.core.component.text.TextComponent
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.routesearch.ui.common.theme.RouteSearchTheme
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentMapOf
 
 @Composable
 internal fun YdsGradeChart(
   modifier: Modifier = Modifier,
-  gradeMap: Map<String, Int>,
+  gradeMap: ImmutableMap<String, Int>,
 ) {
   val entryModel = remember { entryModelOfYds(gradeMap) }
 
@@ -42,7 +44,7 @@ internal fun YdsGradeChart(
 @Composable
 internal fun VScaleGradeChart(
   modifier: Modifier = Modifier,
-  gradeMap: Map<String, Int>,
+  gradeMap: ImmutableMap<String, Int>,
 ) {
   val entryModel = remember { entryModelOfVScale(gradeMap) }
 
@@ -97,7 +99,7 @@ private fun YdsChartPreview() = RouteSearchTheme {
           max = 150.dp,
         )
         .padding(16.dp),
-      gradeMap = mapOf(
+      gradeMap = persistentMapOf(
         "5.4" to 1,
         "5.5" to 3,
         "5.6" to 8,
@@ -123,7 +125,7 @@ private fun VScaleChartPreview() = RouteSearchTheme {
           max = 150.dp,
         )
         .padding(16.dp),
-      gradeMap = mapOf(
+      gradeMap = persistentMapOf(
         "V1" to 1,
         "V2" to 3,
         "V3" to 8,

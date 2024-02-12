@@ -14,6 +14,7 @@ datastore = "1.0.0"
 datetime = "0.5.0"
 dependency-analysis = "1.28.0"
 detekt = "1.23.1"
+immutable-collections = "0.3.7"
 junit-jupiter = "5.8.1"
 koin = "3.5.1"
 kotlin = "1.9.10"
@@ -66,6 +67,7 @@ koin-compose = { group = "io.insert-koin", name = "koin-compose" }
 koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-test = { group = "io.insert-koin", name = "koin-test" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "immutable-collections" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }

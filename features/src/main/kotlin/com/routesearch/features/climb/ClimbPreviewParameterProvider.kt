@@ -3,6 +3,7 @@ package com.routesearch.features.climb
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.routesearch.data.climb.Climb
 import com.routesearch.data.location.Location
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.LocalDate
 import java.time.Month
 
@@ -23,7 +24,7 @@ internal val fakeClimbs = listOf(
       ),
     ),
     name = "The Totem Pole",
-    pathTokens = listOf(
+    pathTokens = persistentListOf(
       "USA",
       "Arizona",
       "Central Arizona",
@@ -35,7 +36,7 @@ internal val fakeClimbs = listOf(
       latitude = 31.12,
       longitude = 32.13,
     ),
-    ancestorIds = emptyList(),
+    ancestorIds = persistentListOf(),
     description = Climb.Description(
       general = """
             A tall, slender tower in a scenic location with good climbing and a tiny summit make for a great route. 
@@ -55,8 +56,8 @@ internal val fakeClimbs = listOf(
     fa = "",
     type = null,
     grades = null,
-    pitches = emptyList(),
-    media = emptyList(),
+    pitches = persistentListOf(),
+    media = persistentListOf(),
   ),
 )
 
