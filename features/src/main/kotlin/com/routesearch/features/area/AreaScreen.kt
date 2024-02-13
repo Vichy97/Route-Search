@@ -61,6 +61,7 @@ import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
 import com.routesearch.ui.common.theme.RouteSearchTheme
+import com.routesearch.util.common.date.monthYearFormat
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.androidx.compose.koinViewModel
 
@@ -196,8 +197,8 @@ private fun Content(
       )
       .wrapContentWidth(),
     location = area.location,
-    createdAt = area.metadata.createdAt,
-    updatedAt = area.metadata.updatedAt,
+    createdAt = area.metadata.createdAt.monthYearFormat(),
+    updatedAt = area.metadata.updatedAt.monthYearFormat(),
     onLocationClick = { onLocationClick() },
   )
 

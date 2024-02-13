@@ -45,6 +45,7 @@ import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
 import com.routesearch.ui.common.theme.RouteSearchTheme
+import com.routesearch.util.common.date.monthYearFormat
 import org.koin.androidx.compose.koinViewModel
 
 @Destination(
@@ -170,8 +171,8 @@ private fun Content(
           .padding(start = 16.dp)
           .wrapContentWidth(),
         location = climb.location,
-        createdAt = climb.metadata.createdAt,
-        updatedAt = climb.metadata.updatedAt,
+        createdAt = climb.metadata.createdAt?.monthYearFormat(),
+        updatedAt = climb.metadata.updatedAt?.monthYearFormat(),
         onLocationClick = onLocationClick,
       )
 
