@@ -5,6 +5,9 @@ import com.routesearch.data.climb.toGrades
 import com.routesearch.data.location.getLocation
 import com.routesearch.data.location.toLocation
 import com.routesearch.data.media.toMedia
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
 import com.routesearch.data.local.area.Area.Climb as LocalClimb
 import com.routesearch.data.local.area.AreaWithClimbsAndChildren as LocalArea
 import com.routesearch.data.local.area.Child as LocalChild
@@ -16,20 +19,21 @@ internal fun RemoteArea.toArea() = Area(
   metadata = getMetadata(),
   name = areaName,
   description = content?.description ?: "",
-  path = pathTokens.filterNotNull(),
-  ancestorIds = ancestors.filterNotNull(),
+  path = pathTokens.filterNotNull().toImmutableList(),
+  ancestorIds = ancestors.filterNotNull().toImmutableList(),
   gradeMap = getGradeMap(),
   location = metadata.getLocation(),
-  children = children?.toChildren() ?: emptyList(),
+  children = children?.toChildren() ?: persistentListOf(),
   climbCount = getClimbCount(),
-  climbs = climbs?.toClimbs() ?: emptyList(),
-  organizations = organizations?.toOrganizations() ?: emptyList(),
-  media = media?.mapNotNull { it?.mediaFragment?.toMedia() } ?: emptyList(),
+  climbs = climbs?.toClimbs() ?: persistentListOf(),
+  organizations = organizations?.toOrganizations() ?: persistentListOf(),
+  media = media?.mapNotNull { it?.mediaFragment?.toMedia() }?.toImmutableList() ?: persistentListOf(),
 )
 
 @JvmName("remoteChildrenToChildren")
 private fun List<RemoteAreaChild?>.toChildren() = filterNotNull()
   .map { it.toChild() }
+  .toImmutableList()
 
 private fun RemoteAreaChild.toChild() = Area.Child(
   id = uuid,
@@ -43,19 +47,20 @@ internal fun LocalArea.toArea() = Area(
   metadata = area.metadata.toMetaData(),
   name = area.name,
   description = area.description,
-  path = area.path,
-  ancestorIds = area.ancestorIds,
-  gradeMap = area.gradeMap,
+  path = area.path.toImmutableList(),
+  ancestorIds = area.ancestorIds.toImmutableList(),
+  gradeMap = area.gradeMap.toImmutableMap(),
   location = area.location.toLocation(),
   children = children.toChildren(),
   climbCount = area.climbCount.toClimbCount(),
   climbs = climbs.toClimbs(),
-  organizations = emptyList(), // Organizations aren't important to save for offline use.
-  media = area.media,
+  organizations = persistentListOf(), // Organizations aren't important to save for offline use.
+  media = area.media.toImmutableList(),
 )
 
 @JvmName("localChildrenToChildren")
 private fun List<LocalChild>.toChildren() = map { it.toChild() }
+  .toImmutableList()
 
 private fun LocalChild.toChild() = Area.Child(
   id = id,
@@ -66,6 +71,7 @@ private fun LocalChild.toChild() = Area.Child(
 
 @JvmName("localClimbsToClimbs")
 private fun List<LocalClimb>.toClimbs() = map { it.toClimb() }
+  .toImmutableList()
 
 private fun LocalClimb.toClimb() = Area.Climb(
   id = id,

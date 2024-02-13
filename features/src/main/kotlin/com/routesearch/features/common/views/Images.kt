@@ -16,6 +16,7 @@ import coil.compose.AsyncImage
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
 import com.google.android.material.carousel.HeroCarouselStrategy
+import kotlinx.collections.immutable.ImmutableList
 
 /**
  * A composable to show either a carousel of images or a placeholder if no images are present.
@@ -23,7 +24,7 @@ import com.google.android.material.carousel.HeroCarouselStrategy
 @Composable
 internal fun Images(
   modifier: Modifier = Modifier,
-  urls: List<String>,
+  urls: ImmutableList<String>,
 ) = if (urls.isEmpty()) {
   ImagePlaceholder(
     modifier = modifier

@@ -5,6 +5,8 @@ import com.routesearch.data.area.Area
 import com.routesearch.data.climb.Grades
 import com.routesearch.data.climb.Type
 import com.routesearch.data.location.Location
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.datetime.LocalDate
 import java.time.Month
 
@@ -31,15 +33,15 @@ internal val fakeAreas = listOf(
     metadata = metadata,
     name = "Lower Devil's Canyon",
     description = "",
-    path = listOf(
+    path = persistentListOf(
       "USA",
       "Arizona",
       "Central Arizona",
       "Queen Creek Canyon",
       "Lower Devil's Canyon",
     ),
-    ancestorIds = emptyList(),
-    gradeMap = mapOf(
+    ancestorIds = persistentListOf(),
+    gradeMap = persistentMapOf(
       "5.4" to 1,
       "5.5" to 3,
       "5.6" to 8,
@@ -59,8 +61,8 @@ internal val fakeAreas = listOf(
       tr = 3,
       bouldering = 0,
     ),
-    climbs = emptyList(),
-    children = listOf(
+    climbs = persistentListOf(),
+    children = persistentListOf(
       Area.Child(
         id = "1",
         name = "Totem-Proto Area",
@@ -86,7 +88,7 @@ internal val fakeAreas = listOf(
         numberOfChildren = 0,
       ),
     ),
-    organizations = listOf(
+    organizations = persistentListOf(
       Area.Organization(
         id = "1",
         name = "Central Arizona Bolt Replacement Program",
@@ -112,7 +114,7 @@ internal val fakeAreas = listOf(
         instagramUrl = null,
       ),
     ),
-    media = emptyList(),
+    media = persistentListOf(),
   ),
   Area(
     id = "2",
@@ -126,7 +128,7 @@ internal val fakeAreas = listOf(
         -- "[Redacted]" and "Kitties Dihedral" -- and some photos. It should, realistically, be within the 
         "Glitter Box" area, but it's easiest to have it listed as a new area within Lower Devils.
     """.trimIndent(),
-    path = listOf(
+    path = persistentListOf(
       "USA",
       "Arizona",
       "Central Arizona",
@@ -134,8 +136,8 @@ internal val fakeAreas = listOf(
       "Lower Devil's Canyon",
       "Lion's Den",
     ),
-    ancestorIds = emptyList(),
-    gradeMap = mapOf(
+    ancestorIds = persistentListOf(),
+    gradeMap = persistentMapOf(
       "5.7" to 1,
       "5.8" to 1,
     ),
@@ -147,7 +149,7 @@ internal val fakeAreas = listOf(
       tr = 0,
       bouldering = 0,
     ),
-    climbs = listOf(
+    climbs = persistentListOf(
       Area.Climb(
         id = "1",
         name = "[Redacted]",
@@ -169,9 +171,9 @@ internal val fakeAreas = listOf(
         numberOfPitches = 1,
       ),
     ),
-    children = emptyList(),
-    organizations = emptyList(),
-    media = emptyList(),
+    children = persistentListOf(),
+    organizations = persistentListOf(),
+    media = persistentListOf(),
   ),
 )
 

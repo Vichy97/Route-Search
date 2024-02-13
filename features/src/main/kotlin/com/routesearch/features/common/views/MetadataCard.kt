@@ -36,8 +36,8 @@ import java.time.Month
 internal fun MetadataCard(
   modifier: Modifier = Modifier,
   location: Location?,
-  createdAt: LocalDate?,
-  updatedAt: LocalDate?,
+  createdAt: String?,
+  updatedAt: String?,
   onLocationClick: () -> Unit,
 ) = Card(
   modifier = modifier,
@@ -179,12 +179,12 @@ private fun LocationText(
 @Composable
 private fun CreatedDateText(
   modifier: Modifier = Modifier,
-  created: LocalDate?,
+  created: String?,
 ) {
   val createdDateText = buildAnnotatedString {
     bold { append(stringResource(R.string.metadata_card_created_title)) }
     append(" ")
-    append(created?.monthYearFormat() ?: "")
+    append(created ?: "")
   }
   Text(
     modifier = modifier,
@@ -198,12 +198,12 @@ private fun CreatedDateText(
 @Composable
 private fun UpdatedDateText(
   modifier: Modifier = Modifier,
-  updated: LocalDate?,
+  updated: String?,
 ) {
   val updatedDateText = buildAnnotatedString {
     bold { append(stringResource(R.string.metadata_card_updated_title)) }
     append(" ")
-    append(updated?.monthYearFormat() ?: "")
+    append(updated ?: "")
   }
   Text(
     modifier = modifier,
@@ -228,12 +228,12 @@ private fun MetadataCardPreview() = RouteSearchTheme {
         year = 2023,
         month = Month.DECEMBER,
         dayOfMonth = 12,
-      ),
+      ).monthYearFormat(),
       updatedAt = LocalDate(
         year = 2024,
         month = Month.JANUARY,
         dayOfMonth = 1,
-      ),
+      ).monthYearFormat(),
       onLocationClick = { },
     )
   }
@@ -250,12 +250,12 @@ private fun MetadataCardPreviewNoLocation() = RouteSearchTheme {
         year = 2023,
         month = Month.DECEMBER,
         dayOfMonth = 12,
-      ),
+      ).monthYearFormat(),
       updatedAt = LocalDate(
         year = 2024,
         month = Month.JANUARY,
         dayOfMonth = 1,
-      ),
+      ).monthYearFormat(),
       onLocationClick = { },
     )
   }

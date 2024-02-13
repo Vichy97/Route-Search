@@ -47,6 +47,7 @@ dependencies {
   implementation(libs.koin.androidx.compose)
   implementation(libs.koin.compose)
   implementation(libs.koin.core)
+  implementation(libs.kotlinx.collections.immutable)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.datetime)
   implementation(libs.lifecycle.common)
