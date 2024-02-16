@@ -6,6 +6,7 @@ import com.routesearch.data.climb.Climb
 import com.routesearch.data.climb.ClimbRepository
 import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
+import com.routesearch.features.destinations.GalleryScreenDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.util.common.result.onFailure
@@ -58,5 +59,9 @@ internal class ClimbViewModel(
       name = climb.name,
     )
     intentLauncher.launchIntent(intent)
+  }
+
+  fun onShowAllImagesClick() = (viewState.value as? ClimbViewState.Content)?.run {
+    navigator.navigate(GalleryScreenDestination(ArrayList(climb.media)))
   }
 }

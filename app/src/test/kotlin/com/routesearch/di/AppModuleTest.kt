@@ -16,6 +16,7 @@ class AppModuleTest {
       SavedStateHandle::class,
       Context::class,
       URI::class,
+      ArrayList::class,
     ),
   )
 }

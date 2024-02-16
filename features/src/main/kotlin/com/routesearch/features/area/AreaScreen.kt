@@ -27,6 +27,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -65,9 +66,12 @@ import com.routesearch.util.common.date.monthYearFormat
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.androidx.compose.koinViewModel
 
+private const val MIN_GALLERY_IMAGE = 6
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination(
   navArgsDelegate = AreaScreenArgs::class,
+  style = AreaTransitions::class,
 )
 @Composable
 fun AreaScreen() {
@@ -96,7 +100,9 @@ fun AreaScreen() {
         onOrganizationClick = viewModel::onOrganizationClick,
         onClimbClick = viewModel::onClimbClick,
         onAreaClick = viewModel::onAreaClick,
+        onShowAllImagesClick = viewModel::onShowAllImagesClick,
       )
+
       is AreaViewState.Loading -> Loading()
       AreaViewState.Idle -> Unit
     }
@@ -121,6 +127,7 @@ private fun Content(
   onOrganizationClick: (Area.Organization) -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
+  onShowAllImagesClick: () -> Unit,
 ) = ConstraintLayout(
   modifier = modifier
     .fillMaxWidth(),
@@ -130,6 +137,7 @@ private fun Content(
     name,
     image,
     metadataCard,
+    showAllImages,
     ydsChartHeader,
     ydsChart,
     vScaleChartHeader,
@@ -201,6 +209,23 @@ private fun Content(
     updatedAt = area.metadata.updatedAt.monthYearFormat(),
     onLocationClick = { onLocationClick() },
   )
+  TextButton(
+    modifier = Modifier
+      .constrainAs(showAllImages) {
+        top.linkTo(image.bottom)
+        end.linkTo(parent.end)
+
+        visibility = if (area.media.size >= MIN_GALLERY_IMAGE) Visibility.Visible else Visibility.Gone
+      }
+      .padding(
+        end = 8.dp,
+      ),
+    onClick = { onShowAllImagesClick() },
+  ) {
+    Text(
+      text = stringResource(R.string.area_screen_show_all_images_button_label),
+    )
+  }
 
   Text(
     modifier = Modifier
@@ -658,6 +683,7 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
     onOrganizationClick = { },
     onClimbClick = { },
     onAreaClick = { },
+    onShowAllImagesClick = { },
   )
 }
 
@@ -671,5 +697,6 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
     onOrganizationClick = { },
     onClimbClick = { },
     onAreaClick = { },
+    onShowAllImagesClick = { },
   )
 }

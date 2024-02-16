@@ -16,6 +16,7 @@
     <item quantity="one">%1$d Pitch</item>
     <item quantity="other">%1$d Pitches</item>
   </plurals>
+  <string name="area_screen_show_all_images_button_label">Show All</string>
   <string name="area_screen_updated_title">Updated:</string>
   <string name="area_screen_v_scale_header">%1$d Boulders</string>
   <string name="area_screen_yds_header">%1$d Routes</string>
@@ -26,6 +27,7 @@
   <string name="climb_screen_expand_description_button_label">See More</string>
   <string name="climb_screen_location_title">Lat, Lng:</string>
   <string name="climb_screen_protection_header">Protection</string>
+  <string name="climb_screen_show_all_images_button_label">Show All</string>
   <string name="climb_screen_updated_title">Updated:</string>
 
   <string name="metadata_card_created_title">Created:</string>
