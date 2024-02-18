@@ -18,9 +18,9 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -487,7 +487,6 @@ private fun OrganizationsHeader(
   style = MaterialTheme.typography.titleLarge,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun OrganizationCard(
   modifier: Modifier = Modifier,
@@ -559,14 +558,14 @@ private fun AreaList(
     ),
     style = MaterialTheme.typography.titleLarge,
   )
-  Divider()
+  HorizontalDivider()
   area.children.forEachIndexed { index, child ->
     AreaListItem(
       areaChild = child,
       onClick = { onAreaClick(it) },
     )
     if (index < area.children.size - 1) {
-      Divider(
+      HorizontalDivider(
         modifier = Modifier.padding(
           horizontal = 16.dp,
         ),
@@ -628,14 +627,14 @@ private fun ClimbList(
     ),
     style = MaterialTheme.typography.titleLarge,
   )
-  Divider()
+  HorizontalDivider()
   area.climbs.forEachIndexed { index, climb ->
     ClimbListItem(
       climb = climb,
       onClick = { onClimbClick(it) },
     )
     if (index < area.climbs.size - 1) {
-      Divider(
+      HorizontalDivider(
         modifier = Modifier.padding(
           horizontal = 16.dp,
         ),

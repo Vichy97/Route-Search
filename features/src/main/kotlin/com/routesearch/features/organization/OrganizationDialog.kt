@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -113,7 +113,7 @@ private fun OrganizationDialogContent(
       style = MaterialTheme.typography.bodyMedium,
     )
 
-    Divider(
+    HorizontalDivider(
       modifier = Modifier.constrainAs(divider) {
         top.linkTo(description.bottom)
         start.linkTo(parent.start)
