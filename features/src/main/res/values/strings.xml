@@ -30,6 +30,10 @@
   <string name="climb_screen_show_all_images_button_label">Show All</string>
   <string name="climb_screen_updated_title">Updated:</string>
 
+  <string name="common_bookmark_button_label">Bookmark</string>
+  <string name="common_download_button_label">Download</string>
+  <string name="common_share_button_label">Share</string>
+
   <string name="metadata_card_created_title">Created:</string>
   <string name="metadata_card_location_title">Lat, Lng:</string>
   <string name="metadata_card_updated_title">Updated:</string>

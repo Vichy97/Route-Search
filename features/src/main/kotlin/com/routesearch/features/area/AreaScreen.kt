@@ -2,9 +2,11 @@ package com.routesearch.features.area
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -18,6 +20,12 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -76,19 +85,20 @@ private const val MIN_GALLERY_IMAGE = 6
 @Composable
 fun AreaScreen() {
   val viewModel = koinViewModel<AreaViewModel>()
+  val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+  val topAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
   Scaffold(
-    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
     topBar = {
       TopAppBar(
-        onBackClick = { viewModel.onBackClick() },
-        scrollBehavior = scrollBehavior,
+        onBackClick = viewModel::onBackClick,
+        onHomeClick = viewModel::onHomeClick,
+        scrollBehavior = topAppBarScrollBehavior,
       )
     },
   ) { padding ->
-
-    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
     when (val currentViewState = viewState) {
       is AreaViewState.Content -> Content(
         modifier = Modifier
@@ -97,8 +107,12 @@ fun AreaScreen() {
         area = currentViewState.area,
         onPathSectionClick = viewModel::onPathSectionClick,
         onLocationClick = viewModel::onLocationClick,
+        onBookmarkClick = viewModel::onBookmarkClick,
+        onDownloadClick = viewModel::onDownloadClick,
+        onShareClick = viewModel::onShareClick,
         onOrganizationClick = viewModel::onOrganizationClick,
         onClimbClick = viewModel::onClimbClick,
+        onFilterClimbsClick = viewModel::onFilterClimbsClick,
         onAreaClick = viewModel::onAreaClick,
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
       )
@@ -124,7 +138,11 @@ private fun Content(
   area: Area,
   onPathSectionClick: (String) -> Unit,
   onLocationClick: () -> Unit,
+  onBookmarkClick: () -> Unit,
+  onDownloadClick: () -> Unit,
+  onShareClick: () -> Unit,
   onOrganizationClick: (Area.Organization) -> Unit,
+  onFilterClimbsClick: () -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
   onShowAllImagesClick: () -> Unit,
@@ -143,6 +161,7 @@ private fun Content(
     vScaleChartHeader,
     vScaleChart,
     description,
+    buttonRow,
     organizations,
     listContent,
   ) = createRefs()
@@ -209,6 +228,7 @@ private fun Content(
     updatedAt = area.metadata.updatedAt.monthYearFormat(),
     onLocationClick = { onLocationClick() },
   )
+
   TextButton(
     modifier = Modifier
       .constrainAs(showAllImages) {
@@ -227,12 +247,22 @@ private fun Content(
     )
   }
 
+  ButtonRow(
+    modifier = Modifier.constrainAs(buttonRow) {
+      top.linkTo(metadataCard.bottom)
+      start.linkTo(parent.start)
+    },
+    onBookmarkClick = { onBookmarkClick() },
+    onDownloadClick = { onDownloadClick() },
+    onShareClick = { onShareClick() },
+  )
+
   Text(
     modifier = Modifier
       .constrainAs(ydsChartHeader) {
         top.linkTo(
-          anchor = metadataCard.bottom,
-          margin = 16.dp,
+          anchor = buttonRow.bottom,
+          margin = 8.dp,
         )
         start.linkTo(parent.start)
 
@@ -351,12 +381,17 @@ private fun Content(
         top.linkTo(organizations.bottom)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
+        bottom.linkTo(
+          anchor = parent.bottom,
+          margin = 16.dp,
+        )
 
         width = Dimension.fillToConstraints
         visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
       }
       .padding(top = 16.dp),
     area = area,
+    onFilterClimbsClick = { onFilterClimbsClick() },
     onClimbClick = { onClimbClick(it) },
     onAreaClick = { onAreaClick(it) },
   )
@@ -366,6 +401,7 @@ private fun Content(
 @Composable
 private fun TopAppBar(
   onBackClick: () -> Unit,
+  onHomeClick: () -> Unit,
   scrollBehavior: TopAppBarScrollBehavior,
 ) = TopAppBar(
   title = { },
@@ -373,6 +409,16 @@ private fun TopAppBar(
     NavigationButton(
       onClick = { onBackClick() },
     )
+  },
+  actions = {
+    IconButton(
+      onClick = { onHomeClick() },
+    ) {
+      Icon(
+        imageVector = Icons.Default.Home,
+        contentDescription = null,
+      )
+    }
   },
   scrollBehavior = scrollBehavior,
 )
@@ -479,6 +525,80 @@ private fun Organizations(
 }
 
 @Composable
+private fun ButtonRow(
+  modifier: Modifier,
+  onBookmarkClick: () -> Unit,
+  onDownloadClick: () -> Unit,
+  onShareClick: () -> Unit,
+) = LazyRow(
+  modifier = modifier.padding(
+    top = 8.dp,
+  ),
+  contentPadding = PaddingValues(
+    horizontal = 16.dp,
+  ),
+  horizontalArrangement = spacedBy(8.dp),
+) {
+  item {
+    BookmarkButton(
+      onClick = { onBookmarkClick() },
+    )
+  }
+  item {
+    DownloadButton(
+      onClick = { onDownloadClick() },
+    )
+  }
+  item {
+    ShareButton(
+      onClick = { onShareClick() },
+    )
+  }
+}
+
+@Composable
+private fun BookmarkButton(
+  onClick: () -> Unit,
+) = AssistChip(
+  onClick = { onClick() },
+  leadingIcon = {
+    Icon(
+      imageVector = Icons.Default.BookmarkBorder,
+      contentDescription = null,
+    )
+  },
+  label = { Text(stringResource(R.string.common_bookmark_button_label)) },
+)
+
+@Composable
+private fun DownloadButton(
+  onClick: () -> Unit,
+) = AssistChip(
+  onClick = { onClick() },
+  leadingIcon = {
+    Icon(
+      imageVector = Icons.Default.Download,
+      contentDescription = null,
+    )
+  },
+  label = { Text(stringResource(R.string.common_download_button_label)) },
+)
+
+@Composable
+private fun ShareButton(
+  onClick: () -> Unit,
+) = AssistChip(
+  onClick = { onClick() },
+  leadingIcon = {
+    Icon(
+      imageVector = Icons.Default.Share,
+      contentDescription = null,
+    )
+  },
+  label = { Text(stringResource(R.string.common_share_button_label)) },
+)
+
+@Composable
 private fun OrganizationsHeader(
   modifier: Modifier = Modifier,
 ) = Text(
@@ -522,12 +642,14 @@ private fun OrganizationCard(
 private fun ListContent(
   modifier: Modifier = Modifier,
   area: Area,
+  onFilterClimbsClick: () -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
 ) = if (area.children.isEmpty()) {
   ClimbList(
     modifier = modifier,
     area = area,
+    onFilterClick = { onFilterClimbsClick() },
     onClimbClick = { onClimbClick(it) },
   )
 } else {
@@ -611,21 +733,14 @@ private fun AreaListItemSubtitle(area: Area.Child) {
 private fun ClimbList(
   modifier: Modifier = Modifier,
   area: Area,
+  onFilterClick: () -> Unit,
   onClimbClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
-  Text(
-    modifier = Modifier.padding(
-      vertical = 8.dp,
-      horizontal = 16.dp,
-    ),
-    text = pluralStringResource(
-      id = R.plurals.area_screen_number_of_climbs,
-      count = area.climbs.size,
-      formatArgs = arrayOf(area.climbs.size),
-    ),
-    style = MaterialTheme.typography.titleLarge,
+  ClimbListHeader(
+    area = area,
+    onFilterClick = { onFilterClick() },
   )
   HorizontalDivider()
   area.climbs.forEachIndexed { index, climb ->
@@ -640,6 +755,37 @@ private fun ClimbList(
         ),
       )
     }
+  }
+}
+
+@Composable
+private fun ClimbListHeader(
+  modifier: Modifier = Modifier,
+  area: Area,
+  onFilterClick: () -> Unit,
+) = Row(
+  modifier = modifier.fillMaxWidth(),
+  horizontalArrangement = Arrangement.SpaceBetween,
+) {
+  Text(
+    modifier = Modifier.padding(
+      vertical = 8.dp,
+      horizontal = 16.dp,
+    ),
+    text = pluralStringResource(
+      id = R.plurals.area_screen_number_of_climbs,
+      count = area.climbs.size,
+      formatArgs = arrayOf(area.climbs.size),
+    ),
+    style = MaterialTheme.typography.titleLarge,
+  )
+  IconButton(
+    onClick = { onFilterClick() },
+  ) {
+    Icon(
+      imageVector = Icons.Default.Tune,
+      contentDescription = null,
+    )
   }
 }
 
@@ -675,27 +821,39 @@ private fun ClimbListItemSubtitle(climb: Area.Climb) {
 @PreviewLightDark
 @Composable
 private fun AreaWithChildrenPreview() = RouteSearchTheme {
-  Content(
-    area = fakeAreas[0],
-    onPathSectionClick = { },
-    onLocationClick = { },
-    onOrganizationClick = { },
-    onClimbClick = { },
-    onAreaClick = { },
-    onShowAllImagesClick = { },
-  )
+  Surface {
+    Content(
+      area = fakeAreas[0],
+      onPathSectionClick = { },
+      onLocationClick = { },
+      onBookmarkClick = { },
+      onDownloadClick = { },
+      onShareClick = { },
+      onOrganizationClick = { },
+      onFilterClimbsClick = { },
+      onClimbClick = { },
+      onAreaClick = { },
+      onShowAllImagesClick = { },
+    )
+  }
 }
 
 @PreviewLightDark
 @Composable
 private fun AreaWithClimbsPreview() = RouteSearchTheme {
-  Content(
-    area = fakeAreas[1],
-    onPathSectionClick = { },
-    onLocationClick = { },
-    onOrganizationClick = { },
-    onClimbClick = { },
-    onAreaClick = { },
-    onShowAllImagesClick = { },
-  )
+  Surface {
+    Content(
+      area = fakeAreas[1],
+      onPathSectionClick = { },
+      onLocationClick = { },
+      onBookmarkClick = { },
+      onDownloadClick = { },
+      onShareClick = { },
+      onOrganizationClick = { },
+      onFilterClimbsClick = { },
+      onClimbClick = { },
+      onAreaClick = { },
+      onShowAllImagesClick = { },
+    )
+  }
 }

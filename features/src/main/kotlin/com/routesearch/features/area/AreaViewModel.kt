@@ -55,6 +55,22 @@ internal class AreaViewModel(
 
   fun onBackClick() = navigator.popBackStack()
 
+  fun onHomeClick() {
+    TODO("Not implemented")
+  }
+
+  fun onBookmarkClick() {
+    TODO("Not implemented")
+  }
+
+  fun onDownloadClick() {
+    TODO("Not implemented")
+  }
+
+  fun onShareClick() {
+    TODO("Not implemented")
+  }
+
   fun onPathSectionClick(pathSection: String) = (viewState.value as? AreaViewState.Content)?.run {
     val pathIndex = area.path.indexOf(pathSection)
     val ancestorId = area.ancestorIds[pathIndex]
@@ -78,6 +94,10 @@ internal class AreaViewModel(
       instagramUrl = organization.instagramUrl,
     ),
   )
+
+  fun onFilterClimbsClick() {
+    TODO("Not implemented")
+  }
 
   fun onClimbClick(id: String) = navigator.navigate(ClimbScreenDestination(id))
 
