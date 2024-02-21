@@ -20,9 +20,9 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -236,7 +236,7 @@ private fun SearchResultsList(
         onClick = onClimbSearchResultClick,
       )
       if (index < viewState.climbSearchResults.size - 1) {
-        Divider(
+        HorizontalDivider(
           modifier = Modifier.padding(horizontal = 16.dp),
         )
       }
@@ -252,7 +252,7 @@ private fun SearchResultsList(
         onClick = onAreaSearchResultClick,
       )
       if (index < viewState.areaSearchResults.size - 1) {
-        Divider(
+        HorizontalDivider(
           modifier = Modifier.padding(horizontal = 16.dp),
         )
       }
@@ -293,7 +293,6 @@ private fun SearchHistoryEntry(
   headlineContent = { Text(text) },
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilterRow(
   areaFilterSelected: Boolean,
