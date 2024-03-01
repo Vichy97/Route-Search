@@ -1,4 +1,9 @@
 <resources>
+  <string name="about_screen_title">About Route Search</string>
+  <string name="about_screen_google_play_store_message">Please leave a review on the Google Play Store!</string>
+  <string name="about_screen_privacy_policy">Privacy Policy</string>
+  <string name="about_screen_version_number">Version Number: %1$s</string>
+
   <string name="area_screen_description_header">Description</string>
   <string name="area_screen_description_placeholder">No description available. Consider contributing to this area at openbeta.io!</string>
   <string name="area_screen_expand_description_button_label">See More</string>

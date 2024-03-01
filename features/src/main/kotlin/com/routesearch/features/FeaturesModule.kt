@@ -1,5 +1,6 @@
 package com.routesearch.features
 
+import com.routesearch.features.about.aboutModule
 import com.routesearch.features.area.areaModule
 import com.routesearch.features.climb.climbModule
 import com.routesearch.features.gallery.galleryModule
@@ -15,5 +16,6 @@ val featuresModule = module {
     climbModule,
     galleryModule,
     organizationModule,
+    aboutModule,
   )
 }

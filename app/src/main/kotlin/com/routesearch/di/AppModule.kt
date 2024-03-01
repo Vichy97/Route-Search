@@ -1,6 +1,6 @@
 package com.routesearch.di
 
-import com.routesearch.appversion.AppVersion
+import com.routesearch.appversion.DefaultAppVersionProvider
 import com.routesearch.data.dataModule
 import com.routesearch.features.featuresModule
 import com.routesearch.navigation.navigationModule
@@ -21,5 +21,5 @@ internal val appModule = module {
     utilModule,
   )
 
-  singleOf(::AppVersion) bind AppVersionProvider::class
+  singleOf(::DefaultAppVersionProvider) bind AppVersionProvider::class
 }
