@@ -27,4 +27,5 @@ include(
   ":util:common",
   ":util:coroutines",
   ":util:view",
+  ":util:app-version",
 )
