@@ -227,6 +227,7 @@ private fun Content(
     createdAt = area.metadata.createdAt.monthYearFormat(),
     updatedAt = area.metadata.updatedAt.monthYearFormat(),
     onLocationClick = { onLocationClick() },
+    firstAscent = null,
   )
 
   TextButton(
