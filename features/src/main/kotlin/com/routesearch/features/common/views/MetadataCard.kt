@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,7 @@ internal fun MetadataCard(
   location: Location?,
   createdAt: String?,
   updatedAt: String?,
+  firstAscent: String?,
   onLocationClick: () -> Unit,
 ) = Card(
   modifier = modifier,
@@ -53,6 +55,8 @@ internal fun MetadataCard(
       createdAtText,
       updatedAtIcon,
       updatedAtText,
+      firstAscentIcon,
+      firstAscentText,
     ) = createRefs()
 
     Icon(
@@ -138,6 +142,34 @@ internal fun MetadataCard(
         },
       updated = updatedAt,
     )
+
+    Icon(
+      modifier = Modifier
+        .constrainAs(firstAscentIcon) {
+          start.linkTo(parent.start)
+          bottom.linkTo(firstAscentText.bottom)
+        }
+        .size(20.dp),
+      imageVector = Icons.Default.Person,
+      contentDescription = null,
+    )
+    FirstAscentText(
+      modifier = Modifier
+        .constrainAs(firstAscentText) {
+          start.linkTo(
+            anchor = firstAscentIcon.end,
+            margin = 4.dp,
+          )
+          top.linkTo(
+            anchor = updatedAtText.bottom,
+            margin = 8.dp,
+            goneMargin = 8.dp,
+          )
+
+          visibility = firstAscent?.let { Visibility.Visible } ?: Visibility.Gone
+        },
+      firstAscent = firstAscent ?: "",
+    )
   }
 }
 
@@ -214,6 +246,25 @@ private fun UpdatedDateText(
   )
 }
 
+@Composable
+private fun FirstAscentText(
+  modifier: Modifier = Modifier,
+  firstAscent: String,
+) {
+  val firstAscentText = buildAnnotatedString {
+    bold { append(stringResource(R.string.metadata_card_fa_title)) }
+    append(" ")
+    append(firstAscent)
+  }
+  Text(
+    modifier = modifier,
+    text = firstAscentText,
+    style = MaterialTheme.typography.titleSmall,
+    maxLines = 1,
+    overflow = TextOverflow.Ellipsis,
+  )
+}
+
 @PreviewLightDark
 @Composable
 private fun MetadataCardPreview() = RouteSearchTheme {
@@ -235,6 +286,7 @@ private fun MetadataCardPreview() = RouteSearchTheme {
         dayOfMonth = 1,
       ).monthYearFormat(),
       onLocationClick = { },
+      firstAscent = "Joe Williams",
     )
   }
 }
@@ -257,6 +309,7 @@ private fun MetadataCardPreviewNoLocation() = RouteSearchTheme {
         dayOfMonth = 1,
       ).monthYearFormat(),
       onLocationClick = { },
+      firstAscent = "Joe Williams",
     )
   }
 }
@@ -274,6 +327,7 @@ private fun MetadataCardPreviewNoDates() = RouteSearchTheme {
       createdAt = null,
       updatedAt = null,
       onLocationClick = { },
+      firstAscent = "Joe Williams",
     )
   }
 }
