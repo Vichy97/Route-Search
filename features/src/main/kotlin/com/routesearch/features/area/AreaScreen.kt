@@ -387,7 +387,6 @@ private fun Content(
         )
 
         width = Dimension.fillToConstraints
-        visibility = if (area.children.isEmpty() && area.climbs.isEmpty()) Visibility.Gone else Visibility.Visible
       }
       .padding(top = 16.dp),
     area = area,
@@ -645,19 +644,21 @@ private fun ListContent(
   onFilterClimbsClick: () -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
-) = if (area.children.isEmpty()) {
+) = if (area.children.isEmpty() && area.climbs.isNotEmpty()) {
   ClimbList(
     modifier = modifier,
     area = area,
     onFilterClick = { onFilterClimbsClick() },
     onClimbClick = { onClimbClick(it) },
   )
-} else {
+} else if (area.climbs.isEmpty() && area.children.isNotEmpty()) {
   AreaList(
     modifier = modifier,
     area = area,
     onAreaClick = { onAreaClick(it) },
   )
+} else {
+  EmptyAreaPlaceholder(modifier = modifier)
 }
 
 @Composable
@@ -818,6 +819,27 @@ private fun ClimbListItemSubtitle(climb: Area.Climb) {
   Text("$type • $pitches")
 }
 
+@Composable
+private fun EmptyAreaPlaceholder(
+  modifier: Modifier = Modifier,
+) = Column(
+  modifier = modifier,
+) {
+  Text(
+    modifier = Modifier.padding(
+      horizontal = 16.dp,
+    ),
+    text = stringResource(R.string.area_screen_empty_area_header),
+    style = MaterialTheme.typography.titleLarge,
+  )
+  Text(
+    modifier = Modifier.padding(
+      horizontal = 16.dp,
+    ),
+    text = stringResource(id = R.string.area_screen_empty_area_placeholder),
+  )
+}
+
 @PreviewLightDark
 @Composable
 private fun AreaWithChildrenPreview() = RouteSearchTheme {
@@ -844,6 +866,26 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
   Surface {
     Content(
       area = fakeAreas[1],
+      onPathSectionClick = { },
+      onLocationClick = { },
+      onBookmarkClick = { },
+      onDownloadClick = { },
+      onShareClick = { },
+      onOrganizationClick = { },
+      onFilterClimbsClick = { },
+      onClimbClick = { },
+      onAreaClick = { },
+      onShowAllImagesClick = { },
+    )
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun EmptyAreaPreview() = RouteSearchTheme {
+  Surface {
+    Content(
+      area = fakeAreas[2],
       onPathSectionClick = { },
       onLocationClick = { },
       onBookmarkClick = { },

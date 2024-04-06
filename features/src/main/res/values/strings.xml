@@ -1,6 +1,8 @@
 <resources>
   <string name="area_screen_description_header">Description</string>
   <string name="area_screen_description_placeholder">No description available. Consider contributing to this area at openbeta.io!</string>
+  <string name="area_screen_empty_area_placeholder">Looks like this area is empty. Consider contributing to this area at openbeta.io!</string>
+  <string name="area_screen_empty_area_header">0 Areas and 0 Climbs</string>
   <string name="area_screen_expand_description_button_label">See More</string>
   <string name="area_screen_loading_error_message">Error Loading Area</string>
   <plurals name="area_screen_number_of_climbs">
