@@ -105,6 +105,7 @@ dependencies {
   implementation(libs.koin.android)
   implementation(libs.koin.compose)
   implementation(libs.koin.core)
+  implementation(libs.kotlin.stdlib)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
