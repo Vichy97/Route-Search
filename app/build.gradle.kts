@@ -95,6 +95,7 @@ dependencies {
   implementation(project(":navigation"))
   implementation(project(":ui-common"))
   implementation(project(":util"))
+  implementation(project(":util:app-version"))
   implementation(project(":util:view"))
   implementation(libs.activity)
   implementation(libs.activity.compose)
