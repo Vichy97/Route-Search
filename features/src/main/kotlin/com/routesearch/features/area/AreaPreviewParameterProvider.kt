@@ -175,6 +175,33 @@ internal val fakeAreas = listOf(
     organizations = persistentListOf(),
     media = persistentListOf(),
   ),
+  Area(
+    id = "3",
+    metadata = metadata,
+    name = "Lower Devil's Canyon",
+    description = "",
+    path = persistentListOf(
+      "USA",
+      "Arizona",
+      "Central Arizona",
+      "Queen Creek Canyon",
+      "Lower Devil's Canyon",
+    ),
+    ancestorIds = persistentListOf(),
+    gradeMap = persistentMapOf(),
+    location = location,
+    climbCount = Area.ClimbCount(
+      total = 0,
+      sport = 0,
+      trad = 0,
+      tr = 0,
+      bouldering = 0,
+    ),
+    climbs = persistentListOf(),
+    children = persistentListOf(),
+    organizations = persistentListOf(),
+    media = persistentListOf(),
+  ),
 )
 
 // Unfortunately we can't actually use PreviewParameterProvider yet because of a bug in Android Studio
