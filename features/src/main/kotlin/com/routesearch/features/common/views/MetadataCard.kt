@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,7 @@ internal fun MetadataCard(
   location: Location?,
   createdAt: String?,
   updatedAt: String?,
+  firstAscent: String?,
   onLocationClick: () -> Unit,
 ) = Card(
   modifier = modifier,
@@ -53,6 +55,8 @@ internal fun MetadataCard(
       createdAtText,
       updatedAtIcon,
       updatedAtText,
+      firstAscentIcon,
+      firstAscentText,
     ) = createRefs()
 
     Icon(
@@ -61,12 +65,13 @@ internal fun MetadataCard(
           start.linkTo(parent.start)
           bottom.linkTo(locationText.bottom)
 
-          visibility = location?.let { Visibility.Visible } ?: Visibility.Gone
+          visibility = if (location != null) Visibility.Visible else Visibility.Gone
         }
         .size(20.dp),
       imageVector = Icons.Default.LocationOn,
       contentDescription = null,
     )
+
     LocationText(
       modifier = Modifier.constrainAs(locationText) {
         top.linkTo(parent.top)
@@ -75,7 +80,7 @@ internal fun MetadataCard(
           margin = 4.dp,
         )
 
-        visibility = location?.let { Visibility.Visible } ?: Visibility.Gone
+        visibility = if (location != null) Visibility.Visible else Visibility.Gone
       },
       location = location,
       onClick = onLocationClick,
@@ -87,12 +92,13 @@ internal fun MetadataCard(
           start.linkTo(parent.start)
           bottom.linkTo(createdAtText.bottom)
 
-          visibility = createdAt?.let { Visibility.Visible } ?: Visibility.Gone
+          visibility = if (createdAt != null) Visibility.Visible else Visibility.Gone
         }
         .size(20.dp),
       imageVector = Icons.Default.CalendarMonth,
       contentDescription = null,
     )
+
     CreatedDateText(
       modifier = Modifier
         .constrainAs(createdAtText) {
@@ -105,7 +111,7 @@ internal fun MetadataCard(
             margin = 4.dp,
           )
 
-          visibility = createdAt?.let { Visibility.Visible } ?: Visibility.Gone
+          visibility = if (createdAt != null) Visibility.Visible else Visibility.Gone
         },
       created = createdAt,
     )
@@ -116,12 +122,13 @@ internal fun MetadataCard(
           start.linkTo(parent.start)
           bottom.linkTo(updatedAtText.bottom)
 
-          visibility = updatedAt?.let { Visibility.Visible } ?: Visibility.Gone
+          visibility = if (updatedAt != null) Visibility.Visible else Visibility.Gone
         }
         .size(20.dp),
       imageVector = Icons.Default.EditCalendar,
       contentDescription = null,
     )
+
     UpdatedDateText(
       modifier = Modifier
         .constrainAs(updatedAtText) {
@@ -134,9 +141,38 @@ internal fun MetadataCard(
             margin = 8.dp,
           )
 
-          visibility = updatedAt?.let { Visibility.Visible } ?: Visibility.Gone
+          visibility = if (updatedAt != null) Visibility.Visible else Visibility.Gone
         },
       updated = updatedAt,
+    )
+
+    Icon(
+      modifier = Modifier
+        .constrainAs(firstAscentIcon) {
+          start.linkTo(parent.start)
+          bottom.linkTo(firstAscentText.bottom)
+        }
+        .size(20.dp),
+      imageVector = Icons.Default.Person,
+      contentDescription = null,
+    )
+
+    FirstAscentText(
+      modifier = Modifier
+        .constrainAs(firstAscentText) {
+          start.linkTo(
+            anchor = firstAscentIcon.end,
+            margin = 4.dp,
+          )
+          top.linkTo(
+            anchor = updatedAtText.bottom,
+            margin = 8.dp,
+            goneMargin = 8.dp,
+          )
+
+          visibility = if (firstAscent != null) Visibility.Visible else Visibility.Gone
+        },
+      firstAscent = firstAscent ?: "",
     )
   }
 }
@@ -214,6 +250,25 @@ private fun UpdatedDateText(
   )
 }
 
+@Composable
+private fun FirstAscentText(
+  modifier: Modifier = Modifier,
+  firstAscent: String,
+) {
+  val firstAscentText = buildAnnotatedString {
+    bold { append(stringResource(R.string.metadata_card_fa_title)) }
+    append(" ")
+    append(firstAscent)
+  }
+  Text(
+    modifier = modifier,
+    text = firstAscentText,
+    style = MaterialTheme.typography.titleSmall,
+    maxLines = 1,
+    overflow = TextOverflow.Ellipsis,
+  )
+}
+
 @PreviewLightDark
 @Composable
 private fun MetadataCardPreview() = RouteSearchTheme {
@@ -235,6 +290,7 @@ private fun MetadataCardPreview() = RouteSearchTheme {
         dayOfMonth = 1,
       ).monthYearFormat(),
       onLocationClick = { },
+      firstAscent = "Joe Williams",
     )
   }
 }
@@ -257,6 +313,7 @@ private fun MetadataCardPreviewNoLocation() = RouteSearchTheme {
         dayOfMonth = 1,
       ).monthYearFormat(),
       onLocationClick = { },
+      firstAscent = "Joe Williams",
     )
   }
 }
@@ -274,6 +331,7 @@ private fun MetadataCardPreviewNoDates() = RouteSearchTheme {
       createdAt = null,
       updatedAt = null,
       onLocationClick = { },
+      firstAscent = "Joe Williams",
     )
   }
 }

@@ -46,6 +46,14 @@ internal class ClimbViewModel(
 
   fun onBackClick() = navigator.popBackStack()
 
+  fun onBookmarkClick() {
+    TODO("Not implemented")
+  }
+
+  fun onShareClick() {
+    TODO("Not implemented")
+  }
+
   fun onPathSectionClick(pathSection: String) = (viewState.value as? ClimbViewState.Content)?.run {
     val pathIndex = climb.pathTokens.indexOf(pathSection)
     val ancestorId = climb.ancestorIds[pathIndex]

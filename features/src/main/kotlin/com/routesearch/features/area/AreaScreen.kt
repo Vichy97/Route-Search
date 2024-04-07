@@ -227,6 +227,7 @@ private fun Content(
     createdAt = area.metadata.createdAt.monthYearFormat(),
     updatedAt = area.metadata.updatedAt.monthYearFormat(),
     onLocationClick = { onLocationClick() },
+    firstAscent = null,
   )
 
   TextButton(
@@ -510,7 +511,7 @@ private fun Organizations(
     contentPadding = PaddingValues(
       horizontal = 16.dp,
     ),
-    horizontalArrangement = Arrangement.spacedBy(16.dp),
+    horizontalArrangement = spacedBy(16.dp),
   ) {
     items(
       items = organizations,

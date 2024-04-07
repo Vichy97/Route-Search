@@ -1,17 +1,23 @@
 package com.routesearch.features.climb
 
+import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +44,7 @@ import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
+import com.routesearch.data.climb.Type
 import com.routesearch.features.R
 import com.routesearch.features.common.views.ExpandableText
 import com.routesearch.features.common.views.Images
@@ -67,6 +74,8 @@ fun ClimbScreen() {
       onPathSectionClick = viewModel::onPathSectionClick,
       onLocationClick = viewModel::onLocationClick,
       onShowAllImagesClick = viewModel::onShowAllImagesClick,
+      onBookmarkClick = viewModel::onBookmarkClick,
+      onShareClick = viewModel::onShareClick,
     )
 
     is ClimbViewState.Loading -> Loading()
@@ -91,6 +100,8 @@ private fun Content(
   onPathSectionClick: (String) -> Unit,
   onLocationClick: () -> Unit,
   onShowAllImagesClick: () -> Unit,
+  onBookmarkClick: () -> Unit,
+  onShareClick: () -> Unit,
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -120,7 +131,11 @@ private fun Content(
         image,
         metadataCard,
         showAllImages,
+        climbInfoCard,
+        buttonRow,
         description,
+        location,
+        protection,
       ) = createRefs()
 
       Path(
@@ -199,13 +214,45 @@ private fun Content(
         createdAt = climb.metadata.createdAt?.monthYearFormat(),
         updatedAt = climb.metadata.updatedAt?.monthYearFormat(),
         onLocationClick = onLocationClick,
+        firstAscent = climb.fa,
+      )
+
+      ClimbInfoCard(
+        modifier = Modifier
+          .constrainAs(climbInfoCard) {
+            top.linkTo(
+              anchor = image.bottom,
+              margin = 16.dp,
+            )
+            end.linkTo(
+              anchor = parent.end,
+            )
+          }
+          .padding(end = 16.dp),
+        grade = if (climb.type == Type.BOULDERING) {
+          climb.grades?.vScale
+        } else {
+          climb.grades?.yds
+        },
+        type = climb.type.toString(),
+        height = climb.length,
+        pitches = if (climb.pitches.isNotEmpty()) climb.pitches.size else 1,
+      )
+
+      ButtonRow(
+        modifier = Modifier.constrainAs(buttonRow) {
+          top.linkTo(metadataCard.bottom)
+          start.linkTo(parent.start)
+        },
+        onBookmarkClick = { onBookmarkClick() },
+        onShareClick = { onShareClick() },
       )
 
       Description(
         modifier = Modifier
           .constrainAs(description) {
             top.linkTo(
-              anchor = metadataCard.bottom,
+              anchor = buttonRow.bottom,
               margin = 8.dp,
             )
             start.linkTo(parent.start)
@@ -215,6 +262,40 @@ private fun Content(
           }
           .padding(horizontal = 16.dp),
         text = climb.description.general,
+      )
+
+      Location(
+        modifier = Modifier
+          .constrainAs(location) {
+            top.linkTo(
+              anchor = description.bottom,
+              margin = 8.dp,
+            )
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (climb.description.location.isNotBlank()) Visibility.Visible else Visibility.Gone
+          }
+          .padding(horizontal = 16.dp),
+        text = climb.description.location,
+      )
+
+      Protection(
+        modifier = Modifier
+          .constrainAs(protection) {
+            top.linkTo(
+              anchor = location.bottom,
+              margin = 8.dp,
+            )
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+
+            width = Dimension.fillToConstraints
+            visibility = if (climb.description.protection.isNotBlank()) Visibility.Visible else Visibility.Gone
+          }
+          .padding(horizontal = 16.dp),
+        text = climb.description.protection,
       )
     }
   }
@@ -277,6 +358,60 @@ private fun Path(
 }
 
 @Composable
+private fun ButtonRow(
+  modifier: Modifier,
+  onBookmarkClick: () -> Unit,
+  onShareClick: () -> Unit,
+) = LazyRow(
+  modifier = modifier.padding(
+    top = 8.dp,
+  ),
+  contentPadding = PaddingValues(
+    horizontal = 16.dp,
+  ),
+  horizontalArrangement = spacedBy(8.dp),
+) {
+  item {
+    BookmarkButton(
+      onClick = { onBookmarkClick() },
+    )
+  }
+  item {
+    ShareButton(
+      onClick = { onShareClick() },
+    )
+  }
+}
+
+@Composable
+private fun BookmarkButton(
+  onClick: () -> Unit,
+) = AssistChip(
+  onClick = { onClick() },
+  leadingIcon = {
+    Icon(
+      imageVector = Icons.Default.BookmarkBorder,
+      contentDescription = null,
+    )
+  },
+  label = { Text(stringResource(R.string.common_bookmark_button_label)) },
+)
+
+@Composable
+private fun ShareButton(
+  onClick: () -> Unit,
+) = AssistChip(
+  onClick = { onClick() },
+  leadingIcon = {
+    Icon(
+      imageVector = Icons.Default.Share,
+      contentDescription = null,
+    )
+  },
+  label = { Text(stringResource(R.string.common_share_button_label)) },
+)
+
+@Composable
 private fun Description(
   modifier: Modifier = Modifier,
   text: String,
@@ -296,8 +431,58 @@ private fun Description(
 }
 
 @Composable
+private fun Location(
+  modifier: Modifier = Modifier,
+  text: String,
+) = Column(
+  modifier = modifier,
+) {
+  LocationHeader()
+
+  if (text.isNotBlank()) {
+    ExpandableText(
+      text = text,
+      maxLinesBeforeExpandable = 5,
+    )
+  } else {
+    DescriptionPlaceholder()
+  }
+}
+
+@Composable
+private fun Protection(
+  modifier: Modifier = Modifier,
+  text: String,
+) = Column(
+  modifier = modifier,
+) {
+  ProtectionHeader()
+
+  if (text.isNotBlank()) {
+    ExpandableText(
+      text = text,
+      maxLinesBeforeExpandable = 5,
+    )
+  } else {
+    DescriptionPlaceholder()
+  }
+}
+
+@Composable
 private fun DescriptionHeader() = Text(
   text = stringResource(R.string.climb_screen_description_header),
+  style = MaterialTheme.typography.titleLarge,
+)
+
+@Composable
+private fun LocationHeader() = Text(
+  text = stringResource(R.string.climb_screen_location_header),
+  style = MaterialTheme.typography.titleLarge,
+)
+
+@Composable
+private fun ProtectionHeader() = Text(
+  text = stringResource(R.string.climb_screen_protection_header),
   style = MaterialTheme.typography.titleLarge,
 )
 
@@ -316,5 +501,7 @@ private fun ClimbScreenPreview() = RouteSearchTheme {
     onPathSectionClick = { },
     onLocationClick = { },
     onShowAllImagesClick = { },
+    onBookmarkClick = { },
+    onShareClick = { },
   )
 }

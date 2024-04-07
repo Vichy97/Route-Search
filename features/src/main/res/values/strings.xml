@@ -26,10 +26,18 @@
   <string name="area_screen_v_scale_header">%1$d Boulders</string>
   <string name="area_screen_yds_header">%1$d Routes</string>
 
+  <string name="climb_info_card_height_ft_label">%1$d ft</string>
+  <string name="climb_info_card_grade_na_label">NA</string>
+  <plurals name="climb_info_card_number_of_pitches">
+    <item quantity="one">%1$d Pitch</item>
+    <item quantity="other">%1$d Pitches</item>
+  </plurals>
+
   <string name="climb_screen_created_title">Created:</string>
   <string name="climb_screen_description_header">Description</string>
   <string name="climb_screen_description_placeholder">No description available. Consider contributing to this climb at openbeta.io!</string>
   <string name="climb_screen_expand_description_button_label">See More</string>
+  <string name="climb_screen_location_header">Location</string>
   <string name="climb_screen_location_title">Lat, Lng:</string>
   <string name="climb_screen_protection_header">Protection</string>
   <string name="climb_screen_show_all_images_button_label">Show All</string>
@@ -40,6 +48,7 @@
   <string name="common_share_button_label">Share</string>
 
   <string name="metadata_card_created_title">Created:</string>
+  <string name="metadata_card_fa_title">FA:</string>
   <string name="metadata_card_location_title">Lat, Lng:</string>
   <string name="metadata_card_updated_title">Updated:</string>
 
