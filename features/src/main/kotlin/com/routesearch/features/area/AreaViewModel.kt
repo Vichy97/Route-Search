@@ -113,7 +113,18 @@ internal class AreaViewModel(
     TODO("Not implemented")
   }
 
-  fun onClimbClick(id: String) = navigator.navigate(ClimbScreenDestination(id))
+  fun onClimbClick(id: String) = (viewState.value as? AreaViewState.Content)?.run {
+    val climb = area.climbs
+      .first { it.id == id }
+
+    navigator.navigate(
+      ClimbScreenDestination(
+        id = id,
+        name = climb.name,
+        path = ArrayList(area.path),
+      ),
+    )
+  }
 
   fun onAreaClick(id: String) = (viewState.value as? AreaViewState.Content)?.run {
     val child = area.children

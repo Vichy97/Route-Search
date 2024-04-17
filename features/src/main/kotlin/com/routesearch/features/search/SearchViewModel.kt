@@ -167,7 +167,15 @@ internal class SearchViewModel(
   fun onClimbSearchResultClick(id: String) {
     saveSearchQuery(viewState.value.searchQuery)
 
-    navigator.navigate(ClimbScreenDestination(id))
+    val result = viewState.value.climbSearchResults
+      .first { it.id == id }
+    navigator.navigate(
+      ClimbScreenDestination(
+        id = id,
+        name = result.name,
+        path = ArrayList(result.pathTokens),
+      ),
+    )
   }
 
   fun onSearchHistoryEntryClick(entry: String) {

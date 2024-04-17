@@ -11,6 +11,7 @@ import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,7 +24,12 @@ internal class ClimbViewModel(
   private val intentLauncher: IntentLauncher,
 ) : ViewModel() {
 
-  private val _viewState = MutableStateFlow<ClimbViewState>(ClimbViewState.Loading)
+  private val _viewState = MutableStateFlow<ClimbViewState>(
+    ClimbViewState.Loading(
+      name = args.name,
+      path = args.path.toImmutableList(),
+    ),
+  )
   val viewState = _viewState.asStateFlow()
 
   init {

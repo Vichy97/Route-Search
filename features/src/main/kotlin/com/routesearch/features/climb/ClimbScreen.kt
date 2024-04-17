@@ -1,7 +1,6 @@
 package com.routesearch.features.climb
 
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,11 +17,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -31,7 +32,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -93,19 +93,55 @@ fun ClimbScreen() {
         onShareClick = viewModel::onShareClick,
       )
 
-      is ClimbViewState.Loading -> Loading()
+      is ClimbViewState.Loading -> Loading(
+        modifier = Modifier.padding(top = padding.calculateTopPadding()),
+        viewState = currentViewState,
+      )
+
       ClimbViewState.Idle -> Unit
     }
   }
 }
 
 @Composable
-private fun Loading() = Box(
-  modifier = Modifier.fillMaxSize(),
-  contentAlignment = Alignment.Center,
+private fun Loading(
+  modifier: Modifier = Modifier,
+  viewState: ClimbViewState.Loading,
+) = ConstraintLayout(
+  modifier = modifier.fillMaxSize(),
 ) {
-  // Progress Indicators are broken in the latest compose BOM
-  // CircularProgressIndicator()
+  val (path, name, loadingIndicator) = createRefs()
+
+  Path(
+    modifier = Modifier
+      .constrainAs(path) {
+        start.linkTo(parent.start)
+        top.linkTo(parent.top)
+      }
+      .padding(horizontal = 16.dp),
+    path = viewState.path,
+    onPathSectionClick = { },
+  )
+
+  Text(
+    modifier = Modifier
+      .constrainAs(name) {
+        start.linkTo(parent.start)
+        top.linkTo(path.bottom)
+      }
+      .padding(horizontal = 16.dp),
+    text = viewState.name,
+    style = MaterialTheme.typography.headlineMedium,
+  )
+
+  CircularProgressIndicator(
+    modifier = Modifier.constrainAs(loadingIndicator) {
+      top.linkTo(name.bottom)
+      start.linkTo(parent.start)
+      end.linkTo(parent.end)
+      bottom.linkTo(parent.bottom)
+    },
+  )
 }
 
 @Composable
@@ -484,6 +520,20 @@ private fun DescriptionPlaceholder(modifier: Modifier = Modifier) = Text(
   modifier = modifier,
   text = stringResource(R.string.climb_screen_description_placeholder),
 )
+
+@PreviewLightDark
+@Composable
+private fun LoadingPreview() = RouteSearchTheme {
+  Surface {
+    val climb = fakeClimbs[0]
+    Loading(
+      viewState = ClimbViewState.Loading(
+        name = climb.name,
+        path = climb.pathTokens,
+      ),
+    )
+  }
+}
 
 @PreviewLightDark
 @Composable
