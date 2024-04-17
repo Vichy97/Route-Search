@@ -3,7 +3,6 @@ package com.routesearch.features.area
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.spacedBy
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,6 +25,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -43,7 +43,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
@@ -117,19 +116,55 @@ fun AreaScreen() {
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
       )
 
-      is AreaViewState.Loading -> Loading()
+      is AreaViewState.Loading -> Loading(
+        modifier = Modifier.padding(top = padding.calculateTopPadding()),
+        viewState = currentViewState,
+      )
+
       AreaViewState.Idle -> Unit
     }
   }
 }
 
 @Composable
-private fun Loading() = Box(
-  modifier = Modifier.fillMaxSize(),
-  contentAlignment = Alignment.Center,
+private fun Loading(
+  modifier: Modifier = Modifier,
+  viewState: AreaViewState.Loading,
+) = ConstraintLayout(
+  modifier = modifier.fillMaxSize(),
 ) {
-  // Progress Indicators are broken in the latest compose BOM
-  // CircularProgressIndicator()
+  val (path, name, loadingIndicator) = createRefs()
+
+  Path(
+    modifier = Modifier
+      .constrainAs(path) {
+        start.linkTo(parent.start)
+        top.linkTo(parent.top)
+      }
+      .padding(horizontal = 16.dp),
+    path = viewState.path,
+    onPathSectionClick = { },
+  )
+
+  Text(
+    modifier = Modifier
+      .constrainAs(name) {
+        start.linkTo(parent.start)
+        top.linkTo(path.bottom)
+      }
+      .padding(horizontal = 16.dp),
+    text = viewState.name,
+    style = MaterialTheme.typography.headlineMedium,
+  )
+
+  CircularProgressIndicator(
+    modifier = Modifier.constrainAs(loadingIndicator) {
+      top.linkTo(name.bottom)
+      start.linkTo(parent.start)
+      end.linkTo(parent.end)
+      bottom.linkTo(parent.bottom)
+    },
+  )
 }
 
 @Composable
@@ -839,6 +874,20 @@ private fun EmptyAreaPlaceholder(
     ),
     text = stringResource(id = R.string.area_screen_empty_area_placeholder),
   )
+}
+
+@PreviewLightDark
+@Composable
+private fun LoadingPreview() = RouteSearchTheme {
+  Surface {
+    val area = fakeAreas[0]
+    Loading(
+      viewState = AreaViewState.Loading(
+        name = area.name,
+        path = area.path,
+      ),
+    )
+  }
 }
 
 @PreviewLightDark

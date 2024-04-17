@@ -153,7 +153,15 @@ internal class SearchViewModel(
   fun onAreaSearchResultClick(id: String) {
     saveSearchQuery(viewState.value.searchQuery)
 
-    navigator.navigate(AreaScreenDestination(id))
+    val result = viewState.value.areaSearchResults
+      .first { it.id == id }
+    navigator.navigate(
+      AreaScreenDestination(
+        id = id,
+        name = result.name,
+        path = ArrayList(result.pathTokens),
+      ),
+    )
   }
 
   fun onClimbSearchResultClick(id: String) {

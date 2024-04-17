@@ -57,7 +57,15 @@ internal class ClimbViewModel(
   fun onPathSectionClick(pathSection: String) = (viewState.value as? ClimbViewState.Content)?.run {
     val pathIndex = climb.pathTokens.indexOf(pathSection)
     val ancestorId = climb.ancestorIds[pathIndex]
-    navigator.navigate(AreaScreenDestination(ancestorId))
+    val ancestorPath = climb.pathTokens.subList(0, pathIndex + 1)
+
+    navigator.navigate(
+      AreaScreenDestination(
+        id = ancestorId,
+        name = pathSection,
+        path = ArrayList(ancestorPath),
+      ),
+    )
   }
 
   fun onLocationClick() = (viewState.value as? ClimbViewState.Content)?.run {
