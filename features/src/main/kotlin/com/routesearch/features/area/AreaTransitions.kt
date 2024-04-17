@@ -24,7 +24,7 @@ internal object AreaTransitions : DestinationStyle.Animated {
     }
 
   override fun AnimatedContentTransitionScope<NavBackStackEntry>.popEnterTransition() =
-    if (targetState.destination.route == AreaScreenDestination.route) {
+    if (initialState.destination.route == GalleryScreenDestination.route) {
       slideInHorizontally(
         initialOffsetX = { fullWidth -> -fullWidth },
         animationSpec = tween(TRANSITION_TIME_MS),
