@@ -69,6 +69,7 @@ dependencyAnalysis {
   issues {
     onUnusedDependencies {
       exclude(libs.leakcanary.android.get().toString())
+      exclude(libs.lifecycle.viewmodel.savedstate)
     }
   }
 }

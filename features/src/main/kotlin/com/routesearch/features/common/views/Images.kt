@@ -1,26 +1,29 @@
 package com.routesearch.features.common.views
 
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
+import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.recyclerview.widget.RecyclerView
 import coil.compose.AsyncImage
-import com.google.android.material.carousel.CarouselLayoutManager
-import com.google.android.material.carousel.CarouselSnapHelper
-import com.google.android.material.carousel.HeroCarouselStrategy
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import kotlinx.collections.immutable.ImmutableList
 
 /**
  * A composable to show either a carousel of images or a placeholder if no images are present.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun Images(
   modifier: Modifier = Modifier,
@@ -44,17 +47,37 @@ internal fun Images(
     contentScale = ContentScale.FillWidth,
   )
 } else {
-  AndroidView(
-    factory = { context ->
-      RecyclerView(context).apply {
-        layoutManager = CarouselLayoutManager(HeroCarouselStrategy())
-        adapter = CarouselAdapter(urls)
-
-        CarouselSnapHelper().attachToRecyclerView(this)
-      }
-    },
-    modifier = modifier
-      .padding(horizontal = 4.dp)
-      .clipToBounds(),
+  val carouselState = rememberCarouselState(
+    initialItem = 0,
+    itemCount = { urls.size },
   )
+  HorizontalMultiBrowseCarousel(
+    modifier = modifier
+      .heightIn(
+        min = 250.dp,
+        max = 250.dp,
+      )
+      .padding(horizontal = 8.dp),
+    state = carouselState,
+    preferredItemWidth = 300.dp,
+    itemSpacing = 8.dp,
+  ) { index ->
+    val url = urls[index]
+    SubcomposeAsyncImage(
+      modifier = Modifier
+        .size(
+          width = 300.dp,
+          height = 250.dp,
+        ),
+      loading = {
+        ImagePlaceholder()
+      },
+      model = ImageRequest.Builder(LocalContext.current)
+        .data(url)
+        .crossfade(true)
+        .build(),
+      contentDescription = null,
+      contentScale = ContentScale.Crop,
+    )
+  }
 }
