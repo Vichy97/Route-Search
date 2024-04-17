@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.routesearch.features.R
+import com.routesearch.features.common.CommonUrls.GITHUB_LINK
+import com.routesearch.features.common.CommonUrls.OPEN_BETA_LINK
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.underline

@@ -52,6 +52,8 @@ import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
+import com.routesearch.ui.common.compose.isAnnotatedAtIndex
+import com.routesearch.ui.common.compose.underline
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
 import org.koin.androidx.compose.koinViewModel
@@ -91,6 +93,7 @@ fun ClimbScreen() {
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
         onBookmarkClick = viewModel::onBookmarkClick,
         onShareClick = viewModel::onShareClick,
+        onOpenBetaClick = viewModel::onOpenBetaClick,
       )
 
       is ClimbViewState.Loading -> Loading(
@@ -153,6 +156,7 @@ private fun Content(
   onShowAllImagesClick: () -> Unit,
   onBookmarkClick: () -> Unit,
   onShareClick: () -> Unit,
+  onOpenBetaClick: () -> Unit,
 ) = ConstraintLayout(
   modifier = modifier.fillMaxWidth(),
 ) {
@@ -293,6 +297,7 @@ private fun Content(
       }
       .padding(horizontal = 16.dp),
     text = climb.description.general,
+    onOpenBetaClick = { onOpenBetaClick() },
   )
 
   Location(
@@ -310,6 +315,7 @@ private fun Content(
       }
       .padding(horizontal = 16.dp),
     text = climb.description.location,
+    onOpenBetaClick = { onOpenBetaClick() },
   )
 
   Protection(
@@ -327,6 +333,7 @@ private fun Content(
       }
       .padding(horizontal = 16.dp),
     text = climb.description.protection,
+    onOpenBetaClick = { onOpenBetaClick() },
   )
 }
 
@@ -444,6 +451,7 @@ private fun ShareButton(
 private fun Description(
   modifier: Modifier = Modifier,
   text: String,
+  onOpenBetaClick: () -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
@@ -455,7 +463,7 @@ private fun Description(
       maxLinesBeforeExpandable = 5,
     )
   } else {
-    DescriptionPlaceholder()
+    DescriptionPlaceholder { onOpenBetaClick() }
   }
 }
 
@@ -463,6 +471,7 @@ private fun Description(
 private fun Location(
   modifier: Modifier = Modifier,
   text: String,
+  onOpenBetaClick: () -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
@@ -474,7 +483,7 @@ private fun Location(
       maxLinesBeforeExpandable = 5,
     )
   } else {
-    DescriptionPlaceholder()
+    DescriptionPlaceholder { onOpenBetaClick() }
   }
 }
 
@@ -482,6 +491,7 @@ private fun Location(
 private fun Protection(
   modifier: Modifier = Modifier,
   text: String,
+  onOpenBetaClick: () -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
@@ -493,7 +503,7 @@ private fun Protection(
       maxLinesBeforeExpandable = 5,
     )
   } else {
-    DescriptionPlaceholder()
+    DescriptionPlaceholder { onOpenBetaClick() }
   }
 }
 
@@ -516,10 +526,35 @@ private fun ProtectionHeader() = Text(
 )
 
 @Composable
-private fun DescriptionPlaceholder(modifier: Modifier = Modifier) = Text(
-  modifier = modifier,
-  text = stringResource(R.string.climb_screen_description_placeholder),
-)
+private fun DescriptionPlaceholder(
+  onOpenBetaClick: () -> Unit,
+) {
+  val websiteAnnotation = "website"
+  val descriptionString = buildAnnotatedString {
+    append(stringResource(R.string.climb_screen_description_placeholder))
+
+    append(" ")
+
+    underline {
+      annotation(websiteAnnotation) {
+        append(stringResource(R.string.open_beta_title))
+      }
+    }
+  }
+  ClickableText(
+    text = descriptionString,
+    style = MaterialTheme.typography.bodyLarge.copy(
+      color = MaterialTheme.colorScheme.onSurface,
+    ),
+
+  ) {
+    val annotationClicked = descriptionString.isAnnotatedAtIndex(
+      index = it,
+      annotation = websiteAnnotation,
+    )
+    if (annotationClicked) onOpenBetaClick()
+  }
+}
 
 @PreviewLightDark
 @Composable
@@ -545,5 +580,6 @@ private fun ClimbScreenPreview() = RouteSearchTheme {
     onShowAllImagesClick = { },
     onBookmarkClick = { },
     onShareClick = { },
+    onOpenBetaClick = { },
   )
 }

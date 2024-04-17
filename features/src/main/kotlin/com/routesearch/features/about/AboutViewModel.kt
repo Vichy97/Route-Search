@@ -1,17 +1,15 @@
 package com.routesearch.features.about
 
 import androidx.lifecycle.ViewModel
+import com.routesearch.features.common.CommonUrls.GITHUB_LINK
+import com.routesearch.features.common.CommonUrls.OPEN_BETA_LINK
+import com.routesearch.features.common.CommonUrls.PLAY_STORE_LINK
+import com.routesearch.features.common.CommonUrls.PRIVACY_POLICY_LINK
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.web.WebLauncher
 import com.routesearch.util.appversion.AppVersionProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-
-internal const val GITHUB_LINK = "https://github.com/Vichy97/Route-Search"
-internal const val OPEN_BETA_LINK = "https://openbeta.io/"
-
-private const val PRIVACY_POLICY_LINK = ""
-private const val PLAY_STORE_LINK = ""
 
 internal class AboutViewModel(
   private val navigator: Navigator,

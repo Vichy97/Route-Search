@@ -69,6 +69,8 @@ import com.routesearch.features.common.views.YdsGradeChart
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
 import com.routesearch.ui.common.compose.getAnnotationAt
+import com.routesearch.ui.common.compose.isAnnotatedAtIndex
+import com.routesearch.ui.common.compose.underline
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
 import kotlinx.collections.immutable.ImmutableList
@@ -114,6 +116,7 @@ fun AreaScreen() {
         onFilterClimbsClick = viewModel::onFilterClimbsClick,
         onAreaClick = viewModel::onAreaClick,
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
+        onOpenBetaClick = viewModel::onOpenBetaClick,
       )
 
       is AreaViewState.Loading -> Loading(
@@ -181,6 +184,7 @@ private fun Content(
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
   onShowAllImagesClick: () -> Unit,
+  onOpenBetaClick: () -> Unit,
 ) = ConstraintLayout(
   modifier = modifier
     .fillMaxWidth(),
@@ -394,6 +398,7 @@ private fun Content(
         end = 16.dp,
       ),
     text = area.description,
+    onOpenBetaClick = { onOpenBetaClick() },
   )
 
   Organizations(
@@ -429,6 +434,7 @@ private fun Content(
     onFilterClimbsClick = { onFilterClimbsClick() },
     onClimbClick = { onClimbClick(it) },
     onAreaClick = { onAreaClick(it) },
+    onOpenBetaClick = { onOpenBetaClick() },
   )
 }
 
@@ -499,6 +505,7 @@ private fun Path(
 private fun Description(
   modifier: Modifier = Modifier,
   text: String,
+  onOpenBetaClick: () -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
@@ -510,7 +517,7 @@ private fun Description(
       maxLinesBeforeExpandable = 5,
     )
   } else {
-    DescriptionPlaceholder()
+    DescriptionPlaceholder { onOpenBetaClick() }
   }
 }
 
@@ -521,10 +528,35 @@ private fun DescriptionHeader() = Text(
 )
 
 @Composable
-private fun DescriptionPlaceholder(modifier: Modifier = Modifier) = Text(
-  modifier = modifier,
-  text = stringResource(R.string.area_screen_description_placeholder),
-)
+private fun DescriptionPlaceholder(
+  onClick: () -> Unit,
+) {
+  val websiteAnnotation = "website"
+  val descriptionString = buildAnnotatedString {
+    append(stringResource(R.string.area_screen_description_placeholder))
+
+    append(" ")
+
+    underline {
+      annotation(websiteAnnotation) {
+        append(stringResource(R.string.open_beta_title))
+      }
+    }
+  }
+  ClickableText(
+    text = descriptionString,
+    style = MaterialTheme.typography.bodyLarge.copy(
+      color = MaterialTheme.colorScheme.onSurface,
+    ),
+
+  ) {
+    val annotationClicked = descriptionString.isAnnotatedAtIndex(
+      index = it,
+      annotation = websiteAnnotation,
+    )
+    if (annotationClicked) onClick()
+  }
+}
 
 @Composable
 private fun Organizations(
@@ -680,6 +712,7 @@ private fun ListContent(
   onFilterClimbsClick: () -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
+  onOpenBetaClick: () -> Unit,
 ) = if (area.children.isEmpty() && area.climbs.isNotEmpty()) {
   ClimbList(
     modifier = modifier,
@@ -694,7 +727,10 @@ private fun ListContent(
     onAreaClick = { onAreaClick(it) },
   )
 } else {
-  EmptyAreaPlaceholder(modifier = modifier)
+  EmptyAreaPlaceholder(
+    modifier = modifier,
+    onClick = { onOpenBetaClick() },
+  )
 }
 
 @Composable
@@ -858,6 +894,7 @@ private fun ClimbListItemSubtitle(climb: Area.Climb) {
 @Composable
 private fun EmptyAreaPlaceholder(
   modifier: Modifier = Modifier,
+  onClick: () -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
@@ -868,12 +905,33 @@ private fun EmptyAreaPlaceholder(
     text = stringResource(R.string.area_screen_empty_area_header),
     style = MaterialTheme.typography.titleLarge,
   )
-  Text(
+  val websiteAnnotation = "website"
+  val descriptionString = buildAnnotatedString {
+    append(stringResource(R.string.area_screen_empty_area_placeholder))
+
+    append(" ")
+
+    underline {
+      annotation(websiteAnnotation) {
+        append(stringResource(R.string.open_beta_title))
+      }
+    }
+  }
+  ClickableText(
     modifier = Modifier.padding(
       horizontal = 16.dp,
     ),
-    text = stringResource(id = R.string.area_screen_empty_area_placeholder),
-  )
+    text = descriptionString,
+    style = MaterialTheme.typography.bodyLarge.copy(
+      color = MaterialTheme.colorScheme.onSurface,
+    ),
+  ) {
+    val annotationClicked = descriptionString.isAnnotatedAtIndex(
+      index = it,
+      annotation = websiteAnnotation,
+    )
+    if (annotationClicked) onClick()
+  }
 }
 
 @PreviewLightDark
@@ -906,6 +964,7 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
       onClimbClick = { },
       onAreaClick = { },
       onShowAllImagesClick = { },
+      onOpenBetaClick = { },
     )
   }
 }
@@ -926,6 +985,7 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
       onClimbClick = { },
       onAreaClick = { },
       onShowAllImagesClick = { },
+      onOpenBetaClick = { },
     )
   }
 }
@@ -946,6 +1006,7 @@ private fun EmptyAreaPreview() = RouteSearchTheme {
       onClimbClick = { },
       onAreaClick = { },
       onShowAllImagesClick = { },
+      onOpenBetaClick = { },
     )
   }
 }
