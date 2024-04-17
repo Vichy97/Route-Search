@@ -15,6 +15,7 @@ import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,7 +29,12 @@ internal class AreaViewModel(
   private val intentLauncher: IntentLauncher,
 ) : ViewModel() {
 
-  private val _viewState = MutableStateFlow<AreaViewState>(AreaViewState.Loading)
+  private val _viewState = MutableStateFlow<AreaViewState>(
+    AreaViewState.Loading(
+      name = args.name,
+      path = args.path.toImmutableList(),
+    ),
+  )
   val viewState = _viewState.asStateFlow()
 
   init {
@@ -74,7 +80,15 @@ internal class AreaViewModel(
   fun onPathSectionClick(pathSection: String) = (viewState.value as? AreaViewState.Content)?.run {
     val pathIndex = area.path.indexOf(pathSection)
     val ancestorId = area.ancestorIds[pathIndex]
-    navigator.navigate(AreaScreenDestination(ancestorId))
+    val ancestorPath = area.path.subList(0, pathIndex + 1)
+
+    navigator.navigate(
+      AreaScreenDestination(
+        id = ancestorId,
+        name = pathSection,
+        path = ArrayList(ancestorPath),
+      ),
+    )
   }
 
   fun onLocationClick() = (viewState.value as? AreaViewState.Content)?.run {
@@ -99,9 +113,30 @@ internal class AreaViewModel(
     TODO("Not implemented")
   }
 
-  fun onClimbClick(id: String) = navigator.navigate(ClimbScreenDestination(id))
+  fun onClimbClick(id: String) = (viewState.value as? AreaViewState.Content)?.run {
+    val climb = area.climbs
+      .first { it.id == id }
 
-  fun onAreaClick(id: String) = navigator.navigate(AreaScreenDestination(id))
+    navigator.navigate(
+      ClimbScreenDestination(
+        id = id,
+        name = climb.name,
+        path = ArrayList(area.path),
+      ),
+    )
+  }
+
+  fun onAreaClick(id: String) = (viewState.value as? AreaViewState.Content)?.run {
+    val child = area.children
+      .first { it.id == id }
+    navigator.navigate(
+      AreaScreenDestination(
+        id = id,
+        name = child.name,
+        path = ArrayList(area.path + child.name),
+      ),
+    )
+  }
 
   fun onShowAllImagesClick() = (viewState.value as? AreaViewState.Content)?.run {
     navigator.navigate(GalleryScreenDestination(ArrayList(area.media)))

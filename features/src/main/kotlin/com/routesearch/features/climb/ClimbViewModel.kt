@@ -11,6 +11,7 @@ import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,7 +24,12 @@ internal class ClimbViewModel(
   private val intentLauncher: IntentLauncher,
 ) : ViewModel() {
 
-  private val _viewState = MutableStateFlow<ClimbViewState>(ClimbViewState.Loading)
+  private val _viewState = MutableStateFlow<ClimbViewState>(
+    ClimbViewState.Loading(
+      name = args.name,
+      path = args.path.toImmutableList(),
+    ),
+  )
   val viewState = _viewState.asStateFlow()
 
   init {
@@ -57,7 +63,15 @@ internal class ClimbViewModel(
   fun onPathSectionClick(pathSection: String) = (viewState.value as? ClimbViewState.Content)?.run {
     val pathIndex = climb.pathTokens.indexOf(pathSection)
     val ancestorId = climb.ancestorIds[pathIndex]
-    navigator.navigate(AreaScreenDestination(ancestorId))
+    val ancestorPath = climb.pathTokens.subList(0, pathIndex + 1)
+
+    navigator.navigate(
+      AreaScreenDestination(
+        id = ancestorId,
+        name = pathSection,
+        path = ArrayList(ancestorPath),
+      ),
+    )
   }
 
   fun onLocationClick() = (viewState.value as? ClimbViewState.Content)?.run {

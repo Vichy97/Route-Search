@@ -1,7 +1,6 @@
 package com.routesearch.features.climb
 
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,11 +17,13 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -31,7 +32,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -58,6 +58,7 @@ import org.koin.androidx.compose.koinViewModel
 
 private const val MIN_GALLERY_IMAGE = 6
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Destination(
   navArgsDelegate = ClimbScreenArgs::class,
   style = ClimbTransitions::class,
@@ -67,238 +68,266 @@ fun ClimbScreen() {
   val viewModel = koinViewModel<ClimbViewModel>()
   val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  when (val currentViewState = viewState) {
-    is ClimbViewState.Content -> Content(
-      climb = currentViewState.climb,
-      onBackClick = viewModel::onBackClick,
-      onPathSectionClick = viewModel::onPathSectionClick,
-      onLocationClick = viewModel::onLocationClick,
-      onShowAllImagesClick = viewModel::onShowAllImagesClick,
-      onBookmarkClick = viewModel::onBookmarkClick,
-      onShareClick = viewModel::onShareClick,
-    )
-
-    is ClimbViewState.Loading -> Loading()
-    ClimbViewState.Idle -> Unit
-  }
-}
-
-@Composable
-private fun Loading() = Box(
-  modifier = Modifier.fillMaxSize(),
-  contentAlignment = Alignment.Center,
-) {
-  // Progress Indicators are broken in the latest compose BOM
-  // CircularProgressIndicator()
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun Content(
-  climb: Climb,
-  onBackClick: () -> Unit,
-  onPathSectionClick: (String) -> Unit,
-  onLocationClick: () -> Unit,
-  onShowAllImagesClick: () -> Unit,
-  onBookmarkClick: () -> Unit,
-  onShareClick: () -> Unit,
-) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
   Scaffold(
     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     topBar = {
       TopAppBar(
-        onBackClick = onBackClick,
+        onBackClick = viewModel::onBackClick,
         scrollBehavior = scrollBehavior,
       )
     },
   ) { padding ->
-    val scrollState = rememberScrollState()
 
-    ConstraintLayout(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(
-          top = padding.calculateTopPadding(),
-          bottom = 16.dp,
-        )
-        .verticalScroll(scrollState),
-    ) {
-      val (
-        path,
-        name,
-        image,
-        metadataCard,
-        showAllImages,
-        climbInfoCard,
-        buttonRow,
-        description,
-        location,
-        protection,
-      ) = createRefs()
-
-      Path(
+    when (val currentViewState = viewState) {
+      is ClimbViewState.Content -> Content(
         modifier = Modifier
-          .constrainAs(path) {
-            start.linkTo(parent.start)
-            top.linkTo(parent.top)
-          }
-          .padding(horizontal = 16.dp),
-        path = climb.pathTokens,
-        onPathSectionClick = onPathSectionClick,
+          .padding(top = padding.calculateTopPadding())
+          .verticalScroll(rememberScrollState()),
+        climb = currentViewState.climb,
+        onPathSectionClick = viewModel::onPathSectionClick,
+        onLocationClick = viewModel::onLocationClick,
+        onShowAllImagesClick = viewModel::onShowAllImagesClick,
+        onBookmarkClick = viewModel::onBookmarkClick,
+        onShareClick = viewModel::onShareClick,
       )
 
-      Text(
-        modifier = Modifier
-          .constrainAs(name) {
-            start.linkTo(parent.start)
-            top.linkTo(path.bottom)
-          }
-          .padding(horizontal = 16.dp),
-        text = climb.name,
-        style = MaterialTheme.typography.headlineMedium,
+      is ClimbViewState.Loading -> Loading(
+        modifier = Modifier.padding(top = padding.calculateTopPadding()),
+        viewState = currentViewState,
       )
 
-      Images(
-        modifier = Modifier
-          .constrainAs(image) {
-            top.linkTo(
-              anchor = name.bottom,
-              margin = 16.dp,
-            )
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            width = Dimension.fillToConstraints
-          }
-          .heightIn(
-            min = 250.dp,
-            max = 250.dp,
-          )
-          .padding(horizontal = 8.dp),
-        urls = climb.media,
-      )
-
-      TextButton(
-        modifier = Modifier
-          .constrainAs(showAllImages) {
-            top.linkTo(image.bottom)
-            end.linkTo(parent.end)
-
-            visibility = if (climb.media.size >= MIN_GALLERY_IMAGE) Visibility.Visible else Visibility.Gone
-          }
-          .padding(
-            end = 8.dp,
-          ),
-        onClick = { onShowAllImagesClick() },
-      ) {
-        Text(
-          text = stringResource(R.string.climb_screen_show_all_images_button_label),
-        )
-      }
-
-      MetadataCard(
-        modifier = Modifier
-          .constrainAs(metadataCard) {
-            top.linkTo(
-              anchor = image.bottom,
-              margin = 16.dp,
-            )
-            start.linkTo(parent.start)
-
-            visibility = if (climb.hasMetadata) Visibility.Visible else Visibility.Gone
-          }
-          .padding(start = 16.dp)
-          .wrapContentWidth(),
-        location = climb.location,
-        createdAt = climb.metadata.createdAt?.monthYearFormat(),
-        updatedAt = climb.metadata.updatedAt?.monthYearFormat(),
-        onLocationClick = onLocationClick,
-        firstAscent = climb.fa,
-      )
-
-      ClimbInfoCard(
-        modifier = Modifier
-          .constrainAs(climbInfoCard) {
-            top.linkTo(
-              anchor = image.bottom,
-              margin = 16.dp,
-            )
-            end.linkTo(
-              anchor = parent.end,
-            )
-          }
-          .padding(end = 16.dp),
-        grade = if (climb.type == Type.BOULDERING) {
-          climb.grades?.vScale
-        } else {
-          climb.grades?.yds
-        },
-        type = climb.type.toString(),
-        height = climb.length,
-        pitches = if (climb.pitches.isNotEmpty()) climb.pitches.size else 1,
-      )
-
-      ButtonRow(
-        modifier = Modifier.constrainAs(buttonRow) {
-          top.linkTo(metadataCard.bottom)
-          start.linkTo(parent.start)
-        },
-        onBookmarkClick = { onBookmarkClick() },
-        onShareClick = { onShareClick() },
-      )
-
-      Description(
-        modifier = Modifier
-          .constrainAs(description) {
-            top.linkTo(
-              anchor = buttonRow.bottom,
-              margin = 8.dp,
-            )
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-
-            width = Dimension.fillToConstraints
-          }
-          .padding(horizontal = 16.dp),
-        text = climb.description.general,
-      )
-
-      Location(
-        modifier = Modifier
-          .constrainAs(location) {
-            top.linkTo(
-              anchor = description.bottom,
-              margin = 8.dp,
-            )
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-
-            width = Dimension.fillToConstraints
-            visibility = if (climb.description.location.isNotBlank()) Visibility.Visible else Visibility.Gone
-          }
-          .padding(horizontal = 16.dp),
-        text = climb.description.location,
-      )
-
-      Protection(
-        modifier = Modifier
-          .constrainAs(protection) {
-            top.linkTo(
-              anchor = location.bottom,
-              margin = 8.dp,
-            )
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-
-            width = Dimension.fillToConstraints
-            visibility = if (climb.description.protection.isNotBlank()) Visibility.Visible else Visibility.Gone
-          }
-          .padding(horizontal = 16.dp),
-        text = climb.description.protection,
-      )
+      ClimbViewState.Idle -> Unit
     }
   }
+}
+
+@Composable
+private fun Loading(
+  modifier: Modifier = Modifier,
+  viewState: ClimbViewState.Loading,
+) = ConstraintLayout(
+  modifier = modifier.fillMaxSize(),
+) {
+  val (path, name, loadingIndicator) = createRefs()
+
+  Path(
+    modifier = Modifier
+      .constrainAs(path) {
+        start.linkTo(parent.start)
+        top.linkTo(parent.top)
+      }
+      .padding(horizontal = 16.dp),
+    path = viewState.path,
+    onPathSectionClick = { },
+  )
+
+  Text(
+    modifier = Modifier
+      .constrainAs(name) {
+        start.linkTo(parent.start)
+        top.linkTo(path.bottom)
+      }
+      .padding(horizontal = 16.dp),
+    text = viewState.name,
+    style = MaterialTheme.typography.headlineMedium,
+  )
+
+  CircularProgressIndicator(
+    modifier = Modifier.constrainAs(loadingIndicator) {
+      top.linkTo(name.bottom)
+      start.linkTo(parent.start)
+      end.linkTo(parent.end)
+      bottom.linkTo(parent.bottom)
+    },
+  )
+}
+
+@Composable
+private fun Content(
+  modifier: Modifier = Modifier,
+  climb: Climb,
+  onPathSectionClick: (String) -> Unit,
+  onLocationClick: () -> Unit,
+  onShowAllImagesClick: () -> Unit,
+  onBookmarkClick: () -> Unit,
+  onShareClick: () -> Unit,
+) = ConstraintLayout(
+  modifier = modifier.fillMaxWidth(),
+) {
+  val (
+    path,
+    name,
+    image,
+    metadataCard,
+    showAllImages,
+    climbInfoCard,
+    buttonRow,
+    description,
+    location,
+    protection,
+  ) = createRefs()
+
+  Path(
+    modifier = Modifier
+      .constrainAs(path) {
+        start.linkTo(parent.start)
+        top.linkTo(parent.top)
+      }
+      .padding(horizontal = 16.dp),
+    path = climb.pathTokens,
+    onPathSectionClick = onPathSectionClick,
+  )
+
+  Text(
+    modifier = Modifier
+      .constrainAs(name) {
+        start.linkTo(parent.start)
+        top.linkTo(path.bottom)
+      }
+      .padding(horizontal = 16.dp),
+    text = climb.name,
+    style = MaterialTheme.typography.headlineMedium,
+  )
+
+  Images(
+    modifier = Modifier
+      .constrainAs(image) {
+        top.linkTo(
+          anchor = name.bottom,
+          margin = 16.dp,
+        )
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+        width = Dimension.fillToConstraints
+      }
+      .heightIn(
+        min = 250.dp,
+        max = 250.dp,
+      )
+      .padding(horizontal = 8.dp),
+    urls = climb.media,
+  )
+
+  TextButton(
+    modifier = Modifier
+      .constrainAs(showAllImages) {
+        top.linkTo(image.bottom)
+        end.linkTo(parent.end)
+
+        visibility = if (climb.media.size >= MIN_GALLERY_IMAGE) Visibility.Visible else Visibility.Gone
+      }
+      .padding(
+        end = 8.dp,
+      ),
+    onClick = { onShowAllImagesClick() },
+  ) {
+    Text(
+      text = stringResource(R.string.climb_screen_show_all_images_button_label),
+    )
+  }
+
+  MetadataCard(
+    modifier = Modifier
+      .constrainAs(metadataCard) {
+        top.linkTo(
+          anchor = image.bottom,
+          margin = 16.dp,
+        )
+        start.linkTo(parent.start)
+
+        visibility = if (climb.hasMetadata) Visibility.Visible else Visibility.Gone
+      }
+      .padding(start = 16.dp)
+      .wrapContentWidth(),
+    location = climb.location,
+    createdAt = climb.metadata.createdAt?.monthYearFormat(),
+    updatedAt = climb.metadata.updatedAt?.monthYearFormat(),
+    onLocationClick = onLocationClick,
+    firstAscent = climb.fa,
+  )
+
+  ClimbInfoCard(
+    modifier = Modifier
+      .constrainAs(climbInfoCard) {
+        top.linkTo(
+          anchor = image.bottom,
+          margin = 16.dp,
+        )
+        end.linkTo(
+          anchor = parent.end,
+        )
+      }
+      .padding(end = 16.dp),
+    grade = if (climb.type == Type.BOULDERING) {
+      climb.grades?.vScale
+    } else {
+      climb.grades?.yds
+    },
+    type = climb.type.toString(),
+    height = climb.length,
+    pitches = if (climb.pitches.isNotEmpty()) climb.pitches.size else 1,
+  )
+
+  ButtonRow(
+    modifier = Modifier.constrainAs(buttonRow) {
+      top.linkTo(metadataCard.bottom)
+      start.linkTo(parent.start)
+    },
+    onBookmarkClick = { onBookmarkClick() },
+    onShareClick = { onShareClick() },
+  )
+
+  Description(
+    modifier = Modifier
+      .constrainAs(description) {
+        top.linkTo(
+          anchor = buttonRow.bottom,
+          margin = 8.dp,
+        )
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+
+        width = Dimension.fillToConstraints
+      }
+      .padding(horizontal = 16.dp),
+    text = climb.description.general,
+  )
+
+  Location(
+    modifier = Modifier
+      .constrainAs(location) {
+        top.linkTo(
+          anchor = description.bottom,
+          margin = 8.dp,
+        )
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+
+        width = Dimension.fillToConstraints
+        visibility = if (climb.description.location.isNotBlank()) Visibility.Visible else Visibility.Gone
+      }
+      .padding(horizontal = 16.dp),
+    text = climb.description.location,
+  )
+
+  Protection(
+    modifier = Modifier
+      .constrainAs(protection) {
+        top.linkTo(
+          anchor = location.bottom,
+          margin = 8.dp,
+        )
+        start.linkTo(parent.start)
+        end.linkTo(parent.end)
+
+        width = Dimension.fillToConstraints
+        visibility = if (climb.description.protection.isNotBlank()) Visibility.Visible else Visibility.Gone
+      }
+      .padding(horizontal = 16.dp),
+    text = climb.description.protection,
+  )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -494,10 +523,23 @@ private fun DescriptionPlaceholder(modifier: Modifier = Modifier) = Text(
 
 @PreviewLightDark
 @Composable
+private fun LoadingPreview() = RouteSearchTheme {
+  Surface {
+    val climb = fakeClimbs[0]
+    Loading(
+      viewState = ClimbViewState.Loading(
+        name = climb.name,
+        path = climb.pathTokens,
+      ),
+    )
+  }
+}
+
+@PreviewLightDark
+@Composable
 private fun ClimbScreenPreview() = RouteSearchTheme {
   Content(
     climb = fakeClimbs[0],
-    onBackClick = { },
     onPathSectionClick = { },
     onLocationClick = { },
     onShowAllImagesClick = { },

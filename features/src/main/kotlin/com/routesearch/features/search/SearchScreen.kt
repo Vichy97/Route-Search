@@ -50,7 +50,9 @@ import com.routesearch.ui.common.theme.RouteSearchTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
-@Destination
+@Destination(
+  style = SearchScreenTransitions::class,
+)
 @RootNavGraph(start = true)
 @Composable
 fun SearchScreen() {
