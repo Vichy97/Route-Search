@@ -3,7 +3,7 @@ package com.routesearch.data.local.search
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringSetPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.map
 import logcat.LogPriority
 import logcat.asLog
@@ -16,10 +16,10 @@ internal class SearchHistoryDataStore(
   private val dataStore: DataStore<Preferences>,
 ) : SearchHistoryDataSource {
 
-  private val searchHistoryKey = stringSetPreferencesKey("search-history")
+  private val searchHistoryKey = stringPreferencesKey("search-history")
 
   override fun searchHistory() = dataStore.data.map {
-    it[searchHistoryKey]?.toList()?.reversed() ?: emptyList()
+    it[searchHistoryKey]?.split(",")?.reversed() ?: emptyList()
   }
 
   override suspend fun addSearchQuery(query: String) = try {
@@ -34,11 +34,15 @@ internal class SearchHistoryDataStore(
 
   private suspend fun writeSearchQueryToPreferences(query: String) {
     dataStore.edit {
-      val currentHistory = it[searchHistoryKey] ?: emptySet()
+      val currentHistory = it[searchHistoryKey]?.split(",")?.toMutableList() ?: mutableListOf()
 
-      it[searchHistoryKey] = (currentHistory + query).toList()
+      // Move query to top of list if it already exists
+      currentHistory.remove(query)
+      currentHistory.add(query)
+
+      it[searchHistoryKey] = currentHistory
         .takeLast(MaxHistoryLength)
-        .toSet()
+        .joinToString(",")
     }
   }
 }
