@@ -8,10 +8,12 @@ import com.routesearch.data.search.SearchService
 import com.routesearch.features.R
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
+import com.routesearch.features.search.SearchViewState.NetworkError
 import com.routesearch.features.search.SearchViewState.ShowingHistory
 import com.routesearch.features.search.SearchViewState.ShowingResults
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.snackbar.SnackbarManager
+import com.routesearch.util.common.error.Error
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
 import kotlinx.coroutines.FlowPreview
@@ -93,7 +95,7 @@ internal class SearchViewModel(
     searchJob = viewModelScope.launch {
       searchService.search(query)
         .onSuccess(::onSearchSuccess)
-        .onFailure { onSearchFailure() }
+        .onFailure(::onSearchFailure)
     }
   }
 
@@ -120,8 +122,17 @@ internal class SearchViewModel(
     )
   }
 
-  private fun onSearchFailure() {
-    snackbarManager.showSnackbar(R.string.search_screen_search_error_message)
+  private fun onSearchFailure(error: Error) {
+    if (error is Error.Network) {
+      _viewState.update {
+        NetworkError(
+          searchActive = it.searchActive,
+          searchQuery = it.searchQuery,
+        )
+      }
+    } else {
+      snackbarManager.showSnackbar(R.string.search_screen_search_error_message)
+    }
   }
 
   fun onSearchActiveChange(searchActive: Boolean) {
@@ -198,5 +209,15 @@ internal class SearchViewModel(
       )
     }
     searchQuery.value = entry
+  }
+
+  fun onRetryClick() {
+    _viewState.update {
+      SearchViewState.Loading(
+        searchActive = it.searchActive,
+        searchQuery = it.searchQuery,
+      )
+    }
+    search(query = viewState.value.searchQuery)
   }
 }

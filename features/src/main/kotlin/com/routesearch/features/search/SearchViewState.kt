@@ -63,4 +63,18 @@ sealed class SearchViewState {
       searchActive = newSearchActive,
     )
   }
+
+  data class NetworkError(
+    override val searchActive: Boolean = false,
+    override val searchQuery: String = "",
+  ) : SearchViewState() {
+
+    override fun copy(
+      newSearchQuery: String,
+      newSearchActive: Boolean,
+    ): NetworkError = copy(
+      searchQuery = newSearchQuery,
+      searchActive = newSearchActive,
+    )
+  }
 }

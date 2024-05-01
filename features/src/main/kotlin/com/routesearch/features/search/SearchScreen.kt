@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
@@ -51,6 +52,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ErrorPlaceholder
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
@@ -76,6 +78,7 @@ fun SearchScreen() {
     onAreaSearchResultClick = viewModel::onAreaSearchResultClick,
     onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
     onSearchHistoryEntryClick = viewModel::onSearchHistoryEntryClick,
+    onRetryClick = viewModel::onRetryClick,
   )
 }
 
@@ -92,6 +95,7 @@ private fun SearchScreenContent(
   onAreaSearchResultClick: (String) -> Unit,
   onClimbSearchResultClick: (String) -> Unit,
   onSearchHistoryEntryClick: (String) -> Unit,
+  onRetryClick: () -> Unit,
 ) = ConstraintLayout(
   modifier = Modifier
     .fillMaxSize()
@@ -132,6 +136,11 @@ private fun SearchScreenContent(
         onClimbFilterClick = onClimbFilterClick,
         onAreaSearchResultClick = onAreaSearchResultClick,
         onClimbSearchResultClick = onClimbSearchResultClick,
+      )
+
+      is SearchViewState.NetworkError -> NetworkError(
+        modifier = Modifier.fillMaxSize(),
+        onRetryClick = { onRetryClick() },
       )
     }
   }
@@ -439,6 +448,18 @@ private fun ClimbSearchResult(
   ),
 )
 
+@Composable
+private fun NetworkError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier,
+  image = Icons.Rounded.WifiOff,
+  message = stringResource(R.string.common_network_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
 @PreviewLightDark
 @Composable
 private fun InactivePreview() = RouteSearchTheme {
@@ -456,6 +477,7 @@ private fun InactivePreview() = RouteSearchTheme {
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
+    onRetryClick = { },
   )
 }
 
@@ -506,6 +528,7 @@ private fun ShowingSearchResultsPreview() = RouteSearchTheme {
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
+    onRetryClick = { },
   )
 }
 
@@ -532,5 +555,28 @@ private fun ShowingHistoryPreview() = RouteSearchTheme {
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
+    onRetryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun NetworkErrorPreview() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState.NetworkError(
+      searchActive = true,
+      searchQuery = "",
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+    onRetryClick = { },
   )
 }
