@@ -25,12 +25,14 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -293,6 +295,9 @@ private fun SearchHistoryEntry(
     )
   },
   headlineContent = { Text(text) },
+  colors = ListItemDefaults.colors(
+    containerColor = Color.Transparent,
+  ),
 )
 
 @Composable
@@ -357,6 +362,9 @@ private fun AreaSearchResult(
 ) = ListItem(
   modifier = Modifier.clickable { onClick(result.id) },
   headlineContent = { AreaSearchResultTitle(result) },
+  colors = ListItemDefaults.colors(
+    containerColor = Color.Transparent,
+  ),
 )
 
 @Composable
@@ -409,6 +417,9 @@ private fun ClimbSearchResult(
   },
   headlineContent = { Text(result.name) },
   supportingContent = { Text(result.subtitle) },
+  colors = ListItemDefaults.colors(
+    containerColor = Color.Transparent,
+  ),
 )
 
 @PreviewLightDark
