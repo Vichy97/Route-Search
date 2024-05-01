@@ -31,7 +31,9 @@ internal class SearchViewModel(
   private val navigator: Navigator,
 ) : ViewModel() {
 
-  private val _viewState = MutableStateFlow(SearchViewState())
+  private val _viewState = MutableStateFlow(SearchViewState(
+    searchHistory = searchHistoryRepository.searchHistory.value
+  ))
   val viewState = _viewState.asStateFlow()
 
   private var searchQuery = MutableStateFlow("")
@@ -48,7 +50,7 @@ internal class SearchViewModel(
   }
 
   private fun collectSearchHistory() = viewModelScope.launch {
-    searchHistoryRepository.searchHistory()
+    searchHistoryRepository.searchHistory
       .collect { onSearchHistoryChange(it) }
   }
 
