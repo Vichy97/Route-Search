@@ -111,14 +111,13 @@ private fun SearchScreenContent(
     onClearClick = onClearClick,
     onSearch = onSearch,
   ) {
-    if (viewState.searchQuery.isEmpty()) {
-      SearchHistoryList(
+    when (viewState) {
+      is SearchViewState.ShowingHistory -> SearchHistoryList(
         modifier = Modifier.fillMaxSize(),
         history = viewState.searchHistory,
         onSearchHistoryEntryClick = onSearchHistoryEntryClick,
       )
-    } else {
-      SearchResultsList(
+      is SearchViewState.ShowingResults -> SearchResultsList(
         modifier = Modifier.fillMaxSize(),
         viewState = viewState,
         onAreaFilterClick = onAreaFilterClick,
@@ -213,7 +212,7 @@ private fun SearchBarTrailingIcon(
 @Composable
 private fun SearchResultsList(
   modifier: Modifier,
-  viewState: SearchViewState,
+  viewState: SearchViewState.ShowingResults,
   onAreaFilterClick: () -> Unit,
   onClimbFilterClick: () -> Unit,
   onAreaSearchResultClick: (String) -> Unit,
@@ -426,7 +425,9 @@ private fun ClimbSearchResult(
 @Composable
 private fun InactivePreview() = RouteSearchTheme {
   SearchScreenContent(
-    viewState = SearchViewState(),
+    viewState = SearchViewState.ShowingHistory(
+      searchHistory = emptyList(),
+    ),
     onSearchQueryChange = { },
     onSearchActiveChange = { },
     onBackClick = { },
@@ -442,9 +443,9 @@ private fun InactivePreview() = RouteSearchTheme {
 
 @PreviewLightDark
 @Composable
-private fun ActivePreview() = RouteSearchTheme {
+private fun ShowingSearchResultsPreview() = RouteSearchTheme {
   SearchScreenContent(
-    viewState = SearchViewState(
+    viewState = SearchViewState.ShowingResults(
       searchActive = true,
       searchQuery = "Atlantis",
       climbSearchResults = listOf(
@@ -492,12 +493,11 @@ private fun ActivePreview() = RouteSearchTheme {
 
 @PreviewLightDark
 @Composable
-private fun ActivePreviewEmptyQuery() = RouteSearchTheme {
+private fun ShowingHistoryPreview() = RouteSearchTheme {
   SearchScreenContent(
-    viewState = SearchViewState(
+    viewState = SearchViewState.ShowingHistory(
       searchActive = true,
       searchQuery = "",
-      climbSearchResults = emptyList(),
       searchHistory = listOf(
         "Atlantis",
         "The Pond",
