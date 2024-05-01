@@ -13,6 +13,20 @@ sealed class SearchViewState {
     newSearchActive: Boolean = this.searchActive,
   ): SearchViewState
 
+  data class Loading(
+    override val searchActive: Boolean = false,
+    override val searchQuery: String = "",
+  ) : SearchViewState() {
+
+    override fun copy(
+      newSearchQuery: String,
+      newSearchActive: Boolean,
+    ): Loading = copy(
+      searchQuery = newSearchQuery,
+      searchActive = newSearchActive,
+    )
+  }
+
   data class ShowingHistory(
     override val searchActive: Boolean = false,
     override val searchQuery: String = "",

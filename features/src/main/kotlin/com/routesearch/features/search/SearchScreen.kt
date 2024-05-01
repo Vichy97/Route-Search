@@ -2,6 +2,7 @@ package com.routesearch.features.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
@@ -31,6 +33,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -112,11 +115,16 @@ private fun SearchScreenContent(
     onSearch = onSearch,
   ) {
     when (viewState) {
+      is SearchViewState.Loading -> Loading(
+        modifier = Modifier.fillMaxSize(),
+      )
+
       is SearchViewState.ShowingHistory -> SearchHistoryList(
         modifier = Modifier.fillMaxSize(),
         history = viewState.searchHistory,
         onSearchHistoryEntryClick = onSearchHistoryEntryClick,
       )
+
       is SearchViewState.ShowingResults -> SearchResultsList(
         modifier = Modifier.fillMaxSize(),
         viewState = viewState,
@@ -207,6 +215,16 @@ private fun SearchBarTrailingIcon(
       contentDescription = null,
     )
   }
+}
+
+@Composable
+private fun Loading(
+  modifier: Modifier = Modifier,
+) = Box(
+  modifier = modifier,
+  contentAlignment = Alignment.Center,
+) {
+  CircularProgressIndicator()
 }
 
 @Composable
