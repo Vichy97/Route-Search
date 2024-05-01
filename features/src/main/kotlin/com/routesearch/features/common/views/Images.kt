@@ -1,5 +1,6 @@
 package com.routesearch.features.common.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,6 +29,7 @@ import kotlinx.collections.immutable.ImmutableList
 internal fun Images(
   modifier: Modifier = Modifier,
   urls: ImmutableList<String>,
+  onImageClick: (Int) -> Unit,
 ) = if (urls.isEmpty()) {
   ImagePlaceholder(
     modifier = modifier
@@ -38,7 +40,8 @@ internal fun Images(
   AsyncImage(
     modifier = modifier
       .padding(horizontal = 8.dp)
-      .clip(RoundedCornerShape(32.dp)),
+      .clip(RoundedCornerShape(32.dp))
+      .clickable { onImageClick(0) },
     model = urls.first(),
     placeholder = ColorPainter(
       color = MaterialTheme.colorScheme.surfaceVariant,
@@ -68,7 +71,8 @@ internal fun Images(
         .size(
           width = 300.dp,
           height = 250.dp,
-        ),
+        )
+        .clickable { onImageClick(index) },
       loading = {
         ImagePlaceholder()
       },

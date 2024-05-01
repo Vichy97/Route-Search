@@ -1,5 +1,6 @@
 package com.routesearch.features.gallery
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,6 +48,7 @@ internal fun GalleryScreen() {
   Content(
     urls = viewState.urls,
     onBackClick = viewModel::onBackClick,
+    onImageClick = viewModel::onImageClick,
   )
 }
 
@@ -55,6 +57,7 @@ internal fun GalleryScreen() {
 private fun Content(
   urls: ImmutableList<String>,
   onBackClick: () -> Unit,
+  onImageClick: (Int) -> Unit,
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
@@ -79,7 +82,10 @@ private fun Content(
       horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
       items(urls.size) { index ->
-        Image(urls[index])
+        Image(
+          url = urls[index],
+          onClick = { onImageClick(index) },
+        )
       }
     }
   }
@@ -115,13 +121,15 @@ private fun NavigationButton(
 @Composable
 private fun Image(
   url: String,
+  onClick: (String) -> Unit,
 ) {
   val requestedImageSize = with(LocalDensity.current) { 200.dp.roundToPx() }
 
   SubcomposeAsyncImage(
     modifier = Modifier
       .clip(RoundedCornerShape(32.dp))
-      .height(200.dp),
+      .height(200.dp)
+      .clickable { onClick(url) },
     loading = {
       ImagePlaceholder(
         modifier = Modifier.height(200.dp),

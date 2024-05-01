@@ -10,6 +10,7 @@ import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.features.destinations.GalleryScreenDestination
+import com.routesearch.features.destinations.ImageViewerScreenDestination
 import com.routesearch.features.destinations.OrganizationDialogDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
@@ -145,5 +146,9 @@ internal class AreaViewModel(
 
   fun onShowAllImagesClick() = (viewState.value as? AreaViewState.Content)?.run {
     navigator.navigate(GalleryScreenDestination(ArrayList(area.media)))
+  }
+
+  fun onImageClick(index: Int) = (viewState.value as? AreaViewState.Content)?.run {
+    navigator.navigate(ImageViewerScreenDestination(ArrayList(area.media), index))
   }
 }

@@ -117,6 +117,7 @@ fun AreaScreen() {
         onAreaClick = viewModel::onAreaClick,
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
         onOpenBetaClick = viewModel::onOpenBetaClick,
+        onImageClick = viewModel::onImageClick,
       )
 
       is AreaViewState.Loading -> Loading(
@@ -185,6 +186,7 @@ private fun Content(
   onAreaClick: (String) -> Unit,
   onShowAllImagesClick: () -> Unit,
   onOpenBetaClick: () -> Unit,
+  onImageClick: (Int) -> Unit,
 ) = ConstraintLayout(
   modifier = modifier
     .fillMaxWidth(),
@@ -248,6 +250,7 @@ private fun Content(
       )
       .padding(horizontal = 8.dp),
     urls = area.media,
+    onImageClick = { onImageClick(it) },
   )
 
   MetadataCard(
@@ -965,6 +968,7 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
       onAreaClick = { },
       onShowAllImagesClick = { },
       onOpenBetaClick = { },
+      onImageClick = { },
     )
   }
 }
@@ -986,6 +990,7 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
       onAreaClick = { },
       onShowAllImagesClick = { },
       onOpenBetaClick = { },
+      onImageClick = { },
     )
   }
 }
@@ -1007,6 +1012,7 @@ private fun EmptyAreaPreview() = RouteSearchTheme {
       onAreaClick = { },
       onShowAllImagesClick = { },
       onOpenBetaClick = { },
+      onImageClick = { },
     )
   }
 }
