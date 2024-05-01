@@ -191,12 +191,12 @@ internal class SearchViewModel(
   }
 
   fun onSearchHistoryEntryClick(entry: String) {
-    searchQuery.value = entry
-
     _viewState.update {
-      (it as ShowingHistory).copy(
-        newSearchQuery = entry,
+      SearchViewState.Loading(
+        searchActive = it.searchActive,
+        searchQuery = entry,
       )
     }
+    searchQuery.value = entry
   }
 }
