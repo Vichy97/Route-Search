@@ -3,17 +3,50 @@ package com.routesearch.features.search
 import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
 
-internal data class SearchViewState(
-  val searchActive: Boolean = false,
-  val searchQuery: String = "",
-  val areaFilterSelected: Boolean = true,
-  val climbFilterSelected: Boolean = true,
-  val areaSearchResults: List<AreaSearchResult> = emptyList(),
-  val climbSearchResults: List<ClimbSearchResult> = emptyList(),
-  val searchHistory: List<String> = emptyList(),
-) {
+sealed class SearchViewState {
 
-  val allFiltersSelected = areaFilterSelected && climbFilterSelected
+  abstract val searchActive: Boolean
+  abstract val searchQuery: String
 
-  val noFiltersSelected = !areaFilterSelected && !climbFilterSelected
+  abstract fun copy(
+    newSearchQuery: String = this.searchQuery,
+    newSearchActive: Boolean = this.searchActive,
+  ): SearchViewState
+
+  data class ShowingHistory(
+    override val searchActive: Boolean = false,
+    override val searchQuery: String = "",
+    val searchHistory: List<String>,
+  ) : SearchViewState() {
+
+    override fun copy(
+      newSearchQuery: String,
+      newSearchActive: Boolean,
+    ): ShowingHistory = copy(
+      searchQuery = newSearchQuery,
+      searchActive = newSearchActive,
+    )
+  }
+
+  data class ShowingResults(
+    override val searchActive: Boolean = false,
+    override val searchQuery: String = "",
+    val areaSearchResults: List<AreaSearchResult> = emptyList(),
+    val climbSearchResults: List<ClimbSearchResult> = emptyList(),
+    val areaFilterSelected: Boolean = true,
+    val climbFilterSelected: Boolean = true,
+  ) : SearchViewState() {
+
+    val allFiltersSelected = areaFilterSelected && climbFilterSelected
+
+    val noFiltersSelected = !areaFilterSelected && !climbFilterSelected
+
+    override fun copy(
+      newSearchQuery: String,
+      newSearchActive: Boolean,
+    ): ShowingResults = copy(
+      searchQuery = newSearchQuery,
+      searchActive = newSearchActive,
+    )
+  }
 }
