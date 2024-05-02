@@ -110,7 +110,6 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
-  implementation(libs.material3)
   implementation(libs.navigation.common)
   implementation(libs.navigation.compose)
   implementation(libs.navigation.runtime)
