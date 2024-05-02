@@ -79,4 +79,18 @@ sealed class SearchViewState {
       searchActive = newSearchActive,
     )
   }
+
+  data class UnknownError(
+    override val searchActive: Boolean = false,
+    override val searchQuery: String = "",
+  ) : SearchViewState() {
+
+    override fun copy(
+      newSearchQuery: String,
+      newSearchActive: Boolean,
+    ): UnknownError = copy(
+      searchQuery = newSearchQuery,
+      searchActive = newSearchActive,
+    )
+  }
 }

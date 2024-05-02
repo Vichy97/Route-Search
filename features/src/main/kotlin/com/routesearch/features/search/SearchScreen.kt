@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -140,6 +141,11 @@ private fun SearchScreenContent(
       )
 
       is SearchViewState.NetworkError -> NetworkError(
+        modifier = Modifier.fillMaxSize(),
+        onRetryClick = { onRetryClick() },
+      )
+
+      is SearchViewState.UnknownError -> UnknownError(
         modifier = Modifier.fillMaxSize(),
         onRetryClick = { onRetryClick() },
       )
@@ -494,6 +500,18 @@ private fun NetworkError(
   onRetryClick = { onRetryClick() },
 )
 
+@Composable
+private fun UnknownError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier,
+  image = Icons.Rounded.Warning,
+  message = stringResource(R.string.common_generic_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
 @PreviewLightDark
 @Composable
 private fun InactivePreview() = RouteSearchTheme {
@@ -620,6 +638,28 @@ private fun ShowingHistoryPreview() = RouteSearchTheme {
 private fun NetworkErrorPreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.NetworkError(
+      searchActive = true,
+      searchQuery = "",
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+    onRetryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun UnknownErrorPreview() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState.UnknownError(
       searchActive = true,
       searchQuery = "",
     ),

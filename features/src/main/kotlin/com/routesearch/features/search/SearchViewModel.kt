@@ -5,14 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.routesearch.data.search.SearchHistoryRepository
 import com.routesearch.data.search.SearchResults
 import com.routesearch.data.search.SearchService
-import com.routesearch.features.R
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.features.search.SearchViewState.NetworkError
 import com.routesearch.features.search.SearchViewState.ShowingHistory
 import com.routesearch.features.search.SearchViewState.ShowingResults
+import com.routesearch.features.search.SearchViewState.UnknownError
 import com.routesearch.navigation.Navigator
-import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.util.common.error.Error
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
@@ -31,7 +30,6 @@ private const val SEARCH_DEBOUNCE_MS = 200L
 internal class SearchViewModel(
   private val searchService: SearchService,
   private val searchHistoryRepository: SearchHistoryRepository,
-  private val snackbarManager: SnackbarManager,
   private val navigator: Navigator,
 ) : ViewModel() {
 
@@ -122,16 +120,17 @@ internal class SearchViewModel(
     )
   }
 
-  private fun onSearchFailure(error: Error) {
+  private fun onSearchFailure(error: Error) = _viewState.update {
     if (error is Error.Network) {
-      _viewState.update {
-        NetworkError(
-          searchActive = it.searchActive,
-          searchQuery = it.searchQuery,
-        )
-      }
+      NetworkError(
+        searchActive = it.searchActive,
+        searchQuery = it.searchQuery,
+      )
     } else {
-      snackbarManager.showSnackbar(R.string.search_screen_search_error_message)
+      UnknownError(
+        searchActive = it.searchActive,
+        searchQuery = it.searchQuery,
+      )
     }
   }
 
