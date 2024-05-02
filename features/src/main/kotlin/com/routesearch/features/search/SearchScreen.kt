@@ -2,6 +2,7 @@ package com.routesearch.features.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,17 +21,24 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material.icons.rounded.WifiOff
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -46,6 +54,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ErrorPlaceholder
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
@@ -71,6 +80,7 @@ fun SearchScreen() {
     onAreaSearchResultClick = viewModel::onAreaSearchResultClick,
     onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
     onSearchHistoryEntryClick = viewModel::onSearchHistoryEntryClick,
+    onRetryClick = viewModel::onRetryClick,
   )
 }
 
@@ -87,6 +97,7 @@ private fun SearchScreenContent(
   onAreaSearchResultClick: (String) -> Unit,
   onClimbSearchResultClick: (String) -> Unit,
   onSearchHistoryEntryClick: (String) -> Unit,
+  onRetryClick: () -> Unit,
 ) = ConstraintLayout(
   modifier = Modifier
     .fillMaxSize()
@@ -109,20 +120,34 @@ private fun SearchScreenContent(
     onClearClick = onClearClick,
     onSearch = onSearch,
   ) {
-    if (viewState.searchQuery.isEmpty()) {
-      SearchHistoryList(
+    when (viewState) {
+      is SearchViewState.Loading -> Loading(
+        modifier = Modifier.fillMaxSize(),
+      )
+
+      is SearchViewState.ShowingHistory -> SearchHistoryList(
         modifier = Modifier.fillMaxSize(),
         history = viewState.searchHistory,
         onSearchHistoryEntryClick = onSearchHistoryEntryClick,
       )
-    } else {
-      SearchResultsList(
+
+      is SearchViewState.ShowingResults -> ShowingResults(
         modifier = Modifier.fillMaxSize(),
         viewState = viewState,
         onAreaFilterClick = onAreaFilterClick,
         onClimbFilterClick = onClimbFilterClick,
         onAreaSearchResultClick = onAreaSearchResultClick,
         onClimbSearchResultClick = onClimbSearchResultClick,
+      )
+
+      is SearchViewState.NetworkError -> NetworkError(
+        modifier = Modifier.fillMaxSize(),
+        onRetryClick = { onRetryClick() },
+      )
+
+      is SearchViewState.UnknownError -> UnknownError(
+        modifier = Modifier.fillMaxSize(),
+        onRetryClick = { onRetryClick() },
       )
     }
   }
@@ -209,9 +234,43 @@ private fun SearchBarTrailingIcon(
 }
 
 @Composable
+private fun Loading(
+  modifier: Modifier = Modifier,
+) = Box(
+  modifier = modifier,
+  contentAlignment = Alignment.Center,
+) {
+  CircularProgressIndicator()
+}
+
+@Composable
+private fun ShowingResults(
+  modifier: Modifier,
+  viewState: SearchViewState.ShowingResults,
+  onAreaFilterClick: () -> Unit,
+  onClimbFilterClick: () -> Unit,
+  onAreaSearchResultClick: (String) -> Unit,
+  onClimbSearchResultClick: (String) -> Unit,
+) = Box {
+  if (viewState.hasNoResults) {
+    NoResultsError(
+      modifier = Modifier.fillMaxSize(),
+    )
+  }
+  SearchResultsList(
+    modifier = modifier,
+    viewState = viewState,
+    onAreaFilterClick = { onAreaFilterClick() },
+    onClimbFilterClick = { onClimbFilterClick() },
+    onAreaSearchResultClick = { onAreaSearchResultClick(it) },
+    onClimbSearchResultClick = { onClimbSearchResultClick(it) },
+  )
+}
+
+@Composable
 private fun SearchResultsList(
   modifier: Modifier,
-  viewState: SearchViewState,
+  viewState: SearchViewState.ShowingResults,
   onAreaFilterClick: () -> Unit,
   onClimbFilterClick: () -> Unit,
   onAreaSearchResultClick: (String) -> Unit,
@@ -293,6 +352,9 @@ private fun SearchHistoryEntry(
     )
   },
   headlineContent = { Text(text) },
+  colors = ListItemDefaults.colors(
+    containerColor = Color.Transparent,
+  ),
 )
 
 @Composable
@@ -357,6 +419,9 @@ private fun AreaSearchResult(
 ) = ListItem(
   modifier = Modifier.clickable { onClick(result.id) },
   headlineContent = { AreaSearchResultTitle(result) },
+  colors = ListItemDefaults.colors(
+    containerColor = Color.Transparent,
+  ),
 )
 
 @Composable
@@ -409,13 +474,51 @@ private fun ClimbSearchResult(
   },
   headlineContent = { Text(result.name) },
   supportingContent = { Text(result.subtitle) },
+  colors = ListItemDefaults.colors(
+    containerColor = Color.Transparent,
+  ),
+)
+
+@Composable
+private fun NoResultsError(
+  modifier: Modifier = Modifier,
+) = ErrorPlaceholder(
+  modifier = modifier,
+  image = Icons.Rounded.Search,
+  message = stringResource(R.string.search_screen_no_results_message),
+)
+
+@Composable
+private fun NetworkError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier,
+  image = Icons.Rounded.WifiOff,
+  message = stringResource(R.string.common_network_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
+@Composable
+private fun UnknownError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier,
+  image = Icons.Rounded.Warning,
+  message = stringResource(R.string.common_generic_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
 )
 
 @PreviewLightDark
 @Composable
 private fun InactivePreview() = RouteSearchTheme {
   SearchScreenContent(
-    viewState = SearchViewState(),
+    viewState = SearchViewState.ShowingHistory(
+      searchHistory = emptyList(),
+    ),
     onSearchQueryChange = { },
     onSearchActiveChange = { },
     onBackClick = { },
@@ -426,14 +529,37 @@ private fun InactivePreview() = RouteSearchTheme {
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
+    onRetryClick = { },
   )
 }
 
 @PreviewLightDark
 @Composable
-private fun ActivePreview() = RouteSearchTheme {
+private fun NoResultsPreview() = RouteSearchTheme {
   SearchScreenContent(
-    viewState = SearchViewState(
+    viewState = SearchViewState.ShowingResults(
+      searchActive = true,
+      searchQuery = "Atlantis",
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+    onRetryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun ShowingSearchResultsPreview() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState.ShowingResults(
       searchActive = true,
       searchQuery = "Atlantis",
       climbSearchResults = listOf(
@@ -476,17 +602,17 @@ private fun ActivePreview() = RouteSearchTheme {
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
+    onRetryClick = { },
   )
 }
 
 @PreviewLightDark
 @Composable
-private fun ActivePreviewEmptyQuery() = RouteSearchTheme {
+private fun ShowingHistoryPreview() = RouteSearchTheme {
   SearchScreenContent(
-    viewState = SearchViewState(
+    viewState = SearchViewState.ShowingHistory(
       searchActive = true,
       searchQuery = "",
-      climbSearchResults = emptyList(),
       searchHistory = listOf(
         "Atlantis",
         "The Pond",
@@ -503,5 +629,50 @@ private fun ActivePreviewEmptyQuery() = RouteSearchTheme {
     onAreaSearchResultClick = { },
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
+    onRetryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun NetworkErrorPreview() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState.NetworkError(
+      searchActive = true,
+      searchQuery = "",
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+    onRetryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun UnknownErrorPreview() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState.UnknownError(
+      searchActive = true,
+      searchQuery = "",
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+    onRetryClick = { },
   )
 }
