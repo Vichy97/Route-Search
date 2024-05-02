@@ -55,6 +55,8 @@ sealed class SearchViewState {
 
     val noFiltersSelected = !areaFilterSelected && !climbFilterSelected
 
+    val hasNoResults = areaSearchResults.isEmpty() && climbSearchResults.isEmpty()
+
     override fun copy(
       newSearchQuery: String,
       newSearchActive: Boolean,

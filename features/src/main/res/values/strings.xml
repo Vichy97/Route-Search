@@ -61,12 +61,13 @@
   <string name="organization_dialog_facebook_button_title">Facebook</string>
   <string name="organization_dialog_instagram_button_title">Instagram</string>
 
-  <string name="search_screen_search_error_message">Something went wrong</string>
-  <string name="search_screen_search_placeholder">Search for areas or climbs</string>
+  <string name="search_screen_climb_filter_text">Climbs</string>
   <string name="search_screen_climbs_header">Climbs</string>
   <string name="search_screen_areas_header">Areas</string>
   <string name="search_screen_area_filter_text">Areas</string>
-  <string name="search_screen_climb_filter_text">Climbs</string>
+  <string name="search_screen_no_results_message">No results found</string>
+  <string name="search_screen_search_error_message">Something went wrong</string>
+  <string name="search_screen_search_placeholder">Search for areas or climbs</string>
 
   <string-array name="climb_types">
     <item>Aid</item>
