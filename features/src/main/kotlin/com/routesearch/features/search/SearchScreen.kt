@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -129,7 +130,7 @@ private fun SearchScreenContent(
         onSearchHistoryEntryClick = onSearchHistoryEntryClick,
       )
 
-      is SearchViewState.ShowingResults -> SearchResultsList(
+      is SearchViewState.ShowingResults -> ShowingResults(
         modifier = Modifier.fillMaxSize(),
         viewState = viewState,
         onAreaFilterClick = onAreaFilterClick,
@@ -234,6 +235,30 @@ private fun Loading(
   contentAlignment = Alignment.Center,
 ) {
   CircularProgressIndicator()
+}
+
+@Composable
+private fun ShowingResults(
+  modifier: Modifier,
+  viewState: SearchViewState.ShowingResults,
+  onAreaFilterClick: () -> Unit,
+  onClimbFilterClick: () -> Unit,
+  onAreaSearchResultClick: (String) -> Unit,
+  onClimbSearchResultClick: (String) -> Unit,
+) = Box {
+  if (viewState.hasNoResults) {
+    NoResultsError(
+      modifier = Modifier.fillMaxSize(),
+    )
+  }
+  SearchResultsList(
+    modifier = modifier,
+    viewState = viewState,
+    onAreaFilterClick = { onAreaFilterClick() },
+    onClimbFilterClick = { onClimbFilterClick() },
+    onAreaSearchResultClick = { onAreaSearchResultClick(it) },
+    onClimbSearchResultClick = { onClimbSearchResultClick(it) },
+  )
 }
 
 @Composable
@@ -449,6 +474,15 @@ private fun ClimbSearchResult(
 )
 
 @Composable
+private fun NoResultsError(
+  modifier: Modifier = Modifier,
+) = ErrorPlaceholder(
+  modifier = modifier,
+  image = Icons.Rounded.Search,
+  message = stringResource(R.string.search_screen_no_results_message),
+)
+
+@Composable
 private fun NetworkError(
   modifier: Modifier = Modifier,
   onRetryClick: () -> Unit,
@@ -466,6 +500,28 @@ private fun InactivePreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.ShowingHistory(
       searchHistory = emptyList(),
+    ),
+    onSearchQueryChange = { },
+    onSearchActiveChange = { },
+    onBackClick = { },
+    onClearClick = { },
+    onSearch = { },
+    onAreaFilterClick = { },
+    onClimbFilterClick = { },
+    onAreaSearchResultClick = { },
+    onClimbSearchResultClick = { },
+    onSearchHistoryEntryClick = { },
+    onRetryClick = { },
+  )
+}
+
+@PreviewLightDark
+@Composable
+private fun NoResultsPreview() = RouteSearchTheme {
+  SearchScreenContent(
+    viewState = SearchViewState.ShowingResults(
+      searchActive = true,
+      searchQuery = "Atlantis",
     ),
     onSearchQueryChange = { },
     onSearchActiveChange = { },
