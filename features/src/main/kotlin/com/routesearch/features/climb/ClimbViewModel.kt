@@ -8,6 +8,7 @@ import com.routesearch.features.common.CommonUrls.OPEN_BETA_LINK
 import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.GalleryScreenDestination
+import com.routesearch.features.destinations.ImageViewerScreenDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
 import com.routesearch.ui.common.web.WebLauncher
@@ -90,5 +91,9 @@ internal class ClimbViewModel(
 
   fun onShowAllImagesClick() = (viewState.value as? ClimbViewState.Content)?.run {
     navigator.navigate(GalleryScreenDestination(ArrayList(climb.media)))
+  }
+
+  fun onImageClick(index: Int) = (viewState.value as? ClimbViewState.Content)?.run {
+    navigator.navigate(ImageViewerScreenDestination(ArrayList(climb.media), index))
   }
 }

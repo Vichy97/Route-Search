@@ -64,6 +64,7 @@ dependencies {
   implementation(libs.ui.unit.android)
   implementation(libs.vico.compose.m3)
   implementation(libs.vico.core)
+  implementation(libs.zoomable)
 
   debugRuntimeOnly(libs.ui.test.manifest)
   debugRuntimeOnly(libs.ui.tooling)

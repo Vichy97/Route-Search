@@ -94,6 +94,7 @@ fun ClimbScreen() {
         onBookmarkClick = viewModel::onBookmarkClick,
         onShareClick = viewModel::onShareClick,
         onOpenBetaClick = viewModel::onOpenBetaClick,
+        onImageClick = viewModel::onImageClick,
       )
 
       is ClimbViewState.Loading -> Loading(
@@ -157,6 +158,7 @@ private fun Content(
   onBookmarkClick: () -> Unit,
   onShareClick: () -> Unit,
   onOpenBetaClick: () -> Unit,
+  onImageClick: (Int) -> Unit,
 ) = ConstraintLayout(
   modifier = modifier.fillMaxWidth(),
 ) {
@@ -212,6 +214,7 @@ private fun Content(
       )
       .padding(horizontal = 8.dp),
     urls = climb.media,
+    onImageClick = { onImageClick(it) },
   )
 
   TextButton(
@@ -581,5 +584,6 @@ private fun ClimbScreenPreview() = RouteSearchTheme {
     onBookmarkClick = { },
     onShareClick = { },
     onOpenBetaClick = { },
+    onImageClick = { },
   )
 }

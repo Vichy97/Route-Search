@@ -33,6 +33,7 @@ sort-dependencies = "0.4"
 sqlite = "2.4.0"
 typesense = "0.4.0"
 vico = "1.13.1"
+zoomable = "1.6.1"
 
 [libraries]
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
@@ -108,6 +109,7 @@ ui-tooling-preview-android = { group = "androidx.compose.ui", name = "ui-tooling
 ui-unit-android = { group = "androidx.compose.ui", name = "ui-unit-android" }
 vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
 vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+zoomable = { group = "net.engawapg.lib", name = "zoomable", version.ref = "zoomable"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
