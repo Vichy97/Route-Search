@@ -25,6 +25,7 @@ import com.routesearch.util.view.isInDarkMode
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.android.ext.android.get
+import org.koin.compose.KoinContext
 
 class MainActivity : ComponentActivity() {
 
@@ -35,28 +36,30 @@ class MainActivity : ComponentActivity() {
     actionBar?.hide()
 
     setContent {
-      RouteSearchTheme {
-        val snackbarManager = get<SnackbarManager>()
-        val snackbarHostState = remember { SnackbarHostState() }
-        val context = LocalContext.current
-        val navController = rememberNavController()
+      KoinContext {
+        RouteSearchTheme {
+          val snackbarManager = get<SnackbarManager>()
+          val snackbarHostState = remember { SnackbarHostState() }
+          val context = LocalContext.current
+          val navController = rememberNavController()
 
-        LaunchedEffect("snackbar") {
-          snackbarManager.snackbarEvents.onEach {
-            val message = context.getString(it.message)
-            snackbarHostState.showSnackbar(message = message)
-          }.launchIn(this)
-        }
+          LaunchedEffect("snackbar") {
+            snackbarManager.snackbarEvents.onEach {
+              val message = context.getString(it.message)
+              snackbarHostState.showSnackbar(message = message)
+            }.launchIn(this)
+          }
 
-        Scaffold(
-          snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-          },
-        ) {
-          MainNavGraph(
-            modifier = Modifier.fillMaxSize(),
-            navController = navController,
-          )
+          Scaffold(
+            snackbarHost = {
+              SnackbarHost(hostState = snackbarHostState)
+            },
+          ) {
+            MainNavGraph(
+              modifier = Modifier.fillMaxSize(),
+              navController = navController,
+            )
+          }
         }
       }
     }
