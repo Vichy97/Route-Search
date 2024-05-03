@@ -1,8 +1,12 @@
 package com.routesearch.features.search
 
+import androidx.compose.runtime.Immutable
 import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
+@Immutable
 sealed class SearchViewState {
 
   abstract val searchActive: Boolean
@@ -13,6 +17,7 @@ sealed class SearchViewState {
     newSearchActive: Boolean = this.searchActive,
   ): SearchViewState
 
+  @Immutable
   data class Loading(
     override val searchActive: Boolean = false,
     override val searchQuery: String = "",
@@ -27,10 +32,11 @@ sealed class SearchViewState {
     )
   }
 
+  @Immutable
   data class ShowingHistory(
     override val searchActive: Boolean = false,
     override val searchQuery: String = "",
-    val searchHistory: List<String>,
+    val searchHistory: ImmutableList<String> = persistentListOf(),
   ) : SearchViewState() {
 
     override fun copy(
@@ -42,11 +48,12 @@ sealed class SearchViewState {
     )
   }
 
+  @Immutable
   data class ShowingResults(
     override val searchActive: Boolean = false,
     override val searchQuery: String = "",
-    val areaSearchResults: List<AreaSearchResult> = emptyList(),
-    val climbSearchResults: List<ClimbSearchResult> = emptyList(),
+    val areaSearchResults: ImmutableList<AreaSearchResult> = persistentListOf(),
+    val climbSearchResults: ImmutableList<ClimbSearchResult> = persistentListOf(),
     val areaFilterSelected: Boolean = true,
     val climbFilterSelected: Boolean = true,
   ) : SearchViewState() {
@@ -70,6 +77,7 @@ sealed class SearchViewState {
     )
   }
 
+  @Immutable
   data class NetworkError(
     override val searchActive: Boolean = false,
     override val searchQuery: String = "",
@@ -84,6 +92,7 @@ sealed class SearchViewState {
     )
   }
 
+  @Immutable
   data class UnknownError(
     override val searchActive: Boolean = false,
     override val searchQuery: String = "",

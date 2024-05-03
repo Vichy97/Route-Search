@@ -15,6 +15,7 @@ import com.routesearch.navigation.Navigator
 import com.routesearch.util.common.error.Error
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +39,7 @@ internal class SearchViewModel(
 
   private val _viewState = MutableStateFlow<SearchViewState>(
     ShowingHistory(
-      searchHistory = currentSearchHistory,
+      searchHistory = currentSearchHistory.toImmutableList(),
     ),
   )
   val viewState = _viewState.asStateFlow()
@@ -63,7 +64,7 @@ internal class SearchViewModel(
 
   private fun onSearchHistoryChange(searchHistory: List<String>) = _viewState.update {
     (it as? ShowingHistory)?.copy(
-      searchHistory = searchHistory,
+      searchHistory = searchHistory.toImmutableList(),
     ) ?: it
   }
 
@@ -107,7 +108,7 @@ internal class SearchViewModel(
     ShowingHistory(
       searchActive = it.searchActive,
       searchQuery = "",
-      searchHistory = currentSearchHistory,
+      searchHistory = currentSearchHistory.toImmutableList(),
     )
   }
 
@@ -149,7 +150,7 @@ internal class SearchViewModel(
       ShowingHistory(
         searchActive = false,
         searchQuery = "",
-        searchHistory = currentSearchHistory,
+        searchHistory = currentSearchHistory.toImmutableList(),
       )
     }
     searchQuery.value = ""

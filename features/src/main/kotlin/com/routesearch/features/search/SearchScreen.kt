@@ -117,11 +117,11 @@ private fun SearchScreenContent(
         end.linkTo(parent.end)
       },
     viewState = viewState,
-    onSearchQueryChange = onSearchQueryChange,
-    onSearchActiveChange = onSearchActiveChange,
-    onBackClick = onBackClick,
-    onClearClick = onClearClick,
-    onSearch = onSearch,
+    onSearchQueryChange = { onSearchQueryChange(it) },
+    onSearchActiveChange = { onSearchActiveChange(it) },
+    onBackClick = { onBackClick() },
+    onClearClick = { onClearClick() },
+    onSearch = { onSearch(it) },
   ) {
     // Necessary because SearchBar doesn't properly handle dark mode colors for items within it's content layout
     Surface(
@@ -135,16 +135,16 @@ private fun SearchScreenContent(
         is SearchViewState.ShowingHistory -> SearchHistoryList(
           modifier = Modifier.fillMaxSize(),
           history = viewState.searchHistory,
-          onSearchHistoryEntryClick = onSearchHistoryEntryClick,
+          onSearchHistoryEntryClick = { onSearchHistoryEntryClick(it) },
         )
 
         is SearchViewState.ShowingResults -> ShowingResults(
           modifier = Modifier.fillMaxSize(),
           viewState = viewState,
-          onAreaFilterClick = onAreaFilterClick,
-          onClimbFilterClick = onClimbFilterClick,
-          onAreaSearchResultClick = onAreaSearchResultClick,
-          onClimbSearchResultClick = onClimbSearchResultClick,
+          onAreaFilterClick = { onAreaFilterClick() },
+          onClimbFilterClick = { onClimbFilterClick() },
+          onAreaSearchResultClick = { onAreaSearchResultClick(it) },
+          onClimbSearchResultClick = { onClimbSearchResultClick(it) },
         )
 
         is SearchViewState.NetworkError -> NetworkError(
@@ -177,25 +177,25 @@ private fun SearchBar(
   SearchBar(
     modifier = modifier,
     query = viewState.searchQuery,
-    onQueryChange = onSearchQueryChange,
+    onQueryChange = { onSearchQueryChange(it) },
     onSearch = {
       onSearch(it)
       keyboardController?.hide()
     },
     active = viewState.searchActive,
-    onActiveChange = onSearchActiveChange,
+    onActiveChange = { onSearchActiveChange(it) },
     placeholder = { SearchPlaceholder() },
     leadingIcon = {
       SearchBarLeadingIcon(
         searchActive = viewState.searchActive,
-        onBackClick = onBackClick,
+        onBackClick = { onBackClick() },
       )
     },
     trailingIcon = {
       SearchBarTrailingIcon(
         searchActive = viewState.searchActive,
         searchQuery = viewState.searchQuery,
-        onClick = onClearClick,
+        onClick = { onClearClick() },
       )
     },
     content = content,
@@ -212,7 +212,7 @@ private fun SearchBarLeadingIcon(
 ) = if (searchActive) {
   Icon(
     modifier = Modifier.clickable(
-      onClick = onBackClick,
+      onClick = { onBackClick() },
     ),
     imageVector = Icons.AutoMirrored.Default.ArrowBack,
     contentDescription = null,
@@ -233,7 +233,7 @@ private fun SearchBarTrailingIcon(
   if (searchActive && searchQuery.isNotEmpty()) {
     Icon(
       modifier = Modifier.clickable(
-        onClick = onClick,
+        onClick = { onClick() },
       ),
       imageVector = Icons.Default.Clear,
       contentDescription = null,
@@ -291,8 +291,8 @@ private fun SearchResultsList(
     FilterRow(
       areaFilterSelected = viewState.areaFilterSelected,
       climbFilterSelected = viewState.climbFilterSelected,
-      onAreaFilterClick = onAreaFilterClick,
-      onClimbFilterClick = onClimbFilterClick,
+      onAreaFilterClick = { onAreaFilterClick() },
+      onClimbFilterClick = { onClimbFilterClick() },
     )
   }
   if (viewState.climbSearchResults.isNotEmpty() && viewState.allFiltersSelected) {
@@ -302,7 +302,7 @@ private fun SearchResultsList(
     itemsIndexed(viewState.climbSearchResults) { index, searchResult ->
       ClimbSearchResult(
         result = searchResult,
-        onClick = onClimbSearchResultClick,
+        onClick = { onClimbSearchResultClick(it) },
       )
       if (index < viewState.climbSearchResults.size - 1) {
         HorizontalDivider(
@@ -318,7 +318,7 @@ private fun SearchResultsList(
     itemsIndexed(viewState.areaSearchResults) { index, areaSearchResult ->
       AreaSearchResult(
         result = areaSearchResult,
-        onClick = onAreaSearchResultClick,
+        onClick = { onAreaSearchResultClick(it) },
       )
       if (index < viewState.areaSearchResults.size - 1) {
         HorizontalDivider(
@@ -389,7 +389,7 @@ private fun FilterRow(
 ) {
   FilterChip(
     selected = areaFilterSelected,
-    onClick = onAreaFilterClick,
+    onClick = { onAreaFilterClick() },
     label = { Text(stringResource(R.string.search_screen_area_filter_text)) },
     leadingIcon = {
       if (areaFilterSelected) {
@@ -403,7 +403,7 @@ private fun FilterRow(
   Spacer(modifier = Modifier.width(8.dp))
   FilterChip(
     selected = climbFilterSelected,
-    onClick = onClimbFilterClick,
+    onClick = { onClimbFilterClick() },
     label = { Text(stringResource(R.string.search_screen_climb_filter_text)) },
     leadingIcon = {
       if (climbFilterSelected) {
@@ -545,9 +545,7 @@ private fun UnknownError(
 @Composable
 private fun InactivePreview() = RouteSearchTheme {
   SearchScreenContent(
-    viewState = SearchViewState.ShowingHistory(
-      searchHistory = emptyList(),
-    ),
+    viewState = SearchViewState.ShowingHistory(),
     onSearchQueryChange = { },
     onSearchActiveChange = { },
     onBackClick = { },
@@ -591,7 +589,7 @@ private fun ShowingSearchResultsPreview() = RouteSearchTheme {
     viewState = SearchViewState.ShowingResults(
       searchActive = true,
       searchQuery = "Atlantis",
-      climbSearchResults = listOf(
+      climbSearchResults = persistentListOf(
         ClimbSearchResult(
           id = "c1",
           name = "Atlantis",
@@ -600,7 +598,7 @@ private fun ShowingSearchResultsPreview() = RouteSearchTheme {
           type = "sport",
         ),
       ),
-      areaSearchResults = listOf(
+      areaSearchResults = persistentListOf(
         AreaSearchResult(
           id = "a1",
           name = "Atlantis",
@@ -642,7 +640,7 @@ private fun ShowingHistoryPreview() = RouteSearchTheme {
     viewState = SearchViewState.ShowingHistory(
       searchActive = true,
       searchQuery = "",
-      searchHistory = listOf(
+      searchHistory = persistentListOf(
         "Atlantis",
         "The Pond",
         "Yosemite",
