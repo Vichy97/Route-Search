@@ -33,6 +33,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -84,6 +86,7 @@ fun SearchScreen() {
   )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchScreenContent(
   viewState: SearchViewState,
@@ -120,35 +123,40 @@ private fun SearchScreenContent(
     onClearClick = onClearClick,
     onSearch = onSearch,
   ) {
-    when (viewState) {
-      is SearchViewState.Loading -> Loading(
-        modifier = Modifier.fillMaxSize(),
-      )
+    // Necessary because SearchBar doesn't properly handle dark mode colors for items within it's content layout
+    Surface(
+      color = SearchBarDefaults.colors().containerColor,
+    ) {
+      when (viewState) {
+        is SearchViewState.Loading -> Loading(
+          modifier = Modifier.fillMaxSize(),
+        )
 
-      is SearchViewState.ShowingHistory -> SearchHistoryList(
-        modifier = Modifier.fillMaxSize(),
-        history = viewState.searchHistory,
-        onSearchHistoryEntryClick = onSearchHistoryEntryClick,
-      )
+        is SearchViewState.ShowingHistory -> SearchHistoryList(
+          modifier = Modifier.fillMaxSize(),
+          history = viewState.searchHistory,
+          onSearchHistoryEntryClick = onSearchHistoryEntryClick,
+        )
 
-      is SearchViewState.ShowingResults -> ShowingResults(
-        modifier = Modifier.fillMaxSize(),
-        viewState = viewState,
-        onAreaFilterClick = onAreaFilterClick,
-        onClimbFilterClick = onClimbFilterClick,
-        onAreaSearchResultClick = onAreaSearchResultClick,
-        onClimbSearchResultClick = onClimbSearchResultClick,
-      )
+        is SearchViewState.ShowingResults -> ShowingResults(
+          modifier = Modifier.fillMaxSize(),
+          viewState = viewState,
+          onAreaFilterClick = onAreaFilterClick,
+          onClimbFilterClick = onClimbFilterClick,
+          onAreaSearchResultClick = onAreaSearchResultClick,
+          onClimbSearchResultClick = onClimbSearchResultClick,
+        )
 
-      is SearchViewState.NetworkError -> NetworkError(
-        modifier = Modifier.fillMaxSize(),
-        onRetryClick = { onRetryClick() },
-      )
+        is SearchViewState.NetworkError -> NetworkError(
+          modifier = Modifier.fillMaxSize(),
+          onRetryClick = { onRetryClick() },
+        )
 
-      is SearchViewState.UnknownError -> UnknownError(
-        modifier = Modifier.fillMaxSize(),
-        onRetryClick = { onRetryClick() },
-      )
+        is SearchViewState.UnknownError -> UnknownError(
+          modifier = Modifier.fillMaxSize(),
+          onRetryClick = { onRetryClick() },
+        )
+      }
     }
   }
 }
