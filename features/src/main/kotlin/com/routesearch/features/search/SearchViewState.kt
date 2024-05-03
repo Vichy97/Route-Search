@@ -7,7 +7,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
-sealed class SearchViewState {
+internal sealed class SearchViewState {
 
   abstract val searchActive: Boolean
   abstract val searchQuery: String

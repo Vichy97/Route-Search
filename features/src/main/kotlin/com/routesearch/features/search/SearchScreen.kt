@@ -66,7 +66,7 @@ import org.koin.androidx.compose.koinViewModel
 )
 @RootNavGraph(start = true)
 @Composable
-fun SearchScreen() {
+internal fun SearchScreen() {
   val viewModel = koinViewModel<SearchViewModel>()
   val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
@@ -417,7 +417,7 @@ private fun FilterRow(
 }
 
 @Composable
-fun AreaSearchResultsHeader() = Text(
+private fun AreaSearchResultsHeader() = Text(
   modifier = Modifier.padding(
     top = 8.dp,
     start = 16.dp,
@@ -471,7 +471,7 @@ private fun AreaSearchResultTitle(result: AreaSearchResult) {
 }
 
 @Composable
-fun ClimbSearchResultsHeader() = Text(
+private fun ClimbSearchResultsHeader() = Text(
   modifier = Modifier.padding(
     top = 8.dp,
     start = 16.dp,
