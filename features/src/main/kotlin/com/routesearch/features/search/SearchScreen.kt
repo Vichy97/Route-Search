@@ -260,7 +260,7 @@ private fun ShowingResults(
   onAreaSearchResultClick: (String) -> Unit,
   onClimbSearchResultClick: (String) -> Unit,
 ) = Box {
-  if (viewState.hasNoResults) {
+  if (viewState.hasNoResults || viewState.allResultsFiltered) {
     NoResultsError(
       modifier = Modifier.fillMaxSize(),
     )
