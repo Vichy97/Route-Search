@@ -350,20 +350,27 @@ private fun SearchHistoryEntry(
   modifier: Modifier = Modifier,
   text: String,
   onClick: () -> Unit,
-) = ListItem(
-  modifier = modifier
-    .clickable { onClick() },
-  leadingContent = {
-    Icon(
-      imageVector = Icons.Default.History,
-      contentDescription = null,
-    )
-  },
-  headlineContent = { Text(text) },
-  colors = ListItemDefaults.colors(
-    containerColor = Color.Transparent,
-  ),
-)
+) {
+  val keyboardController = LocalSoftwareKeyboardController.current
+
+  ListItem(
+    modifier = modifier
+      .clickable {
+        keyboardController?.hide()
+        onClick()
+      },
+    leadingContent = {
+      Icon(
+        imageVector = Icons.Default.History,
+        contentDescription = null,
+      )
+    },
+    headlineContent = { Text(text) },
+    colors = ListItemDefaults.colors(
+      containerColor = Color.Transparent,
+    ),
+  )
+}
 
 @Composable
 private fun FilterRow(
@@ -424,13 +431,20 @@ fun AreaSearchResultsHeader() = Text(
 private fun AreaSearchResult(
   result: AreaSearchResult,
   onClick: (String) -> Unit,
-) = ListItem(
-  modifier = Modifier.clickable { onClick(result.id) },
-  headlineContent = { AreaSearchResultTitle(result) },
-  colors = ListItemDefaults.colors(
-    containerColor = Color.Transparent,
-  ),
-)
+) {
+  val keyboardController = LocalSoftwareKeyboardController.current
+
+  ListItem(
+    modifier = Modifier.clickable {
+      keyboardController?.hide()
+      onClick(result.id)
+    },
+    headlineContent = { AreaSearchResultTitle(result) },
+    colors = ListItemDefaults.colors(
+      containerColor = Color.Transparent,
+    ),
+  )
+}
 
 @Composable
 private fun AreaSearchResultTitle(result: AreaSearchResult) {
@@ -471,21 +485,28 @@ fun ClimbSearchResultsHeader() = Text(
 private fun ClimbSearchResult(
   result: ClimbSearchResult,
   onClick: (String) -> Unit,
-) = ListItem(
-  modifier = Modifier.clickable { onClick(result.id) },
-  overlineContent = {
-    Text(
-      text = result.pathText,
-      maxLines = 1,
-      overflow = TextOverflow.Ellipsis,
-    )
-  },
-  headlineContent = { Text(result.name) },
-  supportingContent = { Text(result.subtitle) },
-  colors = ListItemDefaults.colors(
-    containerColor = Color.Transparent,
-  ),
-)
+) {
+  val keyboardController = LocalSoftwareKeyboardController.current
+
+  ListItem(
+    modifier = Modifier.clickable {
+      keyboardController?.hide()
+      onClick(result.id)
+    },
+    overlineContent = {
+      Text(
+        text = result.pathText,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+      )
+    },
+    headlineContent = { Text(result.name) },
+    supportingContent = { Text(result.subtitle) },
+    colors = ListItemDefaults.colors(
+      containerColor = Color.Transparent,
+    ),
+  )
+}
 
 @Composable
 private fun NoResultsError(
