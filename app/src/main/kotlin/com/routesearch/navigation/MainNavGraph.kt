@@ -3,6 +3,7 @@ package com.routesearch.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.routesearch.features.NavGraphs
@@ -18,6 +19,10 @@ fun MainNavGraph(
 ) {
   LaunchedEffect("navigation") {
     navigator.navEvents.onEach {
+      val isResumed = navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
+      if (!isResumed) {
+        return@onEach
+      }
       when (it) {
         is NavEvent.Navigate -> navController.navigate(
           route = it.destination,

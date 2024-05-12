@@ -108,6 +108,7 @@ dependencies {
   implementation(libs.koin.core)
   implementation(libs.kotlin.stdlib)
   implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.lifecycle.common)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
   implementation(libs.material3)
