@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
@@ -120,6 +121,10 @@ fun AreaScreen() {
       )
 
       is AreaViewState.NetworkError -> NetworkError(
+        onRetryClick = viewModel::onRetryClick,
+      )
+
+      is AreaViewState.UnknownError -> UnknownError(
         onRetryClick = viewModel::onRetryClick,
       )
     }
@@ -940,6 +945,18 @@ private fun NetworkError(
   onRetryClick = { onRetryClick() },
 )
 
+@Composable
+private fun UnknownError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier.fillMaxSize(),
+  image = Icons.Rounded.Warning,
+  message = stringResource(R.string.common_generic_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
 @PreviewLightDark
 @Composable
 private fun LoadingPreview() = RouteSearchTheme {
@@ -1066,6 +1083,26 @@ private fun NetworkErrorPreview() = RouteSearchTheme {
       onPathSectionClick = { },
     ) {
       NetworkError(
+        onRetryClick = { },
+      )
+    }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun UnknownErrorPreview() = RouteSearchTheme {
+  Surface {
+    val area = fakeAreas[2]
+    AreaScreenScaffold(
+      scrollable = false,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
+      onPathSectionClick = { },
+    ) {
+      UnknownError(
         onRetryClick = { },
       )
     }

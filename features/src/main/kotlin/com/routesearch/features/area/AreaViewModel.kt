@@ -53,14 +53,17 @@ internal class AreaViewModel(
     AreaViewState.Content(area)
   }
 
-  private fun onFetchAreaFailure(error: Error) {
+  private fun onFetchAreaFailure(error: Error) = _viewState.update {
     if (error is Error.Network) {
-      _viewState.update {
-        AreaViewState.NetworkError(
-          name = it.name,
-          path = it.path,
-        )
-      }
+      AreaViewState.NetworkError(
+        name = it.name,
+        path = it.path,
+      )
+    } else {
+      AreaViewState.UnknownError(
+        name = it.name,
+        path = it.path,
+      )
     }
   }
 

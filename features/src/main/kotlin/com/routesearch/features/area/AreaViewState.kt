@@ -27,4 +27,10 @@ internal sealed interface AreaViewState {
     override val name: String,
     override val path: ImmutableList<String>,
   ) : AreaViewState
+
+  @Immutable
+  data class UnknownError(
+    override val name: String,
+    override val path: ImmutableList<String>,
+  ) : AreaViewState
 }
