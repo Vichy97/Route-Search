@@ -3,6 +3,7 @@ package com.routesearch.features.area
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,8 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
@@ -43,6 +46,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.pluralStringResource
@@ -61,6 +65,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ErrorPlaceholder
 import com.routesearch.features.common.views.ExpandableText
 import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MetadataCard
@@ -78,7 +83,6 @@ import org.koin.androidx.compose.koinViewModel
 
 private const val MIN_GALLERY_IMAGE = 6
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination(
   navArgsDelegate = AreaScreenArgs::class,
   style = AreaTransitions::class,
@@ -88,25 +92,17 @@ fun AreaScreen() {
   val viewModel = koinViewModel<AreaViewModel>()
   val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  val topAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
-  Scaffold(
-    modifier = Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-    topBar = {
-      TopAppBar(
-        onBackClick = viewModel::onBackClick,
-        onHomeClick = viewModel::onHomeClick,
-        scrollBehavior = topAppBarScrollBehavior,
-      )
-    },
-  ) { padding ->
+  AreaScreenScaffold(
+    scrollable = viewState is AreaViewState.Content,
+    path = viewState.path,
+    name = viewState.name,
+    onBackClick = viewModel::onBackClick,
+    onHomeClick = viewModel::onHomeClick,
+    onPathSectionClick = viewModel::onPathSectionClick,
+  ) {
     when (val currentViewState = viewState) {
       is AreaViewState.Content -> Content(
-        modifier = Modifier
-          .padding(top = padding.calculateTopPadding())
-          .verticalScroll(rememberScrollState()),
         area = currentViewState.area,
-        onPathSectionClick = viewModel::onPathSectionClick,
         onLocationClick = viewModel::onLocationClick,
         onBookmarkClick = viewModel::onBookmarkClick,
         onDownloadClick = viewModel::onDownloadClick,
@@ -121,11 +117,70 @@ fun AreaScreen() {
       )
 
       is AreaViewState.Loading -> Loading(
-        modifier = Modifier.padding(top = padding.calculateTopPadding()),
-        viewState = currentViewState,
+        modifier = Modifier.fillMaxSize(),
       )
 
-      AreaViewState.Idle -> Unit
+      is AreaViewState.NetworkError -> NetworkError(
+        onRetryClick = viewModel::onRetryClick,
+      )
+
+      is AreaViewState.UnknownError -> UnknownError(
+        onRetryClick = viewModel::onRetryClick,
+      )
+    }
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AreaScreenScaffold(
+  scrollable: Boolean,
+  path: ImmutableList<String>,
+  name: String,
+  onBackClick: () -> Unit,
+  onHomeClick: () -> Unit,
+  onPathSectionClick: (String) -> Unit,
+  content: @Composable () -> Unit,
+) {
+  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+  Scaffold(
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      TopAppBar(
+        onBackClick = { onBackClick() },
+        onHomeClick = { onHomeClick() },
+        scrollBehavior = scrollBehavior,
+      )
+    },
+  ) { padding ->
+    Column(
+      modifier = if (scrollable) {
+        Modifier.verticalScroll(rememberScrollState())
+      } else {
+        Modifier
+      },
+    ) {
+      Path(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(
+            top = padding.calculateTopPadding(),
+            start = 16.dp,
+            end = 16.dp,
+          ),
+        path = path,
+        onPathSectionClick = { onPathSectionClick(it) },
+      )
+
+      Text(
+        modifier = Modifier
+          .padding(horizontal = 16.dp),
+        text = name,
+        style = MaterialTheme.typography.headlineMedium,
+      )
+
+      content()
     }
   }
 }
@@ -133,49 +188,18 @@ fun AreaScreen() {
 @Composable
 private fun Loading(
   modifier: Modifier = Modifier,
-  viewState: AreaViewState.Loading,
-) = ConstraintLayout(
-  modifier = modifier.fillMaxSize(),
+) = Box(
+  modifier = modifier
+    .fillMaxSize(),
+  contentAlignment = Alignment.Center,
 ) {
-  val (path, name, loadingIndicator) = createRefs()
-
-  Path(
-    modifier = Modifier
-      .constrainAs(path) {
-        start.linkTo(parent.start)
-        top.linkTo(parent.top)
-      }
-      .padding(horizontal = 16.dp),
-    path = viewState.path,
-    onPathSectionClick = { },
-  )
-
-  Text(
-    modifier = Modifier
-      .constrainAs(name) {
-        start.linkTo(parent.start)
-        top.linkTo(path.bottom)
-      }
-      .padding(horizontal = 16.dp),
-    text = viewState.name,
-    style = MaterialTheme.typography.headlineMedium,
-  )
-
-  CircularProgressIndicator(
-    modifier = Modifier.constrainAs(loadingIndicator) {
-      top.linkTo(name.bottom)
-      start.linkTo(parent.start)
-      end.linkTo(parent.end)
-      bottom.linkTo(parent.bottom)
-    },
-  )
+  CircularProgressIndicator()
 }
 
 @Composable
 private fun Content(
   modifier: Modifier = Modifier,
   area: Area,
-  onPathSectionClick: (String) -> Unit,
   onLocationClick: () -> Unit,
   onBookmarkClick: () -> Unit,
   onDownloadClick: () -> Unit,
@@ -192,8 +216,6 @@ private fun Content(
     .fillMaxWidth(),
 ) {
   val (
-    path,
-    name,
     image,
     metadataCard,
     showAllImages,
@@ -207,37 +229,11 @@ private fun Content(
     listContent,
   ) = createRefs()
 
-  Path(
-    modifier = Modifier
-      .constrainAs(path) {
-        start.linkTo(parent.start)
-        top.linkTo(parent.top)
-      }
-      .padding(
-        horizontal = 16.dp,
-      ),
-    path = area.path,
-    onPathSectionClick = { onPathSectionClick(it) },
-  )
-
-  Text(
-    modifier = Modifier
-      .constrainAs(name) {
-        start.linkTo(parent.start)
-        top.linkTo(path.bottom)
-      }
-      .padding(
-        horizontal = 16.dp,
-      ),
-    text = area.name,
-    style = MaterialTheme.typography.headlineMedium,
-  )
-
   Images(
     modifier = Modifier
       .constrainAs(image) {
         top.linkTo(
-          anchor = name.bottom,
+          anchor = parent.top,
           margin = 16.dp,
         )
         start.linkTo(parent.start)
@@ -937,39 +933,77 @@ private fun EmptyAreaPlaceholder(
   }
 }
 
+@Composable
+private fun NetworkError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier.fillMaxSize(),
+  image = Icons.Rounded.WifiOff,
+  message = stringResource(R.string.common_network_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
+@Composable
+private fun UnknownError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier.fillMaxSize(),
+  image = Icons.Rounded.Warning,
+  message = stringResource(R.string.common_generic_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
 @PreviewLightDark
 @Composable
 private fun LoadingPreview() = RouteSearchTheme {
+  val area = fakeAreas[0]
+
   Surface {
-    val area = fakeAreas[0]
-    Loading(
-      viewState = AreaViewState.Loading(
-        name = area.name,
-        path = area.path,
-      ),
-    )
+    AreaScreenScaffold(
+      scrollable = false,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
+      onPathSectionClick = { },
+    ) {
+      Loading()
+    }
   }
 }
 
 @PreviewLightDark
 @Composable
 private fun AreaWithChildrenPreview() = RouteSearchTheme {
+  val area = fakeAreas[0]
   Surface {
-    Content(
-      area = fakeAreas[0],
+    AreaScreenScaffold(
+      scrollable = true,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
       onPathSectionClick = { },
-      onLocationClick = { },
-      onBookmarkClick = { },
-      onDownloadClick = { },
-      onShareClick = { },
-      onOrganizationClick = { },
-      onFilterClimbsClick = { },
-      onClimbClick = { },
-      onAreaClick = { },
-      onShowAllImagesClick = { },
-      onOpenBetaClick = { },
-      onImageClick = { },
-    )
+    ) {
+      Content(
+        area = area,
+        onLocationClick = { },
+        onBookmarkClick = { },
+        onDownloadClick = { },
+        onShareClick = { },
+        onOrganizationClick = { },
+        onFilterClimbsClick = { },
+        onClimbClick = { },
+        onAreaClick = { },
+        onShowAllImagesClick = { },
+        onOpenBetaClick = { },
+        onImageClick = { },
+      )
+    }
   }
 }
 
@@ -977,21 +1011,30 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
 @Composable
 private fun AreaWithClimbsPreview() = RouteSearchTheme {
   Surface {
-    Content(
-      area = fakeAreas[1],
+    val area = fakeAreas[1]
+    AreaScreenScaffold(
+      scrollable = true,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
       onPathSectionClick = { },
-      onLocationClick = { },
-      onBookmarkClick = { },
-      onDownloadClick = { },
-      onShareClick = { },
-      onOrganizationClick = { },
-      onFilterClimbsClick = { },
-      onClimbClick = { },
-      onAreaClick = { },
-      onShowAllImagesClick = { },
-      onOpenBetaClick = { },
-      onImageClick = { },
-    )
+    ) {
+      Content(
+        area = area,
+        onLocationClick = { },
+        onBookmarkClick = { },
+        onDownloadClick = { },
+        onShareClick = { },
+        onOrganizationClick = { },
+        onFilterClimbsClick = { },
+        onClimbClick = { },
+        onAreaClick = { },
+        onShowAllImagesClick = { },
+        onOpenBetaClick = { },
+        onImageClick = { },
+      )
+    }
   }
 }
 
@@ -999,20 +1042,69 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
 @Composable
 private fun EmptyAreaPreview() = RouteSearchTheme {
   Surface {
-    Content(
-      area = fakeAreas[2],
+    val area = fakeAreas[2]
+    AreaScreenScaffold(
+      scrollable = true,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
       onPathSectionClick = { },
-      onLocationClick = { },
-      onBookmarkClick = { },
-      onDownloadClick = { },
-      onShareClick = { },
-      onOrganizationClick = { },
-      onFilterClimbsClick = { },
-      onClimbClick = { },
-      onAreaClick = { },
-      onShowAllImagesClick = { },
-      onOpenBetaClick = { },
-      onImageClick = { },
-    )
+    ) {
+      Content(
+        area = area,
+        onLocationClick = { },
+        onBookmarkClick = { },
+        onDownloadClick = { },
+        onShareClick = { },
+        onOrganizationClick = { },
+        onFilterClimbsClick = { },
+        onClimbClick = { },
+        onAreaClick = { },
+        onShowAllImagesClick = { },
+        onOpenBetaClick = { },
+        onImageClick = { },
+      )
+    }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun NetworkErrorPreview() = RouteSearchTheme {
+  Surface {
+    val area = fakeAreas[2]
+    AreaScreenScaffold(
+      scrollable = false,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
+      onPathSectionClick = { },
+    ) {
+      NetworkError(
+        onRetryClick = { },
+      )
+    }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun UnknownErrorPreview() = RouteSearchTheme {
+  Surface {
+    val area = fakeAreas[2]
+    AreaScreenScaffold(
+      scrollable = false,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
+      onPathSectionClick = { },
+    ) {
+      UnknownError(
+        onRetryClick = { },
+      )
+    }
   }
 }
