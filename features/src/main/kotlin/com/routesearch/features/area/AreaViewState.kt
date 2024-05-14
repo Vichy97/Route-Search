@@ -6,17 +6,19 @@ import kotlinx.collections.immutable.ImmutableList
 
 internal sealed interface AreaViewState {
 
+  val name: String
+  val path: ImmutableList<String>
+
   @Immutable
   data class Loading(
-    val name: String,
-    val path: ImmutableList<String>,
+    override val name: String,
+    override val path: ImmutableList<String>,
   ) : AreaViewState
 
   @Immutable
   data class Content(
     val area: Area,
+    override val name: String = area.name,
+    override val path: ImmutableList<String> = area.path,
   ) : AreaViewState
-
-  @Immutable
-  data object Idle : AreaViewState
 }
