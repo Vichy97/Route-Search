@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
@@ -63,6 +64,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ErrorPlaceholder
 import com.routesearch.features.common.views.ExpandableText
 import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MetadataCard
@@ -113,7 +115,13 @@ fun AreaScreen() {
         onImageClick = viewModel::onImageClick,
       )
 
-      is AreaViewState.Loading -> Loading()
+      is AreaViewState.Loading -> Loading(
+        modifier = Modifier.fillMaxSize(),
+      )
+
+      is AreaViewState.NetworkError -> NetworkError(
+        onRetryClick = viewModel::onRetryClick,
+      )
     }
   }
 }
@@ -920,6 +928,18 @@ private fun EmptyAreaPlaceholder(
   }
 }
 
+@Composable
+private fun NetworkError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier.fillMaxSize(),
+  image = Icons.Rounded.WifiOff,
+  message = stringResource(R.string.common_network_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
 @PreviewLightDark
 @Composable
 private fun LoadingPreview() = RouteSearchTheme {
@@ -1027,6 +1047,26 @@ private fun EmptyAreaPreview() = RouteSearchTheme {
         onShowAllImagesClick = { },
         onOpenBetaClick = { },
         onImageClick = { },
+      )
+    }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun NetworkErrorPreview() = RouteSearchTheme {
+  Surface {
+    val area = fakeAreas[2]
+    AreaScreenScaffold(
+      scrollable = false,
+      path = area.path,
+      name = area.name,
+      onBackClick = { },
+      onHomeClick = { },
+      onPathSectionClick = { },
+    ) {
+      NetworkError(
+        onRetryClick = { },
       )
     }
   }

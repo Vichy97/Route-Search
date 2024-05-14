@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.area.Area
 import com.routesearch.data.area.AreaRepository
-import com.routesearch.features.R
 import com.routesearch.features.common.CommonUrls.OPEN_BETA_LINK
 import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
@@ -14,8 +13,8 @@ import com.routesearch.features.destinations.ImageViewerScreenDestination
 import com.routesearch.features.destinations.OrganizationDialogDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
-import com.routesearch.ui.common.snackbar.SnackbarManager
 import com.routesearch.ui.common.web.WebLauncher
+import com.routesearch.util.common.error.Error
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
 import kotlinx.collections.immutable.toImmutableList
@@ -25,9 +24,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class AreaViewModel(
-  args: AreaScreenArgs,
+  private val args: AreaScreenArgs,
   private val areaRepository: AreaRepository,
-  private val snackbarManager: SnackbarManager,
   private val navigator: Navigator,
   private val intentLauncher: IntentLauncher,
   private val webLauncher: WebLauncher,
@@ -48,19 +46,22 @@ internal class AreaViewModel(
   private fun fetchArea(areaId: String) = viewModelScope.launch {
     areaRepository.getArea(areaId)
       .onSuccess(::onFetchAreaSuccess)
-      .onFailure { onFetchAreaFailure() }
+      .onFailure(::onFetchAreaFailure)
   }
 
   private fun onFetchAreaSuccess(area: Area) = _viewState.update {
     AreaViewState.Content(area)
   }
 
-  private fun onFetchAreaFailure() {
-    _viewState.update { AreaViewState.Idle }
-
-    snackbarManager.showSnackbar(
-      message = R.string.area_screen_loading_error_message,
-    )
+  private fun onFetchAreaFailure(error: Error) {
+    if (error is Error.Network) {
+      _viewState.update {
+        AreaViewState.NetworkError(
+          name = it.name,
+          path = it.path,
+        )
+      }
+    }
   }
 
   fun onBackClick() = navigator.popBackStack()
@@ -150,5 +151,15 @@ internal class AreaViewModel(
 
   fun onImageClick(index: Int) = (viewState.value as? AreaViewState.Content)?.run {
     navigator.navigate(ImageViewerScreenDestination(ArrayList(area.media), index))
+  }
+
+  fun onRetryClick() {
+    _viewState.update {
+      AreaViewState.Loading(
+        name = it.name,
+        path = it.path,
+      )
+    }
+    fetchArea(args.id)
   }
 }

@@ -21,4 +21,10 @@ internal sealed interface AreaViewState {
     override val name: String = area.name,
     override val path: ImmutableList<String> = area.path,
   ) : AreaViewState
+
+  @Immutable
+  data class NetworkError(
+    override val name: String,
+    override val path: ImmutableList<String>,
+  ) : AreaViewState
 }
