@@ -45,4 +45,5 @@ include(
   ":util:coroutines",
   ":util:view",
   ":util:app-version",
+  ":util:markdown",
 )

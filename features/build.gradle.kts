@@ -29,6 +29,7 @@ dependencies {
   api(libs.navigation.runtime)
   api(libs.runtime.android)
   api(libs.ui.android)
+  api(libs.ui.text.android)
 
   implementation(platform(libs.coil.bom))
   implementation(platform(libs.compose.bom))
@@ -38,6 +39,7 @@ dependencies {
   implementation(project(":ui-common"))
   implementation(project(":util:app-version"))
   implementation(project(":util:common"))
+  implementation(project(":util:markdown"))
 
   implementation(libs.animation)
   implementation(libs.animation.core)
@@ -65,7 +67,6 @@ dependencies {
   implementation(libs.material3)
   implementation(libs.runtime.saveable.android)
   implementation(libs.ui.graphics.android)
-  implementation(libs.ui.text.android)
   implementation(libs.ui.tooling.preview.android)
   implementation(libs.ui.unit.android)
   implementation(libs.vico.compose.m3)
