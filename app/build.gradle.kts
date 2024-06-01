@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import java.util.Properties
 
 plugins {
   id(libs.plugins.androidApplication.get().pluginId)
@@ -20,6 +21,15 @@ android {
     vectorDrawables {
       useSupportLibrary = true
     }
+
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    val properties = Properties()
+    properties.load(localPropertiesFile.inputStream())
+    buildConfigField(
+      type = "String",
+      name = "MAPBOX_ACCESS_TOKEN",
+      value = "\"${properties.getProperty("MAPBOX_ACCESS_TOKEN")}\"",
+    )
   }
   buildTypes {
     debug {
@@ -111,6 +121,7 @@ dependencies {
   implementation(libs.lifecycle.common)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.logcat)
+  implementation(libs.mapbox.common)
   implementation(libs.material3)
   implementation(libs.navigation.common)
   implementation(libs.navigation.compose)
