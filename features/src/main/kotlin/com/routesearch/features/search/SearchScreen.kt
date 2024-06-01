@@ -50,12 +50,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
 import com.routesearch.features.R
+import com.routesearch.features.common.views.CragMap
 import com.routesearch.features.common.views.ErrorPlaceholder
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import kotlinx.collections.immutable.persistentListOf
@@ -106,7 +108,20 @@ private fun SearchScreenContent(
     .fillMaxSize()
     .background(MaterialTheme.colorScheme.surface),
 ) {
-  val (searchBar) = createRefs()
+  val (map, searchBar) = createRefs()
+
+  CragMap(
+    modifier = Modifier.constrainAs(map) {
+      top.linkTo(parent.top)
+      start.linkTo(parent.start)
+      end.linkTo(parent.end)
+      bottom.linkTo(parent.bottom)
+
+      width = Dimension.fillToConstraints
+      height = Dimension.fillToConstraints
+    },
+    textColor = MaterialTheme.colorScheme.primary,
+  )
 
   SearchBar(
     modifier = Modifier
