@@ -1,9 +1,9 @@
 package com.routesearch.features.common.views
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -56,10 +56,7 @@ internal fun Images(
   )
   HorizontalMultiBrowseCarousel(
     modifier = modifier
-      .heightIn(
-        min = 250.dp,
-        max = 250.dp,
-      )
+      .height(250.dp)
       .padding(horizontal = 8.dp),
     state = carouselState,
     preferredItemWidth = 300.dp,
@@ -68,14 +65,9 @@ internal fun Images(
     val url = urls[index]
     SubcomposeAsyncImage(
       modifier = Modifier
-        .size(
-          width = 300.dp,
-          height = 250.dp,
-        )
+        .fillMaxSize()
         .clickable { onImageClick(index) },
-      loading = {
-        ImagePlaceholder()
-      },
+      loading = { ImagePlaceholder() },
       model = ImageRequest.Builder(LocalContext.current)
         .data(url)
         .crossfade(true)
