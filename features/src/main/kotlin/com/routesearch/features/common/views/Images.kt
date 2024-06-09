@@ -6,17 +6,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import kotlinx.collections.immutable.ImmutableList
@@ -44,15 +41,13 @@ internal fun Images(
   )
 } else if (urls.size == 1) {
   // Carousel with one item looks odd, so we use a normal AsyncImage here.
-  AsyncImage(
+  SubcomposeAsyncImage(
     modifier = modifier
       .padding(horizontal = 8.dp)
       .clip(RoundedCornerShape(32.dp))
       .clickable { onImageClick(0) },
     model = urls.first(),
-    placeholder = ColorPainter(
-      color = MaterialTheme.colorScheme.surfaceVariant,
-    ),
+    loading = { ImagePlaceholder() },
     onLoading = { onImageLoading(urls.first()) },
     onSuccess = { onImageLoadingSuccess(urls.first()) },
     onError = {
