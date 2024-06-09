@@ -66,8 +66,8 @@ import com.routesearch.data.area.Area
 import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
 import com.routesearch.features.common.views.ErrorPlaceholder
-import com.routesearch.features.common.views.ExpandableText
 import com.routesearch.features.common.views.Images
+import com.routesearch.features.common.views.MarkdownView
 import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.features.common.views.VScaleGradeChart
 import com.routesearch.features.common.views.YdsGradeChart
@@ -113,6 +113,7 @@ fun AreaScreen() {
         onAreaClick = viewModel::onAreaClick,
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
         onOpenBetaClick = viewModel::onOpenBetaClick,
+        onMarkdownUrlClick = viewModel::onMarkdownUrlClick,
         onImageClick = viewModel::onImageClick,
       )
 
@@ -210,6 +211,7 @@ private fun Content(
   onAreaClick: (String) -> Unit,
   onShowAllImagesClick: () -> Unit,
   onOpenBetaClick: () -> Unit,
+  onMarkdownUrlClick: (String) -> Unit,
   onImageClick: (Int) -> Unit,
 ) = ConstraintLayout(
   modifier = modifier
@@ -398,6 +400,7 @@ private fun Content(
       ),
     text = area.description,
     onOpenBetaClick = { onOpenBetaClick() },
+    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 
   Organizations(
@@ -505,15 +508,18 @@ private fun Description(
   modifier: Modifier = Modifier,
   text: String,
   onOpenBetaClick: () -> Unit,
+  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   DescriptionHeader()
 
   if (text.isNotBlank()) {
-    ExpandableText(
+    MarkdownView(
       text = text,
-      maxLinesBeforeExpandable = 5,
+      onUrlClick = { url ->
+        onMarkdownUrlClick(url)
+      },
     )
   } else {
     DescriptionPlaceholder { onOpenBetaClick() }
@@ -1002,6 +1008,7 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
         onShowAllImagesClick = { },
         onOpenBetaClick = { },
         onImageClick = { },
+        onMarkdownUrlClick = { },
       )
     }
   }
@@ -1033,6 +1040,7 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
         onShowAllImagesClick = { },
         onOpenBetaClick = { },
         onImageClick = { },
+        onMarkdownUrlClick = { },
       )
     }
   }
@@ -1064,6 +1072,7 @@ private fun EmptyAreaPreview() = RouteSearchTheme {
         onShowAllImagesClick = { },
         onOpenBetaClick = { },
         onImageClick = { },
+        onMarkdownUrlClick = { },
       )
     }
   }

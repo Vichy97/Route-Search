@@ -46,8 +46,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
 import com.routesearch.data.climb.Type
 import com.routesearch.features.R
-import com.routesearch.features.common.views.ExpandableText
 import com.routesearch.features.common.views.Images
+import com.routesearch.features.common.views.MarkdownView
 import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
@@ -94,6 +94,7 @@ fun ClimbScreen() {
         onBookmarkClick = viewModel::onBookmarkClick,
         onShareClick = viewModel::onShareClick,
         onOpenBetaClick = viewModel::onOpenBetaClick,
+        onMarkdownUrlClick = viewModel::onMarkdownUrlClick,
         onImageClick = viewModel::onImageClick,
       )
 
@@ -158,6 +159,7 @@ private fun Content(
   onBookmarkClick: () -> Unit,
   onShareClick: () -> Unit,
   onOpenBetaClick: () -> Unit,
+  onMarkdownUrlClick: (String) -> Unit,
   onImageClick: (Int) -> Unit,
 ) = ConstraintLayout(
   modifier = modifier.fillMaxWidth(),
@@ -301,6 +303,7 @@ private fun Content(
       .padding(horizontal = 16.dp),
     text = climb.description.general,
     onOpenBetaClick = { onOpenBetaClick() },
+    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 
   Location(
@@ -319,6 +322,7 @@ private fun Content(
       .padding(horizontal = 16.dp),
     text = climb.description.location,
     onOpenBetaClick = { onOpenBetaClick() },
+    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 
   Protection(
@@ -337,6 +341,7 @@ private fun Content(
       .padding(horizontal = 16.dp),
     text = climb.description.protection,
     onOpenBetaClick = { onOpenBetaClick() },
+    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 }
 
@@ -455,15 +460,18 @@ private fun Description(
   modifier: Modifier = Modifier,
   text: String,
   onOpenBetaClick: () -> Unit,
+  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   DescriptionHeader()
 
   if (text.isNotBlank()) {
-    ExpandableText(
+    MarkdownView(
       text = text,
-      maxLinesBeforeExpandable = 5,
+      onUrlClick = { url ->
+        onMarkdownUrlClick(url)
+      },
     )
   } else {
     DescriptionPlaceholder { onOpenBetaClick() }
@@ -475,15 +483,18 @@ private fun Location(
   modifier: Modifier = Modifier,
   text: String,
   onOpenBetaClick: () -> Unit,
+  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   LocationHeader()
 
   if (text.isNotBlank()) {
-    ExpandableText(
+    MarkdownView(
       text = text,
-      maxLinesBeforeExpandable = 5,
+      onUrlClick = { url ->
+        onMarkdownUrlClick(url)
+      },
     )
   } else {
     DescriptionPlaceholder { onOpenBetaClick() }
@@ -495,15 +506,18 @@ private fun Protection(
   modifier: Modifier = Modifier,
   text: String,
   onOpenBetaClick: () -> Unit,
+  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   ProtectionHeader()
 
   if (text.isNotBlank()) {
-    ExpandableText(
+    MarkdownView(
       text = text,
-      maxLinesBeforeExpandable = 5,
+      onUrlClick = { url ->
+        onMarkdownUrlClick(url)
+      },
     )
   } else {
     DescriptionPlaceholder { onOpenBetaClick() }
@@ -585,5 +599,6 @@ private fun ClimbScreenPreview() = RouteSearchTheme {
     onShareClick = { },
     onOpenBetaClick = { },
     onImageClick = { },
+    onMarkdownUrlClick = { },
   )
 }
