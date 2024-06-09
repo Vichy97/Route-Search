@@ -57,6 +57,7 @@ dependencies {
   implementation(libs.lifecycle.runtime.compose)
   implementation(libs.lifecycle.viewmodel)
   implementation(libs.lifecycle.viewmodel.compose)
+  implementation(libs.logcat)
   implementation(libs.mapbox.android)
   implementation(libs.mapbox.android.core)
   implementation(libs.mapbox.base)

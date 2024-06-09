@@ -20,6 +20,13 @@ import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import kotlinx.collections.immutable.ImmutableList
+import logcat.LogPriority.DEBUG
+import logcat.LogPriority.WARN
+import logcat.asLog
+import logcat.logcat
+import java.lang.RuntimeException
+
+private const val LogTag = "Images"
 
 /**
  * A composable to show either a carousel of images or a placeholder if no images are present.
@@ -46,6 +53,14 @@ internal fun Images(
     placeholder = ColorPainter(
       color = MaterialTheme.colorScheme.surfaceVariant,
     ),
+    onLoading = { onImageLoading(urls.first()) },
+    onSuccess = { onImageLoadingSuccess(urls.first()) },
+    onError = {
+      onImageLoadingError(
+        url = urls.first(),
+        error = it.result.throwable,
+      )
+    },
     contentDescription = null,
     contentScale = ContentScale.FillWidth,
   )
@@ -72,8 +87,44 @@ internal fun Images(
         .data(url)
         .crossfade(true)
         .build(),
+      onLoading = { onImageLoading(url) },
+      onSuccess = { onImageLoadingSuccess(url) },
+      onError = {
+        onImageLoadingError(
+          url = url,
+          error = it.result.throwable,
+        )
+      },
       contentDescription = null,
       contentScale = ContentScale.Crop,
     )
   }
 }
+
+private fun onImageLoading(url: String) = logcat(
+  tag = LogTag,
+  priority = DEBUG,
+) { "Loading image $url" }
+
+private fun onImageLoadingSuccess(url: String) = logcat(
+  tag = LogTag,
+  priority = DEBUG,
+) { "Done loading image $url" }
+
+private fun onImageLoadingError(
+  url: String,
+  error: Throwable,
+) = logcat(
+  tag = LogTag,
+  priority = WARN,
+) {
+  ImageLoadingException(
+    message = "Error loading image $url",
+    cause = error,
+  ).asLog()
+}
+
+private class ImageLoadingException(
+  message: String,
+  cause: Throwable,
+) : RuntimeException(message, cause)
