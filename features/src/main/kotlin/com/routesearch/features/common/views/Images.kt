@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
@@ -48,6 +50,11 @@ internal fun Images(
       .clickable { onImageClick(0) },
     model = urls.first(),
     loading = { ImagePlaceholder() },
+    error = {
+      ImagePlaceholder(
+        icon = Icons.Default.BrokenImage,
+      )
+    },
     onLoading = { onImageLoading(urls.first()) },
     onSuccess = { onImageLoadingSuccess(urls.first()) },
     onError = {
@@ -78,6 +85,11 @@ internal fun Images(
         .fillMaxSize()
         .clickable { onImageClick(index) },
       loading = { ImagePlaceholder() },
+      error = {
+        ImagePlaceholder(
+          icon = Icons.Default.BrokenImage,
+        )
+      },
       model = ImageRequest.Builder(LocalContext.current)
         .data(url)
         .crossfade(true)
