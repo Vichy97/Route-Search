@@ -1,14 +1,12 @@
 plugins {
   `android-library-convention`
+  alias(libs.plugins.compose.compiler)
 }
 android {
   namespace = "com.routesearch.ui.common"
 
   buildFeatures {
     compose = true
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
   }
 }
 dependencies {

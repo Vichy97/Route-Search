@@ -2,6 +2,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
+  alias(libs.plugins.compose.compiler) apply false
   id(libs.plugins.androidApplication.get().pluginId) apply false
   id(libs.plugins.androidLibrary.get().pluginId) apply false
   id(libs.plugins.kotlinAndroid.get().pluginId) apply false

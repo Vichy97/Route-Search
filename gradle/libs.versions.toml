@@ -6,7 +6,6 @@ apollo = "3.8.2"
 collection = "1.4.0"
 coil-bom = "2.5.0"
 compose-bom = "2024.04.00"
-compose-compiler = "1.5.11"
 compose-destinations = "1.9.56"
 core = "1.12.0"
 coroutines = "1.7.3"
@@ -17,8 +16,8 @@ detekt = "1.23.1"
 immutable-collections = "0.3.7"
 junit-jupiter = "5.8.1"
 koin = "3.5.1"
-kotlin = "1.9.23"
-ksp = "1.9.10-1.0.13"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.22"
 ktlint = "11.5.1"
 leakcanary = "2.12"
 lifecycle = "2.7.0"
@@ -123,6 +122,7 @@ zoomable = { group = "net.engawapg.lib", name = "zoomable", version.ref = "zooma
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin"}
 dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependency-analysis" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
