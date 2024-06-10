@@ -38,6 +38,7 @@ dependencies {
   implementation(project(":ui-common"))
   implementation(project(":util:app-version"))
   implementation(project(":util:common"))
+  implementation(project(":util:markdown"))
 
   implementation(libs.animation)
   implementation(libs.animation.core)

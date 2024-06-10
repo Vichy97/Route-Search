@@ -33,6 +33,22 @@ inline fun <R : Any> AnnotatedString.Builder.annotation(
   }
 }
 
+inline fun <R : Any> AnnotatedString.Builder.annotation(
+  tag: String,
+  annotation: String,
+  block: AnnotatedString.Builder.() -> R,
+): R {
+  val index = pushStringAnnotation(
+    tag = tag,
+    annotation = annotation,
+  )
+  return try {
+    block(this)
+  } finally {
+    pop(index)
+  }
+}
+
 fun AnnotatedString.isAnnotatedAtIndex(
   index: Int,
   annotation: String,

@@ -89,6 +89,8 @@ internal class ClimbViewModel(
 
   fun onOpenBetaClick() = webLauncher.launchUrl(OPEN_BETA_LINK)
 
+  fun onMarkdownUrlClick(url: String) = webLauncher.launchUrl(url)
+
   fun onShowAllImagesClick() = (viewState.value as? ClimbViewState.Content)?.run {
     navigator.navigate(GalleryScreenDestination(ArrayList(climb.media)))
   }

@@ -119,6 +119,8 @@ internal class AreaViewModel(
 
   fun onOpenBetaClick() = webLauncher.launchUrl(OPEN_BETA_LINK)
 
+  fun onMarkdownUrlClick(link: String) = webLauncher.launchUrl(link)
+
   fun onFilterClimbsClick() {
     TODO("Not implemented")
   }
