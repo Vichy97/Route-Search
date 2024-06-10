@@ -2,7 +2,6 @@ package com.routesearch.features.climb
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.routesearch.data.climb.Climb
-import com.routesearch.data.climb.Grades
 import com.routesearch.data.climb.Type
 import com.routesearch.data.location.Location
 import kotlinx.collections.immutable.persistentListOf
@@ -56,11 +55,8 @@ internal val fakeClimbs = listOf(
     length = 700,
     boltCount = null,
     fa = "Joe Williams",
-    type = Type.TRAD,
-    grades = Grades(
-      yds = "5.9",
-      vScale = null,
-    ),
+    types = persistentListOf(Type.TRAD),
+    grade = "5.9",
     pitches = persistentListOf(),
     media = persistentListOf(),
   ),

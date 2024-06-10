@@ -17,8 +17,8 @@ data class Climb(
   val length: Int?,
   val boltCount: Int?,
   val fa: String,
-  val type: Type?,
-  val grades: Grades?,
+  val types: ImmutableList<Type>,
+  val grade: String?,
   val pitches: ImmutableList<Pitch>,
   val media: ImmutableList<String>,
 ) {

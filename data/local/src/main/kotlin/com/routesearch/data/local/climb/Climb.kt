@@ -22,7 +22,7 @@ data class Climb(
   val length: Int,
   val boltCount: Int?,
   val fa: String,
-  val type: String,
+  val types: List<String>,
   @Embedded
   val grades: Grades?,
   val numberOfPitches: Int,

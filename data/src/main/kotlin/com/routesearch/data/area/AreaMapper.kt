@@ -1,7 +1,8 @@
 package com.routesearch.data.area
 
 import com.routesearch.data.climb.Type
-import com.routesearch.data.climb.toGrades
+import com.routesearch.data.climb.toGrade
+import com.routesearch.data.climb.toTypes
 import com.routesearch.data.location.getLocation
 import com.routesearch.data.location.toLocation
 import com.routesearch.data.media.toMedia
@@ -76,7 +77,7 @@ private fun List<LocalClimb>.toClimbs() = map { it.toClimb() }
 private fun LocalClimb.toClimb() = Area.Climb(
   id = id,
   name = name,
-  grades = grades.toGrades(),
-  type = Type.valueOf(type),
+  grade = grades.toGrade(types.contains(Type.BOULDERING.toString())),
+  types = types.toTypes(),
   numberOfPitches = numberOfPitches,
 )

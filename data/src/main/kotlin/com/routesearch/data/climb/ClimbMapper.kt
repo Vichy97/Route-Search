@@ -19,8 +19,8 @@ internal fun RemoteClimb.toClimb() = Climb(
   length = length,
   boltCount = boltsCount,
   fa = fa ?: "",
-  type = type.typeFragment.toType(),
-  grades = grades?.gradesFragment?.toGrade(),
+  types = type.typeFragment.toTypes(),
+  grade = grades?.gradesFragment?.toGrade(type.typeFragment.bouldering == true),
   pitches = pitches.toPitches(),
   media = media?.mapNotNull { it?.mediaFragment?.toMedia() }?.toImmutableList() ?: persistentListOf(),
 )
@@ -36,8 +36,8 @@ internal fun LocalClimbWithPitches.toClimb() = Climb(
   length = climb.length,
   boltCount = climb.boltCount,
   fa = climb.fa,
-  type = climb.type.toType(),
-  grades = climb.grades?.toGrades(),
+  types = climb.types.toTypes(),
+  grade = climb.grades?.toGrade(climb.types.contains(Type.BOULDERING.toString())),
   pitches = pitches.toPitches(),
   media = climb.media.toImmutableList(),
 )

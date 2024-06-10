@@ -1,7 +1,7 @@
 package com.routesearch.data.area
 
 import com.routesearch.data.climb.toGrade
-import com.routesearch.data.climb.toType
+import com.routesearch.data.climb.toTypes
 import kotlinx.collections.immutable.toImmutableList
 import com.routesearch.data.remote.AreaQuery as RemoteArea
 
@@ -12,8 +12,8 @@ internal fun List<RemoteArea.Climb?>.toClimbs() = filterNotNull()
 
 internal fun RemoteArea.Climb.toClimb() = Area.Climb(
   id = uuid,
-  grades = grades?.gradesFragment?.toGrade(),
+  grade = grades?.gradesFragment?.toGrade(type.typeFragment.bouldering == true),
   name = name,
-  type = type.typeFragment.toType(),
+  types = type.typeFragment.toTypes(),
   numberOfPitches = pitches?.count() ?: 1,
 )

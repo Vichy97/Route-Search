@@ -1,7 +1,6 @@
 package com.routesearch.data.area
 
 import androidx.compose.runtime.Immutable
-import com.routesearch.data.climb.Grades
 import com.routesearch.data.climb.Type
 import com.routesearch.data.location.Location
 import kotlinx.collections.immutable.ImmutableList
@@ -54,9 +53,9 @@ data class Area(
   @Immutable
   data class Climb(
     val id: String,
-    val grades: Grades?,
+    val grade: String?,
     val name: String,
-    val type: Type,
+    val types: List<Type>,
     val numberOfPitches: Int,
   )
 

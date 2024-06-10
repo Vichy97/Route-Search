@@ -8,6 +8,6 @@ data class Pitch(
   val description: String,
   val length: Int?,
   val boltCount: Int?,
-  val grades: Grades?,
-  val type: Type?,
+  val grade: String?,
+  val types: List<Type>?,
 )
