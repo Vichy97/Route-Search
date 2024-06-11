@@ -4,8 +4,8 @@ import java.util.Properties
 
 plugins {
   `android-library-convention`
-  id(libs.plugins.apollo.get().pluginId)
-  id(libs.plugins.ksp.get().pluginId)
+  alias(libs.plugins.apollo)
+  alias(libs.plugins.ksp)
 }
 android {
   namespace = "com.routesearch.data.remote"

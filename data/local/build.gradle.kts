@@ -1,6 +1,6 @@
 plugins {
   `android-library-convention`
-  id(libs.plugins.ksp.get().pluginId)
+  alias(libs.plugins.ksp)
 }
 android {
   namespace = "com.routesearch.data.local"

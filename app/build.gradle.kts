@@ -4,9 +4,10 @@ import java.util.Properties
 
 plugins {
   alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.ksp)
+
   id(libs.plugins.androidApplication.get().pluginId)
   id(libs.plugins.kotlinAndroid.get().pluginId)
-  id(libs.plugins.ksp.get().pluginId)
 }
 android {
   namespace = "com.routesearch"
