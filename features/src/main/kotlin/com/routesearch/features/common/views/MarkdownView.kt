@@ -1,7 +1,6 @@
 package com.routesearch.features.common.views
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,9 +14,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.routesearch.ui.common.compose.annotation
-import com.routesearch.ui.common.compose.getAnnotationAt
 import com.routesearch.ui.common.compose.underline
+import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.markdown.MarkdownElement
 import com.routesearch.util.markdown.MarkdownParser
@@ -30,7 +28,6 @@ private const val BOLD_ANNOTATION_LENGTH = 2
 @Composable
 internal fun MarkdownView(
   text: String,
-  onUrlClick: (String) -> Unit,
 ) = Column {
   val lineProcessors = remember { listOf(HeadingProcessor(), ListItemProcessor()) }
   val markdownParser = remember { MarkdownParser(lineProcessors) }
@@ -54,9 +51,6 @@ internal fun MarkdownView(
         MarkdownText(
           text = "• ${element.text}",
           style = MaterialTheme.typography.bodySmall,
-          onUrlClick = { url ->
-            onUrlClick(url)
-          },
         )
       }
 
@@ -64,7 +58,6 @@ internal fun MarkdownView(
         MarkdownText(
           text = element.text,
           style = MaterialTheme.typography.bodySmall,
-          onUrlClick = { onUrlClick(it) },
         )
       }
     }
@@ -75,25 +68,16 @@ internal fun MarkdownView(
 private fun MarkdownText(
   text: String,
   style: TextStyle,
-  onUrlClick: (String) -> Unit,
 ) {
   var annotatedString = boldItalicAnnotation(AnnotatedString(text))
   annotatedString = boldAnnotation(annotatedString)
   annotatedString = italicAnnotation(annotatedString)
   annotatedString = linkAnnotation(annotatedString)
 
-  ClickableText(
+  Text(
     text = annotatedString,
-    style = style.copy(
-      color = MaterialTheme.colorScheme.onSurface,
-    ),
-  ) { index ->
-    annotatedString.getAnnotationAt(
-      index = index,
-    )?.let {
-      onUrlClick(it)
-    }
-  }
+    style = style,
+  )
 }
 
 private fun linkAnnotation(text: AnnotatedString): AnnotatedString {
@@ -106,17 +90,12 @@ private fun linkAnnotation(text: AnnotatedString): AnnotatedString {
       val matchStart = matchResult.range.first
       val matchEnd = matchResult.range.last + 1
 
-      val annotationTag = "website"
-
       if (currentIndex < matchStart) {
         append(text.subSequence(currentIndex, matchStart))
       }
 
       underline {
-        annotation(
-          tag = annotationTag,
-          annotation = url,
-        ) {
+        url(url) {
           append(linkText)
         }
       }
@@ -225,7 +204,6 @@ private fun MarkdownViewPreview() = RouteSearchTheme {
         
         [Learn more about Compose](https://developer.android.com/jetpack/compose)
       """.trimIndent(),
-      onUrlClick = { },
     )
   }
 }

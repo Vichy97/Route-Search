@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -71,11 +70,10 @@ import com.routesearch.features.common.views.MarkdownView
 import com.routesearch.features.common.views.MetadataCard
 import com.routesearch.features.common.views.VScaleGradeChart
 import com.routesearch.features.common.views.YdsGradeChart
-import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
-import com.routesearch.ui.common.compose.getAnnotationAt
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
+import com.routesearch.ui.common.compose.clickable
 import com.routesearch.ui.common.compose.underline
+import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
 import kotlinx.collections.immutable.ImmutableList
@@ -112,8 +110,6 @@ fun AreaScreen() {
         onFilterClimbsClick = viewModel::onFilterClimbsClick,
         onAreaClick = viewModel::onAreaClick,
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
-        onOpenBetaClick = viewModel::onOpenBetaClick,
-        onMarkdownUrlClick = viewModel::onMarkdownUrlClick,
         onImageClick = viewModel::onImageClick,
       )
 
@@ -210,8 +206,6 @@ private fun Content(
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
   onShowAllImagesClick: () -> Unit,
-  onOpenBetaClick: () -> Unit,
-  onMarkdownUrlClick: (String) -> Unit,
   onImageClick: (Int) -> Unit,
 ) = ConstraintLayout(
   modifier = modifier
@@ -399,8 +393,6 @@ private fun Content(
         end = 16.dp,
       ),
     text = area.description,
-    onOpenBetaClick = { onOpenBetaClick() },
-    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 
   Organizations(
@@ -436,7 +428,6 @@ private fun Content(
     onFilterClimbsClick = { onFilterClimbsClick() },
     onClimbClick = { onClimbClick(it) },
     onAreaClick = { onAreaClick(it) },
-    onOpenBetaClick = { onOpenBetaClick() },
   )
 }
 
@@ -486,43 +477,34 @@ private fun Path(
 ) {
   val pathString = buildAnnotatedString {
     path.dropLast(1).forEach {
-      annotation(it) { append(it) }
+      clickable(
+        tag = it,
+        onClick = { onPathSectionClick(it) },
+      ) { append(it) }
       append(" / ")
     }
     bold { append(path.last()) }
   }
-  ClickableText(
+  Text(
     modifier = modifier,
     text = pathString,
-    style = MaterialTheme.typography.bodyLarge.copy(
-      color = MaterialTheme.colorScheme.onSurface,
-    ),
-  ) { index ->
-    pathString.getAnnotationAt(index)
-      ?.let { onPathSectionClick(it) }
-  }
+    style = MaterialTheme.typography.bodyLarge,
+  )
 }
 
 @Composable
 private fun Description(
   modifier: Modifier = Modifier,
   text: String,
-  onOpenBetaClick: () -> Unit,
-  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   DescriptionHeader()
 
   if (text.isNotBlank()) {
-    MarkdownView(
-      text = text,
-      onUrlClick = { url ->
-        onMarkdownUrlClick(url)
-      },
-    )
+    MarkdownView(text)
   } else {
-    DescriptionPlaceholder { onOpenBetaClick() }
+    DescriptionPlaceholder()
   }
 }
 
@@ -533,34 +515,24 @@ private fun DescriptionHeader() = Text(
 )
 
 @Composable
-private fun DescriptionPlaceholder(
-  onClick: () -> Unit,
-) {
-  val websiteAnnotation = "website"
+private fun DescriptionPlaceholder() {
   val descriptionString = buildAnnotatedString {
     append(stringResource(R.string.area_screen_description_placeholder))
 
     append(" ")
 
+    val openBetaUrl = stringResource(R.string.common_urls_open_beta)
     underline {
-      annotation(websiteAnnotation) {
-        append(stringResource(R.string.open_beta_title))
+      url(openBetaUrl) {
+        append(openBetaUrl)
       }
+      append("!")
     }
   }
-  ClickableText(
+  Text(
     text = descriptionString,
-    style = MaterialTheme.typography.bodyLarge.copy(
-      color = MaterialTheme.colorScheme.onSurface,
-    ),
-
-  ) {
-    val annotationClicked = descriptionString.isAnnotatedAtIndex(
-      index = it,
-      annotation = websiteAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
+    style = MaterialTheme.typography.bodyLarge,
+  )
 }
 
 @Composable
@@ -717,7 +689,6 @@ private fun ListContent(
   onFilterClimbsClick: () -> Unit,
   onClimbClick: (String) -> Unit,
   onAreaClick: (String) -> Unit,
-  onOpenBetaClick: () -> Unit,
 ) = if (area.children.isEmpty() && area.climbs.isNotEmpty()) {
   ClimbList(
     modifier = modifier,
@@ -734,7 +705,6 @@ private fun ListContent(
 } else {
   EmptyAreaPlaceholder(
     modifier = modifier,
-    onClick = { onOpenBetaClick() },
   )
 }
 
@@ -899,7 +869,6 @@ private fun ClimbListItemSubtitle(climb: Area.Climb) {
 @Composable
 private fun EmptyAreaPlaceholder(
   modifier: Modifier = Modifier,
-  onClick: () -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
@@ -910,33 +879,26 @@ private fun EmptyAreaPlaceholder(
     text = stringResource(R.string.area_screen_empty_area_header),
     style = MaterialTheme.typography.titleLarge,
   )
-  val websiteAnnotation = "website"
   val descriptionString = buildAnnotatedString {
     append(stringResource(R.string.area_screen_empty_area_placeholder))
 
     append(" ")
 
+    val openBetaUrl = stringResource(R.string.common_urls_open_beta)
     underline {
-      annotation(websiteAnnotation) {
-        append(stringResource(R.string.open_beta_title))
+      url(openBetaUrl) {
+        append(openBetaUrl)
       }
+      append("!")
     }
   }
-  ClickableText(
+  Text(
     modifier = Modifier.padding(
       horizontal = 16.dp,
     ),
     text = descriptionString,
-    style = MaterialTheme.typography.bodyLarge.copy(
-      color = MaterialTheme.colorScheme.onSurface,
-    ),
-  ) {
-    val annotationClicked = descriptionString.isAnnotatedAtIndex(
-      index = it,
-      annotation = websiteAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
+    style = MaterialTheme.typography.bodyLarge,
+  )
 }
 
 @Composable
@@ -1006,9 +968,7 @@ private fun AreaWithChildrenPreview() = RouteSearchTheme {
         onClimbClick = { },
         onAreaClick = { },
         onShowAllImagesClick = { },
-        onOpenBetaClick = { },
         onImageClick = { },
-        onMarkdownUrlClick = { },
       )
     }
   }
@@ -1038,9 +998,7 @@ private fun AreaWithClimbsPreview() = RouteSearchTheme {
         onClimbClick = { },
         onAreaClick = { },
         onShowAllImagesClick = { },
-        onOpenBetaClick = { },
         onImageClick = { },
-        onMarkdownUrlClick = { },
       )
     }
   }
@@ -1070,9 +1028,7 @@ private fun EmptyAreaPreview() = RouteSearchTheme {
         onClimbClick = { },
         onAreaClick = { },
         onShowAllImagesClick = { },
-        onOpenBetaClick = { },
         onImageClick = { },
-        onMarkdownUrlClick = { },
       )
     }
   }

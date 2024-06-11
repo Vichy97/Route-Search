@@ -3,7 +3,6 @@ package com.routesearch.features.about
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,11 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.routesearch.features.R
-import com.routesearch.features.common.CommonUrls.GITHUB_LINK
-import com.routesearch.features.common.CommonUrls.OPEN_BETA_LINK
-import com.routesearch.ui.common.compose.annotation
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.underline
+import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -49,10 +45,6 @@ internal fun AboutScreen() {
       modifier = Modifier
         .padding(top = padding.calculateTopPadding()),
       appVersion = viewState.appVersion,
-      onGithubClick = viewModel::onGithubClick,
-      onOpenBetaClick = viewModel::onOpenBetaClick,
-      onPrivacyPolicyClick = viewModel::onPrivacyPolicyClick,
-      onPlayStoreClick = viewModel::onPlayStoreClick,
     )
   }
 }
@@ -61,10 +53,6 @@ internal fun AboutScreen() {
 private fun Content(
   modifier: Modifier = Modifier,
   appVersion: String,
-  onGithubClick: () -> Unit,
-  onOpenBetaClick: () -> Unit,
-  onPrivacyPolicyClick: () -> Unit,
-  onPlayStoreClick: () -> Unit,
 ) = ConstraintLayout(
   modifier = modifier
     .fillMaxSize(),
@@ -96,10 +84,6 @@ private fun Content(
         top.linkTo(title.bottom)
       },
     appVersion = appVersion,
-    onGithubClick = { onGithubClick() },
-    onOpenBetaClick = { onOpenBetaClick() },
-    onPrivacyPolicyClick = { onPrivacyPolicyClick() },
-    onPlayStoreClick = { onPlayStoreClick() },
   )
 }
 
@@ -132,10 +116,6 @@ private fun NavigationButton(
 private fun InfoColumn(
   modifier: Modifier = Modifier,
   appVersion: String,
-  onGithubClick: () -> Unit,
-  onOpenBetaClick: () -> Unit,
-  onPrivacyPolicyClick: () -> Unit,
-  onPlayStoreClick: () -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
@@ -158,7 +138,6 @@ private fun InfoColumn(
         vertical = 8.dp,
       ),
     text = stringResource(R.string.about_screen_google_play_store_message),
-    onClick = { onPlayStoreClick() },
   )
   WebsiteText(
     modifier = Modifier
@@ -166,8 +145,7 @@ private fun InfoColumn(
         horizontal = 16.dp,
         vertical = 8.dp,
       ),
-    text = GITHUB_LINK,
-    onClick = { onGithubClick() },
+    text = stringResource(R.string.common_urls_github_repo),
   )
   WebsiteText(
     modifier = Modifier
@@ -175,8 +153,7 @@ private fun InfoColumn(
         horizontal = 16.dp,
         vertical = 8.dp,
       ),
-    text = OPEN_BETA_LINK,
-    onClick = { onOpenBetaClick() },
+    text = stringResource(R.string.common_urls_open_beta),
   )
   WebsiteText(
     modifier = Modifier
@@ -185,7 +162,6 @@ private fun InfoColumn(
         vertical = 8.dp,
       ),
     text = stringResource(R.string.about_screen_privacy_policy),
-    onClick = { onPrivacyPolicyClick() },
   )
 }
 
@@ -193,31 +169,21 @@ private fun InfoColumn(
 private fun WebsiteText(
   modifier: Modifier = Modifier,
   text: String,
-  onClick: () -> Unit,
 ) {
-  val websiteAnnotation = "website"
   val url = buildAnnotatedString {
     underline {
-      annotation(websiteAnnotation) {
+      url(text) {
         append(text)
       }
     }
   }
-  ClickableText(
+  Text(
     modifier = modifier,
     text = url,
-    style = MaterialTheme.typography.bodyMedium.copy(
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    ),
+    style = MaterialTheme.typography.bodyMedium,
     maxLines = 1,
     overflow = TextOverflow.Ellipsis,
-  ) {
-    val annotationClicked = url.isAnnotatedAtIndex(
-      index = it,
-      annotation = websiteAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
+  )
 }
 
 @PreviewLightDark
@@ -226,10 +192,6 @@ private fun AboutScreenPreview() = RouteSearchTheme {
   Surface {
     Content(
       appVersion = "1.0",
-      onGithubClick = { },
-      onOpenBetaClick = { },
-      onPrivacyPolicyClick = { },
-      onPlayStoreClick = { },
     )
   }
 }

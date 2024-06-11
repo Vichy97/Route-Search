@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -49,11 +48,10 @@ import com.routesearch.features.R
 import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MarkdownView
 import com.routesearch.features.common.views.MetadataCard
-import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
-import com.routesearch.ui.common.compose.getAnnotationAt
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
+import com.routesearch.ui.common.compose.clickable
 import com.routesearch.ui.common.compose.underline
+import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
 import org.koin.androidx.compose.koinViewModel
@@ -93,8 +91,6 @@ fun ClimbScreen() {
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
         onBookmarkClick = viewModel::onBookmarkClick,
         onShareClick = viewModel::onShareClick,
-        onOpenBetaClick = viewModel::onOpenBetaClick,
-        onMarkdownUrlClick = viewModel::onMarkdownUrlClick,
         onImageClick = viewModel::onImageClick,
       )
 
@@ -158,8 +154,6 @@ private fun Content(
   onShowAllImagesClick: () -> Unit,
   onBookmarkClick: () -> Unit,
   onShareClick: () -> Unit,
-  onOpenBetaClick: () -> Unit,
-  onMarkdownUrlClick: (String) -> Unit,
   onImageClick: (Int) -> Unit,
 ) = ConstraintLayout(
   modifier = modifier.fillMaxWidth(),
@@ -302,8 +296,6 @@ private fun Content(
       }
       .padding(horizontal = 16.dp),
     text = climb.description.general,
-    onOpenBetaClick = { onOpenBetaClick() },
-    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 
   Location(
@@ -321,8 +313,6 @@ private fun Content(
       }
       .padding(horizontal = 16.dp),
     text = climb.description.location,
-    onOpenBetaClick = { onOpenBetaClick() },
-    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 
   Protection(
@@ -340,8 +330,6 @@ private fun Content(
       }
       .padding(horizontal = 16.dp),
     text = climb.description.protection,
-    onOpenBetaClick = { onOpenBetaClick() },
-    onMarkdownUrlClick = { onMarkdownUrlClick(it) },
   )
 }
 
@@ -380,25 +368,28 @@ private fun Path(
 ) {
   val pathString = buildAnnotatedString {
     path.dropLast(1).forEach {
-      annotation(it) { append(it) }
+      clickable(
+        tag = it,
+        onClick = { onPathSectionClick(it) },
+      ) {
+        append(it)
+      }
       append(" / ")
     }
     bold {
-      annotation(path.last()) {
+      clickable(
+        tag = path.last(),
+        onClick = { onPathSectionClick(path.last()) },
+      ) {
         append(path.last())
       }
     }
   }
-  ClickableText(
+  Text(
     modifier = modifier,
     text = pathString,
-    style = MaterialTheme.typography.bodyLarge.copy(
-      color = MaterialTheme.colorScheme.onSurface,
-    ),
-  ) { index ->
-    pathString.getAnnotationAt(index)
-      ?.let { onPathSectionClick(it) }
-  }
+    style = MaterialTheme.typography.bodyLarge,
+  )
 }
 
 @Composable
@@ -459,22 +450,15 @@ private fun ShareButton(
 private fun Description(
   modifier: Modifier = Modifier,
   text: String,
-  onOpenBetaClick: () -> Unit,
-  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   DescriptionHeader()
 
   if (text.isNotBlank()) {
-    MarkdownView(
-      text = text,
-      onUrlClick = { url ->
-        onMarkdownUrlClick(url)
-      },
-    )
+    MarkdownView(text)
   } else {
-    DescriptionPlaceholder { onOpenBetaClick() }
+    DescriptionPlaceholder()
   }
 }
 
@@ -482,22 +466,15 @@ private fun Description(
 private fun Location(
   modifier: Modifier = Modifier,
   text: String,
-  onOpenBetaClick: () -> Unit,
-  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   LocationHeader()
 
   if (text.isNotBlank()) {
-    MarkdownView(
-      text = text,
-      onUrlClick = { url ->
-        onMarkdownUrlClick(url)
-      },
-    )
+    MarkdownView(text)
   } else {
-    DescriptionPlaceholder { onOpenBetaClick() }
+    DescriptionPlaceholder()
   }
 }
 
@@ -505,22 +482,15 @@ private fun Location(
 private fun Protection(
   modifier: Modifier = Modifier,
   text: String,
-  onOpenBetaClick: () -> Unit,
-  onMarkdownUrlClick: (String) -> Unit,
 ) = Column(
   modifier = modifier,
 ) {
   ProtectionHeader()
 
   if (text.isNotBlank()) {
-    MarkdownView(
-      text = text,
-      onUrlClick = { url ->
-        onMarkdownUrlClick(url)
-      },
-    )
+    MarkdownView(text)
   } else {
-    DescriptionPlaceholder { onOpenBetaClick() }
+    DescriptionPlaceholder()
   }
 }
 
@@ -543,34 +513,24 @@ private fun ProtectionHeader() = Text(
 )
 
 @Composable
-private fun DescriptionPlaceholder(
-  onOpenBetaClick: () -> Unit,
-) {
-  val websiteAnnotation = "website"
+private fun DescriptionPlaceholder() {
   val descriptionString = buildAnnotatedString {
     append(stringResource(R.string.climb_screen_description_placeholder))
 
     append(" ")
 
+    val openBetaUrl = stringResource(R.string.common_urls_open_beta)
     underline {
-      annotation(websiteAnnotation) {
-        append(stringResource(R.string.open_beta_title))
+      url(openBetaUrl) {
+        append(openBetaUrl)
       }
+      append("!")
     }
   }
-  ClickableText(
+  Text(
     text = descriptionString,
-    style = MaterialTheme.typography.bodyLarge.copy(
-      color = MaterialTheme.colorScheme.onSurface,
-    ),
-
-  ) {
-    val annotationClicked = descriptionString.isAnnotatedAtIndex(
-      index = it,
-      annotation = websiteAnnotation,
-    )
-    if (annotationClicked) onOpenBetaClick()
-  }
+    style = MaterialTheme.typography.bodyLarge,
+  )
 }
 
 @PreviewLightDark
@@ -597,8 +557,6 @@ private fun ClimbScreenPreview() = RouteSearchTheme {
     onShowAllImagesClick = { },
     onBookmarkClick = { },
     onShareClick = { },
-    onOpenBetaClick = { },
     onImageClick = { },
-    onMarkdownUrlClick = { },
   )
 }

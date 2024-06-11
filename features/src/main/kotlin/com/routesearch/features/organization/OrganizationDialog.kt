@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
@@ -30,9 +29,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.spec.DestinationStyle
 import com.routesearch.features.R
-import com.routesearch.ui.common.compose.annotation
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
 import com.routesearch.ui.common.compose.underline
+import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -47,7 +45,6 @@ internal fun OrganizationDialog() {
 
   OrganizationDialogContent(
     viewState = viewState,
-    onWebsiteClick = viewModel::onWebsiteClick,
     onFacebookClick = viewModel::onFacebookClick,
     onInstagramClick = viewModel::onInstagramClick,
   )
@@ -57,7 +54,6 @@ internal fun OrganizationDialog() {
 private fun OrganizationDialogContent(
   modifier: Modifier = Modifier,
   viewState: OrganizationViewState,
-  onWebsiteClick: () -> Unit,
   onFacebookClick: () -> Unit,
   onInstagramClick: () -> Unit,
 ) = ElevatedCard(
@@ -91,7 +87,6 @@ private fun OrganizationDialogContent(
         }
         .padding(horizontal = 16.dp),
       text = viewState.websiteUrl ?: "",
-      onClick = onWebsiteClick,
     )
 
     Text(
@@ -159,31 +154,21 @@ private fun OrganizationDialogContent(
 private fun WebsiteText(
   modifier: Modifier = Modifier,
   text: String,
-  onClick: () -> Unit,
 ) {
-  val websiteAnnotation = "website"
   val locationString = buildAnnotatedString {
     underline {
-      annotation(websiteAnnotation) {
+      url(text) {
         append(text)
       }
     }
   }
-  ClickableText(
+  Text(
     modifier = modifier,
     text = locationString,
-    style = MaterialTheme.typography.bodyMedium.copy(
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    ),
+    style = MaterialTheme.typography.bodyMedium,
     maxLines = 1,
     overflow = TextOverflow.Ellipsis,
-  ) {
-    val annotationClicked = locationString.isAnnotatedAtIndex(
-      index = it,
-      annotation = websiteAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
+  )
 }
 
 @PreviewLightDark
@@ -216,7 +201,6 @@ private fun OrganizationDialogPreview() = RouteSearchTheme {
           facebookUrl = "https://facebook.com/cabrp",
           instagramUrl = "https://instagram.com/cabrp",
         ),
-        onWebsiteClick = { },
         onFacebookClick = { },
         onInstagramClick = { },
       )
@@ -242,7 +226,6 @@ private fun OrganizationDialogMinimalPreview() = RouteSearchTheme {
           facebookUrl = null,
           instagramUrl = null,
         ),
-        onWebsiteClick = { },
         onFacebookClick = { },
         onInstagramClick = { },
       )
