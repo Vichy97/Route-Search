@@ -34,6 +34,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarDefaults.InputField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -75,7 +76,7 @@ internal fun SearchScreen() {
   SearchScreenContent(
     viewState = viewState,
     onSearchQueryChange = viewModel::onSearchQueryChange,
-    onSearchActiveChange = viewModel::onSearchActiveChange,
+    onSearchExpandedChange = viewModel::onSearchExpandedChange,
     onBackClick = viewModel::onBackClick,
     onClearClick = viewModel::onClearClick,
     onSearch = viewModel::onSearch,
@@ -93,7 +94,7 @@ internal fun SearchScreen() {
 private fun SearchScreenContent(
   viewState: SearchViewState,
   onSearchQueryChange: (String) -> Unit,
-  onSearchActiveChange: (Boolean) -> Unit,
+  onSearchExpandedChange: (Boolean) -> Unit,
   onBackClick: () -> Unit,
   onClearClick: () -> Unit,
   onSearch: (String) -> Unit,
@@ -133,7 +134,7 @@ private fun SearchScreenContent(
       },
     viewState = viewState,
     onSearchQueryChange = { onSearchQueryChange(it) },
-    onSearchActiveChange = { onSearchActiveChange(it) },
+    onExpandedChange = { onSearchExpandedChange(it) },
     onBackClick = { onBackClick() },
     onClearClick = { onClearClick() },
     onSearch = { onSearch(it) },
@@ -182,14 +183,42 @@ private fun SearchBar(
   modifier: Modifier = Modifier,
   viewState: SearchViewState,
   onSearchQueryChange: (String) -> Unit,
-  onSearchActiveChange: (Boolean) -> Unit,
+  onExpandedChange: (Boolean) -> Unit,
   onBackClick: () -> Unit,
   onClearClick: () -> Unit,
   onSearch: (String) -> Unit,
   content: @Composable ColumnScope.() -> Unit,
+) = SearchBar(
+  inputField = {
+    SearchBarInputField(
+      viewState = viewState,
+      onSearchQueryChange = { onSearchQueryChange(it) },
+      onExpandedChange = { onExpandedChange(it) },
+      onSearch = { onSearch(it) },
+      onBackClick = { onBackClick() },
+      onClearClick = { onClearClick() },
+    )
+  },
+  expanded = viewState.searchExpanded,
+  onExpandedChange = { onExpandedChange(it) },
+  modifier = modifier,
+  content = content,
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SearchBarInputField(
+  modifier: Modifier = Modifier,
+  viewState: SearchViewState,
+  onSearchQueryChange: (String) -> Unit,
+  onExpandedChange: (Boolean) -> Unit,
+  onSearch: (String) -> Unit,
+  onBackClick: () -> Unit,
+  onClearClick: () -> Unit,
 ) {
   val keyboardController = LocalSoftwareKeyboardController.current
-  SearchBar(
+
+  InputField(
     modifier = modifier,
     query = viewState.searchQuery,
     onQueryChange = { onSearchQueryChange(it) },
@@ -197,23 +226,23 @@ private fun SearchBar(
       onSearch(it)
       keyboardController?.hide()
     },
-    active = viewState.searchActive,
-    onActiveChange = { onSearchActiveChange(it) },
+    expanded = viewState.searchExpanded,
+    onExpandedChange = { onExpandedChange(it) },
+    enabled = true,
     placeholder = { SearchPlaceholder() },
     leadingIcon = {
       SearchBarLeadingIcon(
-        searchActive = viewState.searchActive,
+        searchActive = viewState.searchExpanded,
         onBackClick = { onBackClick() },
       )
     },
     trailingIcon = {
       SearchBarTrailingIcon(
-        searchActive = viewState.searchActive,
+        searchActive = viewState.searchExpanded,
         searchQuery = viewState.searchQuery,
         onClick = { onClearClick() },
       )
     },
-    content = content,
   )
 }
 
@@ -562,7 +591,7 @@ private fun InactivePreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.ShowingHistory(),
     onSearchQueryChange = { },
-    onSearchActiveChange = { },
+    onSearchExpandedChange = { },
     onBackClick = { },
     onClearClick = { },
     onSearch = { },
@@ -580,11 +609,11 @@ private fun InactivePreview() = RouteSearchTheme {
 private fun NoResultsPreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.ShowingResults(
-      searchActive = true,
+      searchExpanded = true,
       searchQuery = "Atlantis",
     ),
     onSearchQueryChange = { },
-    onSearchActiveChange = { },
+    onSearchExpandedChange = { },
     onBackClick = { },
     onClearClick = { },
     onSearch = { },
@@ -602,7 +631,7 @@ private fun NoResultsPreview() = RouteSearchTheme {
 private fun ShowingSearchResultsPreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.ShowingResults(
-      searchActive = true,
+      searchExpanded = true,
       searchQuery = "Atlantis",
       climbSearchResults = persistentListOf(
         ClimbSearchResult(
@@ -635,7 +664,7 @@ private fun ShowingSearchResultsPreview() = RouteSearchTheme {
       ),
     ),
     onSearchQueryChange = { },
-    onSearchActiveChange = { },
+    onSearchExpandedChange = { },
     onBackClick = { },
     onClearClick = { },
     onSearch = { },
@@ -653,7 +682,7 @@ private fun ShowingSearchResultsPreview() = RouteSearchTheme {
 private fun ShowingHistoryPreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.ShowingHistory(
-      searchActive = true,
+      searchExpanded = true,
       searchQuery = "",
       searchHistory = persistentListOf(
         "Atlantis",
@@ -662,7 +691,7 @@ private fun ShowingHistoryPreview() = RouteSearchTheme {
       ),
     ),
     onSearchQueryChange = { },
-    onSearchActiveChange = { },
+    onSearchExpandedChange = { },
     onBackClick = { },
     onClearClick = { },
     onSearch = { },
@@ -680,11 +709,11 @@ private fun ShowingHistoryPreview() = RouteSearchTheme {
 private fun NetworkErrorPreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.NetworkError(
-      searchActive = true,
+      searchExpanded = true,
       searchQuery = "",
     ),
     onSearchQueryChange = { },
-    onSearchActiveChange = { },
+    onSearchExpandedChange = { },
     onBackClick = { },
     onClearClick = { },
     onSearch = { },
@@ -702,11 +731,11 @@ private fun NetworkErrorPreview() = RouteSearchTheme {
 private fun UnknownErrorPreview() = RouteSearchTheme {
   SearchScreenContent(
     viewState = SearchViewState.UnknownError(
-      searchActive = true,
+      searchExpanded = true,
       searchQuery = "",
     ),
     onSearchQueryChange = { },
-    onSearchActiveChange = { },
+    onSearchExpandedChange = { },
     onBackClick = { },
     onClearClick = { },
     onSearch = { },
