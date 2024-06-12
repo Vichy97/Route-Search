@@ -1,7 +1,7 @@
 plugins {
   `android-library-convention`
   alias(libs.plugins.compose.compiler)
-  id(libs.plugins.ksp.get().pluginId)
+  alias(libs.plugins.ksp)
 }
 
 android {

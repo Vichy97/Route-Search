@@ -2,22 +2,25 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
+  alias(libs.plugins.apollo) apply false
   alias(libs.plugins.compose.compiler) apply false
+  alias(libs.plugins.ksp) apply false
+  alias(libs.plugins.ktlint) apply false
+
   id(libs.plugins.androidApplication.get().pluginId) apply false
   id(libs.plugins.androidLibrary.get().pluginId) apply false
   id(libs.plugins.kotlinAndroid.get().pluginId) apply false
-  id(libs.plugins.ksp.get().pluginId).version(libs.plugins.ksp.get().version.toString()) apply false
-  id(libs.plugins.ktlint.get().pluginId).version(libs.plugins.ktlint.get().version.toString()) apply false
-  id(libs.plugins.apollo.get().pluginId).version(libs.plugins.apollo.get().version.toString()) apply false
 
-  id(libs.plugins.dependencyAnalysis.get().pluginId).version(libs.plugins.dependencyAnalysis.get().version.toString())
-  id(libs.plugins.detekt.get().pluginId).version(libs.plugins.detekt.get().version.toString())
-  id(libs.plugins.sortDependencies.get().pluginId).version(libs.plugins.sortDependencies.get().version.toString())
+  alias(libs.plugins.dependencyAnalysis)
+  alias(libs.plugins.detekt)
+  alias(libs.plugins.sortDependencies)
 }
+
+// TODO: Stop using subprojects and favor composition using convention plugins
 subprojects {
-  apply(plugin = "org.jlleitschuh.gradle.ktlint")
-  apply(plugin = "io.gitlab.arturbosch.detekt")
-  apply(plugin = "com.squareup.sort-dependencies")
+  apply(plugin = rootProject.libs.plugins.ktlint.get().pluginId)
+  apply(plugin = rootProject.libs.plugins.detekt.get().pluginId)
+  apply(plugin = rootProject.libs.plugins.sortDependencies.get().pluginId)
 
   configure<KtlintExtension> {
     debug.set(true)
@@ -62,7 +65,7 @@ dependencyAnalysis {
 }
 tasks.register<Copy>("copyGitHooks") {
   group = "git hooks"
-  description = "Copies the git hooks from /git-hooks to the .git folder."
+  description = "Copies git pre-commit hooks from scripts folder to the .git folder."
 
   from(project.layout.projectDirectory.file("scripts/pre-commit"))
   into(project.layout.projectDirectory.dir(".git/hooks"))
