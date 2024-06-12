@@ -3,6 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import java.util.Properties
 
 plugins {
+  alias(libs.plugins.compose.compiler)
   id(libs.plugins.androidApplication.get().pluginId)
   id(libs.plugins.kotlinAndroid.get().pluginId)
   id(libs.plugins.ksp.get().pluginId)
@@ -65,9 +66,6 @@ android {
   buildFeatures {
     buildConfig = true
     compose = true
-  }
-  composeOptions {
-    kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
   }
   packaging {
     resources {
