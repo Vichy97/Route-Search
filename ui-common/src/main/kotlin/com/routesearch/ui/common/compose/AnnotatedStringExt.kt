@@ -1,9 +1,11 @@
 package com.routesearch.ui.common.compose
 
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 
 inline fun <R : Any> AnnotatedString.Builder.bold(
@@ -17,6 +19,26 @@ inline fun <R : Any> AnnotatedString.Builder.underline(
 ): R = withStyle(
   SpanStyle(textDecoration = TextDecoration.Underline),
 ) { block() }
+
+inline fun <R : Any> AnnotatedString.Builder.url(
+  url: String,
+  block: AnnotatedString.Builder.() -> R,
+): R = withLink(LinkAnnotation.Url(url)) {
+  block()
+}
+
+inline fun <R : Any> AnnotatedString.Builder.clickable(
+  tag: String,
+  crossinline onClick: () -> Unit,
+  block: AnnotatedString.Builder.() -> R,
+): R = withLink(
+  LinkAnnotation.Clickable(
+    tag = tag,
+    linkInteractionListener = { onClick() },
+  ),
+) {
+  block()
+}
 
 inline fun <R : Any> AnnotatedString.Builder.annotation(
   annotation: String,

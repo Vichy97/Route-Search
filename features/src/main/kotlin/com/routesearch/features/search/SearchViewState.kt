@@ -9,48 +9,48 @@ import kotlinx.collections.immutable.persistentListOf
 @Immutable
 internal sealed class SearchViewState {
 
-  abstract val searchActive: Boolean
+  abstract val searchExpanded: Boolean
   abstract val searchQuery: String
 
   abstract fun copy(
     newSearchQuery: String = this.searchQuery,
-    newSearchActive: Boolean = this.searchActive,
+    newSearchExpanded: Boolean = this.searchExpanded,
   ): SearchViewState
 
   @Immutable
   data class Loading(
-    override val searchActive: Boolean = false,
+    override val searchExpanded: Boolean = false,
     override val searchQuery: String = "",
   ) : SearchViewState() {
 
     override fun copy(
       newSearchQuery: String,
-      newSearchActive: Boolean,
+      newSearchExpanded: Boolean,
     ): Loading = copy(
       searchQuery = newSearchQuery,
-      searchActive = newSearchActive,
+      searchExpanded = newSearchExpanded,
     )
   }
 
   @Immutable
   data class ShowingHistory(
-    override val searchActive: Boolean = false,
+    override val searchExpanded: Boolean = false,
     override val searchQuery: String = "",
     val searchHistory: ImmutableList<String> = persistentListOf(),
   ) : SearchViewState() {
 
     override fun copy(
       newSearchQuery: String,
-      newSearchActive: Boolean,
+      newSearchExpanded: Boolean,
     ): ShowingHistory = copy(
       searchQuery = newSearchQuery,
-      searchActive = newSearchActive,
+      searchExpanded = newSearchExpanded,
     )
   }
 
   @Immutable
   data class ShowingResults(
-    override val searchActive: Boolean = false,
+    override val searchExpanded: Boolean = false,
     override val searchQuery: String = "",
     val areaSearchResults: ImmutableList<AreaSearchResult> = persistentListOf(),
     val climbSearchResults: ImmutableList<ClimbSearchResult> = persistentListOf(),
@@ -70,40 +70,40 @@ internal sealed class SearchViewState {
 
     override fun copy(
       newSearchQuery: String,
-      newSearchActive: Boolean,
+      newSearchExpanded: Boolean,
     ): ShowingResults = copy(
       searchQuery = newSearchQuery,
-      searchActive = newSearchActive,
+      searchExpanded = newSearchExpanded,
     )
   }
 
   @Immutable
   data class NetworkError(
-    override val searchActive: Boolean = false,
+    override val searchExpanded: Boolean = false,
     override val searchQuery: String = "",
   ) : SearchViewState() {
 
     override fun copy(
       newSearchQuery: String,
-      newSearchActive: Boolean,
+      newSearchExpanded: Boolean,
     ): NetworkError = copy(
       searchQuery = newSearchQuery,
-      searchActive = newSearchActive,
+      searchExpanded = newSearchExpanded,
     )
   }
 
   @Immutable
   data class UnknownError(
-    override val searchActive: Boolean = false,
+    override val searchExpanded: Boolean = false,
     override val searchQuery: String = "",
   ) : SearchViewState() {
 
     override fun copy(
       newSearchQuery: String,
-      newSearchActive: Boolean,
+      newSearchExpanded: Boolean,
     ): UnknownError = copy(
       searchQuery = newSearchQuery,
-      searchActive = newSearchActive,
+      searchExpanded = newSearchExpanded,
     )
   }
 }

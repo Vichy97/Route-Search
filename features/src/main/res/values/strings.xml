@@ -51,12 +51,13 @@
   <string name="common_retry_label">Retry</string>
   <string name="common_share_button_label">Share</string>
 
+  <string name="common_urls_open_beta">openbeta.io</string>
+  <string name="common_urls_github_repo">https://github.com/Vichy97/Route-Search</string>
+
   <string name="metadata_card_created_title">Created:</string>
   <string name="metadata_card_fa_title">FA:</string>
   <string name="metadata_card_location_title">Lat, Lng:</string>
   <string name="metadata_card_updated_title">Updated:</string>
-
-  <string name="open_beta_title">openbeta.io!</string>
 
   <string name="organization_dialog_facebook_button_title">Facebook</string>
   <string name="organization_dialog_instagram_button_title">Instagram</string>

@@ -2,7 +2,6 @@ package com.routesearch.features.common.views
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EditCalendar
@@ -24,9 +23,8 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Visibility
 import com.routesearch.data.location.Location
 import com.routesearch.features.R
-import com.routesearch.ui.common.compose.annotation
 import com.routesearch.ui.common.compose.bold
-import com.routesearch.ui.common.compose.isAnnotatedAtIndex
+import com.routesearch.ui.common.compose.clickable
 import com.routesearch.ui.common.compose.underline
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
@@ -183,33 +181,27 @@ private fun LocationText(
   location: Location?,
   onClick: () -> Unit,
 ) {
-  val locationAnnotation = "location"
   val locationString = buildAnnotatedString {
     bold { append(stringResource(R.string.metadata_card_location_title)) }
 
     append(" ")
 
     underline {
-      annotation(locationAnnotation) {
+      clickable(
+        tag = "location",
+        onClick = { onClick() },
+      ) {
         append(location?.displayString ?: "")
       }
     }
   }
-  ClickableText(
+  Text(
     modifier = modifier,
     text = locationString,
-    style = MaterialTheme.typography.titleSmall.copy(
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    ),
+    style = MaterialTheme.typography.titleSmall,
     maxLines = 1,
     overflow = TextOverflow.Ellipsis,
-  ) {
-    val annotationClicked = locationString.isAnnotatedAtIndex(
-      index = it,
-      annotation = locationAnnotation,
-    )
-    if (annotationClicked) onClick()
-  }
+  )
 }
 
 @Composable

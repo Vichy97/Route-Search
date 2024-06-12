@@ -106,7 +106,7 @@ internal class SearchViewModel(
 
   private fun clearSearchResults() = _viewState.update {
     ShowingHistory(
-      searchActive = it.searchActive,
+      searchExpanded = it.searchExpanded,
       searchQuery = "",
       searchHistory = currentSearchHistory.toImmutableList(),
     )
@@ -114,7 +114,7 @@ internal class SearchViewModel(
 
   private fun onSearchSuccess(searchResults: SearchResults) = _viewState.update {
     ShowingResults(
-      searchActive = it.searchActive,
+      searchExpanded = it.searchExpanded,
       searchQuery = it.searchQuery,
       areaSearchResults = searchResults.areaSearchResults,
       climbSearchResults = searchResults.climbSearchResults,
@@ -124,22 +124,22 @@ internal class SearchViewModel(
   private fun onSearchFailure(error: Error) = _viewState.update {
     if (error is Error.Network) {
       NetworkError(
-        searchActive = it.searchActive,
+        searchExpanded = it.searchExpanded,
         searchQuery = it.searchQuery,
       )
     } else {
       UnknownError(
-        searchActive = it.searchActive,
+        searchExpanded = it.searchExpanded,
         searchQuery = it.searchQuery,
       )
     }
   }
 
-  fun onSearchActiveChange(searchActive: Boolean) {
+  fun onSearchExpandedChange(expanded: Boolean) {
     _viewState.update {
       it.copy(
         newSearchQuery = "",
-        newSearchActive = searchActive,
+        newSearchExpanded = expanded,
       )
     }
     searchQuery.value = ""
@@ -148,7 +148,7 @@ internal class SearchViewModel(
   fun onBackClick() {
     _viewState.update {
       ShowingHistory(
-        searchActive = false,
+        searchExpanded = false,
         searchQuery = "",
         searchHistory = currentSearchHistory.toImmutableList(),
       )
@@ -204,7 +204,7 @@ internal class SearchViewModel(
   fun onSearchHistoryEntryClick(entry: String) {
     _viewState.update {
       SearchViewState.Loading(
-        searchActive = it.searchActive,
+        searchExpanded = it.searchExpanded,
         searchQuery = entry,
       )
     }
@@ -214,7 +214,7 @@ internal class SearchViewModel(
   fun onRetryClick() {
     _viewState.update {
       SearchViewState.Loading(
-        searchActive = it.searchActive,
+        searchExpanded = it.searchExpanded,
         searchQuery = it.searchQuery,
       )
     }

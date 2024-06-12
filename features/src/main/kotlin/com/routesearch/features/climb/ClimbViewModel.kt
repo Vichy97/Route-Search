@@ -4,14 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.climb.Climb
 import com.routesearch.data.climb.ClimbRepository
-import com.routesearch.features.common.CommonUrls.OPEN_BETA_LINK
 import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.GalleryScreenDestination
 import com.routesearch.features.destinations.ImageViewerScreenDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
-import com.routesearch.ui.common.web.WebLauncher
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
 import kotlinx.collections.immutable.toImmutableList
@@ -25,7 +23,6 @@ internal class ClimbViewModel(
   private val climbRepository: ClimbRepository,
   private val navigator: Navigator,
   private val intentLauncher: IntentLauncher,
-  private val webLauncher: WebLauncher,
 ) : ViewModel() {
 
   private val _viewState = MutableStateFlow<ClimbViewState>(
@@ -86,10 +83,6 @@ internal class ClimbViewModel(
     )
     intentLauncher.launchIntent(intent)
   }
-
-  fun onOpenBetaClick() = webLauncher.launchUrl(OPEN_BETA_LINK)
-
-  fun onMarkdownUrlClick(url: String) = webLauncher.launchUrl(url)
 
   fun onShowAllImagesClick() = (viewState.value as? ClimbViewState.Content)?.run {
     navigator.navigate(GalleryScreenDestination(ArrayList(climb.media)))

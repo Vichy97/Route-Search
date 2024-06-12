@@ -21,11 +21,6 @@ internal class OrganizationViewModel(
   )
   val viewState = _viewState.asStateFlow()
 
-  fun onWebsiteClick() {
-    val url = requireNotNull(viewState.value.websiteUrl)
-    webLauncher.launchUrl(url)
-  }
-
   fun onFacebookClick() {
     val url = requireNotNull(viewState.value.facebookUrl)
     webLauncher.launchUrl(url)

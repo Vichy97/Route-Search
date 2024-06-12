@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.area.Area
 import com.routesearch.data.area.AreaRepository
-import com.routesearch.features.common.CommonUrls.OPEN_BETA_LINK
 import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
@@ -13,7 +12,6 @@ import com.routesearch.features.destinations.ImageViewerScreenDestination
 import com.routesearch.features.destinations.OrganizationDialogDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
-import com.routesearch.ui.common.web.WebLauncher
 import com.routesearch.util.common.error.Error
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
@@ -28,7 +26,6 @@ internal class AreaViewModel(
   private val areaRepository: AreaRepository,
   private val navigator: Navigator,
   private val intentLauncher: IntentLauncher,
-  private val webLauncher: WebLauncher,
 ) : ViewModel() {
 
   private val _viewState = MutableStateFlow<AreaViewState>(
@@ -116,10 +113,6 @@ internal class AreaViewModel(
       instagramUrl = organization.instagramUrl,
     ),
   )
-
-  fun onOpenBetaClick() = webLauncher.launchUrl(OPEN_BETA_LINK)
-
-  fun onMarkdownUrlClick(link: String) = webLauncher.launchUrl(link)
 
   fun onFilterClimbsClick() {
     TODO("Not implemented")
