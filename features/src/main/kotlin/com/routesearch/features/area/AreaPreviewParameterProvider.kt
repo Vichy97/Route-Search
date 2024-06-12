@@ -2,7 +2,6 @@ package com.routesearch.features.area
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.routesearch.data.area.Area
-import com.routesearch.data.climb.Grades
 import com.routesearch.data.climb.Type
 import com.routesearch.data.location.Location
 import kotlinx.collections.immutable.persistentListOf
@@ -153,21 +152,15 @@ internal val fakeAreas = listOf(
       Area.Climb(
         id = "1",
         name = "[Redacted]",
-        grades = Grades(
-          yds = "5.8",
-          vScale = null,
-        ),
-        type = Type.SPORT,
+        grade = "5.8",
+        types = listOf(Type.SPORT),
         numberOfPitches = 1,
       ),
       Area.Climb(
         id = "2",
         name = "Kitties Dihedral",
-        grades = Grades(
-          yds = "5.7",
-          vScale = null,
-        ),
-        type = Type.SPORT,
+        grade = "5.7",
+        types = listOf(Type.SPORT),
         numberOfPitches = 1,
       ),
     ),

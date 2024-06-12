@@ -15,5 +15,5 @@ data class Pitch(
   val boltCount: Int?,
   @Embedded
   val grades: Grades?,
-  val type: String?,
+  val type: List<String>?,
 )

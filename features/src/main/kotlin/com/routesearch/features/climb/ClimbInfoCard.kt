@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Visibility
+import com.routesearch.data.climb.Type
 import com.routesearch.features.R
 import com.routesearch.ui.common.theme.RouteSearchTheme
 
@@ -20,7 +21,7 @@ import com.routesearch.ui.common.theme.RouteSearchTheme
 internal fun ClimbInfoCard(
   modifier: Modifier = Modifier,
   grade: String?,
-  type: String?,
+  type: List<Type>?,
   height: Int?,
   pitches: Int,
 ) = Card(
@@ -57,7 +58,7 @@ internal fun ClimbInfoCard(
 
           visibility = if (type != null) Visibility.Visible else Visibility.Gone
         },
-      text = type ?: "",
+      text = type?.joinToString(", ") ?: "",
       style = MaterialTheme.typography.labelLarge,
     )
 
@@ -99,7 +100,7 @@ private fun ClimbInfoCardPreview() = RouteSearchTheme {
     ClimbInfoCard(
       modifier = Modifier.padding(16.dp),
       grade = "5.9",
-      type = "Trad",
+      type = listOf(Type.TRAD, Type.AID),
       height = 700,
       pitches = 10,
     )

@@ -44,7 +44,6 @@ import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
-import com.routesearch.data.climb.Type
 import com.routesearch.features.R
 import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MarkdownView
@@ -269,12 +268,8 @@ private fun Content(
         )
       }
       .padding(end = 16.dp),
-    grade = if (climb.type == Type.BOULDERING) {
-      climb.grades?.vScale
-    } else {
-      climb.grades?.yds
-    },
-    type = climb.type.toString(),
+    grade = climb.grade,
+    type = climb.types,
     height = climb.length,
     pitches = if (climb.pitches.isNotEmpty()) climb.pitches.size else 1,
   )

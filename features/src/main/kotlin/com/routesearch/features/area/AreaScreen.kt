@@ -63,7 +63,6 @@ import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.area.Area
-import com.routesearch.data.climb.getDisplayName
 import com.routesearch.features.R
 import com.routesearch.features.common.views.ErrorPlaceholder
 import com.routesearch.features.common.views.Images
@@ -876,7 +875,7 @@ private fun ClimbListItem(
   headlineContent = { Text(climb.name) },
   supportingContent = { ClimbListItemSubtitle(climb) },
   trailingContent = {
-    climb.grades?.getDisplayName(climb.type)?.let {
+    climb.grade?.let {
       Text(
         text = it,
         fontWeight = FontWeight.Bold,
@@ -887,13 +886,16 @@ private fun ClimbListItem(
 
 @Composable
 private fun ClimbListItemSubtitle(climb: Area.Climb) {
-  val type = stringArrayResource(R.array.climb_types)[climb.type.ordinal]
+  val typeNames = stringArrayResource(id = R.array.climb_types)
+  val types = climb.types.joinToString(
+    separator = ", ",
+  ) { typeNames[it.ordinal] }
   val pitches = pluralStringResource(
     id = R.plurals.area_screen_number_of_pitches,
     count = climb.numberOfPitches,
     formatArgs = arrayOf(climb.numberOfPitches),
   )
-  Text("$type • $pitches")
+  Text("$types • $pitches")
 }
 
 @Composable

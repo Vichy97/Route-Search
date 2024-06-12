@@ -15,8 +15,8 @@ internal fun RemotePitch.toPitch() = Pitch(
   description = description ?: "",
   length = length,
   boltCount = boltsCount,
-  grades = grades?.gradesFragment?.toGrade(),
-  type = type?.typeFragment?.toType(),
+  grade = grades?.gradesFragment?.toGrade(false),
+  types = type?.typeFragment?.toTypes(),
 )
 
 @JvmName("localPitchesToPitches")
@@ -28,6 +28,6 @@ internal fun LocalPitch.toPitch() = Pitch(
   description = description,
   length = length,
   boltCount = boltCount,
-  grades = grades?.toGrades(),
-  type = type?.let { Type.valueOf(it) },
+  grade = grades?.toGrade(false),
+  types = type?.toTypes(),
 )
