@@ -61,6 +61,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.routesearch.data.area.Area
 import com.routesearch.features.R
 import com.routesearch.features.common.views.ErrorPlaceholder
@@ -80,8 +81,8 @@ import org.koin.androidx.compose.koinViewModel
 
 private const val MIN_GALLERY_IMAGE = 6
 
-@Destination(
-  navArgsDelegate = AreaScreenArgs::class,
+@Destination<RootGraph>(
+  navArgs = AreaScreenArgs::class,
   style = AreaTransitions::class,
 )
 @Composable

@@ -28,13 +28,14 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size.Companion.ORIGINAL
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import kotlinx.collections.immutable.ImmutableList
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 import org.koin.androidx.compose.koinViewModel
 
-@Destination(
-  navArgsDelegate = ImageViewerScreenArgs::class,
+@Destination<RootGraph>(
+  navArgs = ImageViewerScreenArgs::class,
 )
 @Composable
 internal fun ImageViewerScreen() {

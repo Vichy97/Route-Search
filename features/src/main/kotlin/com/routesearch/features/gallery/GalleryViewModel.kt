@@ -1,7 +1,7 @@
 package com.routesearch.features.gallery
 
 import androidx.lifecycle.ViewModel
-import com.routesearch.features.destinations.ImageViewerScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ImageViewerScreenDestination
 import com.routesearch.navigation.Navigator
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow

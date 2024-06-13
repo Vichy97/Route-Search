@@ -42,6 +42,7 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.Visibility
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.routesearch.data.climb.Climb
 import com.routesearch.features.R
 import com.routesearch.features.common.views.Images
@@ -58,8 +59,8 @@ import org.koin.androidx.compose.koinViewModel
 private const val MIN_GALLERY_IMAGE = 6
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination(
-  navArgsDelegate = ClimbScreenArgs::class,
+@Destination<RootGraph>(
+  navArgs = ClimbScreenArgs::class,
   style = ClimbTransitions::class,
 )
 @Composable

@@ -1,6 +1,8 @@
 package com.routesearch.features.climb
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -8,16 +10,16 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavBackStackEntry
+import com.ramcosta.composedestinations.generated.destinations.ClimbScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.GalleryScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SearchScreenDestination
 import com.ramcosta.composedestinations.spec.DestinationStyle
-import com.routesearch.features.destinations.ClimbScreenDestination
-import com.routesearch.features.destinations.GalleryScreenDestination
-import com.routesearch.features.destinations.SearchScreenDestination
 
-internal object ClimbTransitions : DestinationStyle.Animated {
+internal object ClimbTransitions : DestinationStyle.Animated() {
 
   private const val TRANSITION_TIME_MS = 300
 
-  override fun AnimatedContentTransitionScope<NavBackStackEntry>.enterTransition() =
+  override val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition? = {
     if (initialState.destination.route == SearchScreenDestination.route) {
       fadeIn(
         animationSpec = tween(TRANSITION_TIME_MS),
@@ -28,8 +30,9 @@ internal object ClimbTransitions : DestinationStyle.Animated {
     } else {
       null
     }
+  }
 
-  override fun AnimatedContentTransitionScope<NavBackStackEntry>.exitTransition() =
+  override val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition? = {
     if (targetState.destination.route == GalleryScreenDestination.route) {
       slideOutHorizontally(
         targetOffsetX = { fullWidth -> -fullWidth },
@@ -38,8 +41,9 @@ internal object ClimbTransitions : DestinationStyle.Animated {
     } else {
       null
     }
+  }
 
-  override fun AnimatedContentTransitionScope<NavBackStackEntry>.popEnterTransition() =
+  override val popEnterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition? = {
     if (targetState.destination.route == ClimbScreenDestination.route) {
       slideInHorizontally(
         initialOffsetX = { fullWidth -> -fullWidth },
@@ -48,8 +52,9 @@ internal object ClimbTransitions : DestinationStyle.Animated {
     } else {
       null
     }
+  }
 
-  override fun AnimatedContentTransitionScope<NavBackStackEntry>.popExitTransition() =
+  override val popExitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition? = {
     if (targetState.destination.route == SearchScreenDestination.route) {
       fadeOut(
         animationSpec = tween(TRANSITION_TIME_MS),
@@ -57,4 +62,5 @@ internal object ClimbTransitions : DestinationStyle.Animated {
     } else {
       null
     }
+  }
 }
