@@ -27,6 +27,7 @@ import androidx.constraintlayout.compose.Visibility.Companion.Gone
 import androidx.constraintlayout.compose.Visibility.Companion.Visible
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.spec.DestinationStyle
 import com.routesearch.features.R
 import com.routesearch.ui.common.compose.underline
@@ -34,8 +35,8 @@ import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
-@Destination(
-  navArgsDelegate = OrganizationScreenArgs::class,
+@Destination<RootGraph>(
+  navArgs = OrganizationScreenArgs::class,
   style = DestinationStyle.Dialog.Default::class,
 )
 @Composable

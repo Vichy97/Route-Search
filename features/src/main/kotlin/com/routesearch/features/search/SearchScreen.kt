@@ -54,7 +54,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.routesearch.data.search.AreaSearchResult
 import com.routesearch.data.search.ClimbSearchResult
 import com.routesearch.features.R
@@ -64,10 +64,10 @@ import com.routesearch.ui.common.theme.RouteSearchTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.androidx.compose.koinViewModel
 
-@Destination(
+@Destination<RootGraph>(
+  start = true,
   style = SearchScreenTransitions::class,
 )
-@RootNavGraph(start = true)
 @Composable
 internal fun SearchScreen() {
   val viewModel = koinViewModel<SearchViewModel>()

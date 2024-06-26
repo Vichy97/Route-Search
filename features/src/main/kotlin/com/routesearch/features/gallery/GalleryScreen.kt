@@ -30,14 +30,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import com.routesearch.features.common.views.ImagePlaceholder
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.androidx.compose.koinViewModel
 
 private const val CROSS_FADE_DURATION_MS = 200
 
-@Destination(
-  navArgsDelegate = GalleryScreenArgs::class,
+@Destination<RootGraph>(
+  navArgs = GalleryScreenArgs::class,
   style = GalleryTransitions::class,
 )
 @Composable

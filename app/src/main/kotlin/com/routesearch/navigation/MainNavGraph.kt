@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavHostController
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.routesearch.features.NavGraphs
+import com.ramcosta.composedestinations.generated.navgraphs.RootNavGraph
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.compose.koinInject
@@ -34,7 +34,7 @@ fun MainNavGraph(
   }
   DestinationsNavHost(
     modifier = modifier,
-    navGraph = NavGraphs.root,
+    navGraph = RootNavGraph,
     navController = navController,
   )
 }

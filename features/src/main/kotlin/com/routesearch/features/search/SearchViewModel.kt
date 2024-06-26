@@ -2,11 +2,11 @@ package com.routesearch.features.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.generated.destinations.AreaScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ClimbScreenDestination
 import com.routesearch.data.search.SearchHistoryRepository
 import com.routesearch.data.search.SearchResults
 import com.routesearch.data.search.SearchService
-import com.routesearch.features.destinations.AreaScreenDestination
-import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.features.search.SearchViewState.NetworkError
 import com.routesearch.features.search.SearchViewState.ShowingHistory
 import com.routesearch.features.search.SearchViewState.ShowingResults
