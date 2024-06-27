@@ -4,6 +4,7 @@ import com.routesearch.data.area.AreaRepository
 import com.routesearch.data.area.DefaultAreaRepository
 import com.routesearch.data.climb.ClimbRepository
 import com.routesearch.data.climb.DefaultClimbRepository
+import com.routesearch.data.image.imageModule
 import com.routesearch.data.local.localDataModule
 import com.routesearch.data.local.search.SearchHistoryDataSource
 import com.routesearch.data.remote.area.AreaRemoteDataSource
@@ -25,6 +26,7 @@ val dataModule = module {
   includes(
     remoteDataModule,
     localDataModule,
+    imageModule,
   )
 
   single {

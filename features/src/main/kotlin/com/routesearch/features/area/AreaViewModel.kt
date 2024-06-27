@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.routesearch.data.area.Area
 import com.routesearch.data.area.AreaRepository
+import com.routesearch.data.image.ImageLoader
 import com.routesearch.features.common.intent.GeoIntent
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
@@ -21,11 +22,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val IMAGE_CACHE_COUNT = 10
+
 internal class AreaViewModel(
   private val args: AreaScreenArgs,
   private val areaRepository: AreaRepository,
   private val navigator: Navigator,
   private val intentLauncher: IntentLauncher,
+  private val imageLoader: ImageLoader,
 ) : ViewModel() {
 
   private val _viewState = MutableStateFlow<AreaViewState>(
@@ -46,8 +50,16 @@ internal class AreaViewModel(
       .onFailure(::onFetchAreaFailure)
   }
 
-  private fun onFetchAreaSuccess(area: Area) = _viewState.update {
-    AreaViewState.Content(area)
+  private fun onFetchAreaSuccess(area: Area) {
+    _viewState.update {
+      AreaViewState.Content(area)
+    }
+
+    area.media.take(IMAGE_CACHE_COUNT).forEach {
+      viewModelScope.launch {
+        imageLoader.load(it)
+      }
+    }
   }
 
   private fun onFetchAreaFailure(error: Error) = _viewState.update {

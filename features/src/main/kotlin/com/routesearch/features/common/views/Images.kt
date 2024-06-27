@@ -18,12 +18,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.routesearch.util.common.exception.ImageLoadingException
 import kotlinx.collections.immutable.ImmutableList
 import logcat.LogPriority.DEBUG
 import logcat.LogPriority.WARN
 import logcat.asLog
 import logcat.logcat
-import java.lang.RuntimeException
 
 private const val LogTag = "Images"
 
@@ -130,8 +130,3 @@ private fun onImageLoadingError(
     cause = error,
   ).asLog()
 }
-
-private class ImageLoadingException(
-  message: String,
-  cause: Throwable,
-) : RuntimeException(message, cause)

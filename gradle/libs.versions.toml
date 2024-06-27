@@ -42,6 +42,7 @@ animation-core = { group = "androidx.compose.animation", name = "animation-core"
 annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 apollo-api = { group = "com.apollographql.apollo3", name = "apollo-api", version.ref = "apollo" }
 apollo-runtime = { group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
+coil = { group = "io.coil-kt", name = "coil", version.ref = "coil-bom"}
 coil-bom = { group = "io.coil-kt", name = "coil-bom", version.ref = "coil-bom" }
 coil-base = { group = "io.coil-kt", name = "coil-base" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose" }
