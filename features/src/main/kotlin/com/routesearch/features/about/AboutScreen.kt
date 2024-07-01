@@ -23,12 +23,16 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.features.R
 import com.routesearch.ui.common.compose.underline
 import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import org.koin.androidx.compose.koinViewModel
 
+@Destination(
+  style = AboutTransitions::class,
+)
 @Composable
 internal fun AboutScreen() {
   val viewModel = koinViewModel<AboutViewModel>()

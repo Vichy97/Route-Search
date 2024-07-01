@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.routesearch.data.search.SearchHistoryRepository
 import com.routesearch.data.search.SearchResults
 import com.routesearch.data.search.SearchService
+import com.routesearch.features.destinations.AboutScreenDestination
 import com.routesearch.features.destinations.AreaScreenDestination
 import com.routesearch.features.destinations.ClimbScreenDestination
 import com.routesearch.features.search.SearchViewState.NetworkError
@@ -220,4 +221,6 @@ internal class SearchViewModel(
     }
     search(query = viewState.value.searchQuery)
   }
+
+  fun onAboutClick() = navigator.navigate(AboutScreenDestination)
 }

@@ -37,6 +37,7 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarDefaults.InputField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -86,6 +87,7 @@ internal fun SearchScreen() {
     onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
     onSearchHistoryEntryClick = viewModel::onSearchHistoryEntryClick,
     onRetryClick = viewModel::onRetryClick,
+    onAboutClick = viewModel::onAboutClick,
   )
 }
 
@@ -104,12 +106,13 @@ private fun SearchScreenContent(
   onClimbSearchResultClick: (String) -> Unit,
   onSearchHistoryEntryClick: (String) -> Unit,
   onRetryClick: () -> Unit,
+  onAboutClick: () -> Unit,
 ) = ConstraintLayout(
   modifier = Modifier
     .fillMaxSize()
     .background(MaterialTheme.colorScheme.surface),
 ) {
-  val (map, searchBar) = createRefs()
+  val (map, searchBar, about) = createRefs()
 
   CragMap(
     modifier = Modifier.constrainAs(map) {
@@ -174,6 +177,19 @@ private fun SearchScreenContent(
         )
       }
     }
+  }
+
+  TextButton(
+    onClick = onAboutClick,
+    modifier = Modifier.constrainAs(about) {
+      bottom.linkTo(parent.bottom)
+      start.linkTo(parent.start)
+      end.linkTo(parent.end)
+    },
+  ) {
+    Text(
+      text = stringResource(R.string.search_screen_about_button_label),
+    )
   }
 }
 
@@ -601,6 +617,7 @@ private fun InactivePreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -623,6 +640,7 @@ private fun NoResultsPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -674,6 +692,7 @@ private fun ShowingSearchResultsPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -701,6 +720,7 @@ private fun ShowingHistoryPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -723,6 +743,7 @@ private fun NetworkErrorPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -745,5 +766,6 @@ private fun UnknownErrorPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
