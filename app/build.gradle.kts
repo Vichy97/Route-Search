@@ -97,6 +97,7 @@ tasks.withType<Test> {
 dependencies {
   ksp(libs.compose.destinations.ksp)
 
+  implementation(platform(libs.coil.bom))
   implementation(platform(libs.compose.bom))
   implementation(platform(libs.koin.bom))
 
@@ -109,6 +110,8 @@ dependencies {
   implementation(project(":util:view"))
   implementation(libs.activity)
   implementation(libs.activity.compose)
+  implementation(libs.coil)
+  implementation(libs.coil.base)
   implementation(libs.compose.destinations.core)
   implementation(libs.core)
   implementation(libs.foundation.layout.android)

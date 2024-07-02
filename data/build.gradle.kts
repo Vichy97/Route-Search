@@ -14,6 +14,7 @@ dependencies {
   api(libs.kotlinx.collections.immutable)
   api(libs.kotlinx.datetime)
 
+  implementation(platform(libs.coil.bom))
   implementation(platform(libs.compose.bom))
   implementation(platform(libs.koin.bom))
 
@@ -22,6 +23,9 @@ dependencies {
   implementation(project(":util:common"))
   implementation(project(":util:coroutines"))
 
+  implementation(libs.coil.base)
+  implementation(libs.koin.android)
   implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.logcat)
   implementation(libs.runtime.android)
 }
