@@ -1,6 +1,7 @@
 package com.routesearch.features.climb
 
 import androidx.compose.foundation.layout.Arrangement.Absolute.spacedBy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,6 +34,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -44,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.routesearch.data.climb.Climb
 import com.routesearch.features.R
+import com.routesearch.features.common.views.ErrorPlaceholder
 import com.routesearch.features.common.views.Images
 import com.routesearch.features.common.views.MarkdownView
 import com.routesearch.features.common.views.MetadataCard
@@ -53,11 +58,11 @@ import com.routesearch.ui.common.compose.underline
 import com.routesearch.ui.common.compose.url
 import com.routesearch.ui.common.theme.RouteSearchTheme
 import com.routesearch.util.common.date.monthYearFormat
+import kotlinx.collections.immutable.ImmutableList
 import org.koin.androidx.compose.koinViewModel
 
 private const val MIN_GALLERY_IMAGE = 6
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination(
   navArgsDelegate = ClimbScreenArgs::class,
   style = ClimbTransitions::class,
@@ -67,25 +72,16 @@ fun ClimbScreen() {
   val viewModel = koinViewModel<ClimbViewModel>()
   val viewState by viewModel.viewState.collectAsStateWithLifecycle()
 
-  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
-  Scaffold(
-    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-    topBar = {
-      TopAppBar(
-        onBackClick = viewModel::onBackClick,
-        scrollBehavior = scrollBehavior,
-      )
-    },
-  ) { padding ->
-
+  ClimbScreenScaffold(
+    scrollable = viewState is ClimbViewState.Content,
+    path = viewState.path,
+    name = viewState.name,
+    onBackClick = viewModel::onBackClick,
+    onPathSectionClick = viewModel::onPathSectionClick,
+  ) {
     when (val currentViewState = viewState) {
       is ClimbViewState.Content -> Content(
-        modifier = Modifier
-          .padding(top = padding.calculateTopPadding())
-          .verticalScroll(rememberScrollState()),
         climb = currentViewState.climb,
-        onPathSectionClick = viewModel::onPathSectionClick,
         onLocationClick = viewModel::onLocationClick,
         onShowAllImagesClick = viewModel::onShowAllImagesClick,
         onBookmarkClick = viewModel::onBookmarkClick,
@@ -94,11 +90,68 @@ fun ClimbScreen() {
       )
 
       is ClimbViewState.Loading -> Loading(
-        modifier = Modifier.padding(top = padding.calculateTopPadding()),
-        viewState = currentViewState,
+        modifier = Modifier.fillMaxSize(),
       )
 
-      ClimbViewState.Idle -> Unit
+      is ClimbViewState.NetworkError -> NetworkError(
+        onRetryClick = viewModel::onRetryClick,
+      )
+
+      is ClimbViewState.UnknownError -> UnknownError(
+        onRetryClick = viewModel::onRetryClick,
+      )
+    }
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ClimbScreenScaffold(
+  scrollable: Boolean,
+  path: ImmutableList<String>,
+  name: String,
+  onBackClick: () -> Unit,
+  onPathSectionClick: (String) -> Unit,
+  content: @Composable () -> Unit,
+) {
+  val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
+  Scaffold(
+    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+    topBar = {
+      TopAppBar(
+        onBackClick = { onBackClick() },
+        scrollBehavior = scrollBehavior,
+      )
+    },
+  ) { padding ->
+    Column(
+      modifier = if (scrollable) {
+        Modifier.verticalScroll(rememberScrollState())
+      } else {
+        Modifier
+      },
+    ) {
+      Path(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(
+            top = padding.calculateTopPadding(),
+            start = 16.dp,
+            end = 16.dp,
+          ),
+        path = path,
+        onPathSectionClick = { onPathSectionClick(it) },
+      )
+
+      Text(
+        modifier = Modifier
+          .padding(horizontal = 16.dp),
+        text = name,
+        style = MaterialTheme.typography.headlineMedium,
+      )
+
+      content()
     }
   }
 }
@@ -106,49 +159,18 @@ fun ClimbScreen() {
 @Composable
 private fun Loading(
   modifier: Modifier = Modifier,
-  viewState: ClimbViewState.Loading,
-) = ConstraintLayout(
-  modifier = modifier.fillMaxSize(),
+) = Box(
+  modifier = modifier
+    .fillMaxSize(),
+  contentAlignment = Alignment.Center,
 ) {
-  val (path, name, loadingIndicator) = createRefs()
-
-  Path(
-    modifier = Modifier
-      .constrainAs(path) {
-        start.linkTo(parent.start)
-        top.linkTo(parent.top)
-      }
-      .padding(horizontal = 16.dp),
-    path = viewState.path,
-    onPathSectionClick = { },
-  )
-
-  Text(
-    modifier = Modifier
-      .constrainAs(name) {
-        start.linkTo(parent.start)
-        top.linkTo(path.bottom)
-      }
-      .padding(horizontal = 16.dp),
-    text = viewState.name,
-    style = MaterialTheme.typography.headlineMedium,
-  )
-
-  CircularProgressIndicator(
-    modifier = Modifier.constrainAs(loadingIndicator) {
-      top.linkTo(name.bottom)
-      start.linkTo(parent.start)
-      end.linkTo(parent.end)
-      bottom.linkTo(parent.bottom)
-    },
-  )
+  CircularProgressIndicator()
 }
 
 @Composable
 private fun Content(
   modifier: Modifier = Modifier,
   climb: Climb,
-  onPathSectionClick: (String) -> Unit,
   onLocationClick: () -> Unit,
   onShowAllImagesClick: () -> Unit,
   onBookmarkClick: () -> Unit,
@@ -158,8 +180,6 @@ private fun Content(
   modifier = modifier.fillMaxWidth(),
 ) {
   val (
-    path,
-    name,
     image,
     metadataCard,
     showAllImages,
@@ -170,33 +190,11 @@ private fun Content(
     protection,
   ) = createRefs()
 
-  Path(
-    modifier = Modifier
-      .constrainAs(path) {
-        start.linkTo(parent.start)
-        top.linkTo(parent.top)
-      }
-      .padding(horizontal = 16.dp),
-    path = climb.pathTokens,
-    onPathSectionClick = onPathSectionClick,
-  )
-
-  Text(
-    modifier = Modifier
-      .constrainAs(name) {
-        start.linkTo(parent.start)
-        top.linkTo(path.bottom)
-      }
-      .padding(horizontal = 16.dp),
-    text = climb.name,
-    style = MaterialTheme.typography.headlineMedium,
-  )
-
   Images(
     modifier = Modifier
       .constrainAs(image) {
         top.linkTo(
-          anchor = name.bottom,
+          anchor = parent.top,
           margin = 16.dp,
         )
         start.linkTo(parent.start)
@@ -528,30 +526,106 @@ private fun DescriptionPlaceholder() {
   )
 }
 
+@Composable
+private fun NetworkError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier.fillMaxSize(),
+  image = Icons.Rounded.WifiOff,
+  message = stringResource(R.string.common_network_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
+@Composable
+private fun UnknownError(
+  modifier: Modifier = Modifier,
+  onRetryClick: () -> Unit,
+) = ErrorPlaceholder(
+  modifier = modifier.fillMaxSize(),
+  image = Icons.Rounded.Warning,
+  message = stringResource(R.string.common_generic_error_message),
+  showRetry = true,
+  onRetryClick = { onRetryClick() },
+)
+
 @PreviewLightDark
 @Composable
-private fun LoadingPreview() = RouteSearchTheme {
+private fun ClimbScreenPreview() = RouteSearchTheme {
+  val climb = fakeClimbs[0]
   Surface {
-    val climb = fakeClimbs[0]
-    Loading(
-      viewState = ClimbViewState.Loading(
-        name = climb.name,
-        path = climb.pathTokens,
-      ),
-    )
+    ClimbScreenScaffold(
+      scrollable = true,
+      path = climb.pathTokens,
+      name = climb.name,
+      onBackClick = { },
+      onPathSectionClick = { },
+    ) {
+      Content(
+        climb = climb,
+        onLocationClick = { },
+        onShowAllImagesClick = { },
+        onBookmarkClick = { },
+        onShareClick = { },
+        onImageClick = { },
+      )
+    }
   }
 }
 
 @PreviewLightDark
 @Composable
-private fun ClimbScreenPreview() = RouteSearchTheme {
-  Content(
-    climb = fakeClimbs[0],
-    onPathSectionClick = { },
-    onLocationClick = { },
-    onShowAllImagesClick = { },
-    onBookmarkClick = { },
-    onShareClick = { },
-    onImageClick = { },
-  )
+private fun LoadingPreview() = RouteSearchTheme {
+  val climb = fakeClimbs[0]
+
+  Surface {
+    ClimbScreenScaffold(
+      scrollable = false,
+      path = climb.pathTokens,
+      name = climb.name,
+      onBackClick = { },
+      onPathSectionClick = { },
+    ) {
+      Loading()
+    }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun NetworkErrorPreview() = RouteSearchTheme {
+  Surface {
+    val climb = fakeClimbs[0]
+    ClimbScreenScaffold(
+      scrollable = false,
+      path = climb.pathTokens,
+      name = climb.name,
+      onBackClick = { },
+      onPathSectionClick = { },
+    ) {
+      NetworkError(
+        onRetryClick = { },
+      )
+    }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun UnknownErrorPreview() = RouteSearchTheme {
+  Surface {
+    val climb = fakeClimbs[0]
+    ClimbScreenScaffold(
+      scrollable = false,
+      path = climb.pathTokens,
+      name = climb.name,
+      onBackClick = { },
+      onPathSectionClick = { },
+    ) {
+      UnknownError(
+        onRetryClick = { },
+      )
+    }
+  }
 }

@@ -10,6 +10,7 @@ import com.routesearch.features.destinations.GalleryScreenDestination
 import com.routesearch.features.destinations.ImageViewerScreenDestination
 import com.routesearch.navigation.Navigator
 import com.routesearch.ui.common.intent.IntentLauncher
+import com.routesearch.util.common.error.Error
 import com.routesearch.util.common.result.onFailure
 import com.routesearch.util.common.result.onSuccess
 import kotlinx.collections.immutable.toImmutableList
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class ClimbViewModel(
-  args: ClimbScreenArgs,
+  private val args: ClimbScreenArgs,
   private val climbRepository: ClimbRepository,
   private val navigator: Navigator,
   private val intentLauncher: IntentLauncher,
@@ -40,15 +41,25 @@ internal class ClimbViewModel(
   private fun fetchClimb(climbId: String) = viewModelScope.launch {
     climbRepository.getClimb(climbId)
       .onSuccess(::onFetchClimbSuccess)
-      .onFailure { onFetchClimbFailure() }
+      .onFailure(::onFetchClimbFailure)
   }
 
   private fun onFetchClimbSuccess(climb: Climb) = _viewState.update {
     ClimbViewState.Content(climb)
   }
 
-  private fun onFetchClimbFailure() {
-    _viewState.update { ClimbViewState.Idle }
+  private fun onFetchClimbFailure(error: Error) = _viewState.update {
+    if (error is Error.Network) {
+      ClimbViewState.NetworkError(
+        name = it.name,
+        path = it.path,
+      )
+    } else {
+      ClimbViewState.UnknownError(
+        name = it.name,
+        path = it.path,
+      )
+    }
   }
 
   fun onBackClick() = navigator.popBackStack()
@@ -90,5 +101,15 @@ internal class ClimbViewModel(
 
   fun onImageClick(index: Int) = (viewState.value as? ClimbViewState.Content)?.run {
     navigator.navigate(ImageViewerScreenDestination(ArrayList(climb.media), index))
+  }
+
+  fun onRetryClick() {
+    _viewState.update {
+      ClimbViewState.Loading(
+        name = it.name,
+        path = it.path,
+      )
+    }
+    fetchClimb(args.id)
   }
 }
