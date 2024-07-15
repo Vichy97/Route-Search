@@ -1,7 +1,7 @@
 <resources>
-  <string name="about_screen_title">About Route Search</string>
   <string name="about_screen_google_play_store_message">Please leave a review on the Google Play Store!</string>
   <string name="about_screen_privacy_policy">Privacy Policy</string>
+  <string name="about_screen_title">About Route Search</string>
   <string name="about_screen_version_number">Version Number: %1$s</string>
 
   <string name="area_screen_description_header">Description</string>
@@ -9,26 +9,26 @@
   <string name="area_screen_empty_area_placeholder">Looks like this area is empty. Consider contributing to this area at</string>
   <string name="area_screen_empty_area_header">0 Areas and 0 Climbs</string>
   <string name="area_screen_expand_description_button_label">See More</string>
-  <plurals name="area_screen_number_of_climbs">
-    <item quantity="one">%1$d Climb</item>
-    <item quantity="other">%1$d Climbs</item>
-  </plurals>
   <plurals name="area_screen_number_of_areas">
     <item quantity="one">%1$d Area</item>
     <item quantity="other">%1$d Areas</item>
   </plurals>
-  <string name="area_screen_organizations_header">Local climbing organizations</string>
+  <plurals name="area_screen_number_of_climbs">
+    <item quantity="one">%1$d Climb</item>
+    <item quantity="other">%1$d Climbs</item>
+  </plurals>
   <plurals name="area_screen_number_of_pitches">
     <item quantity="one">%1$d Pitch</item>
     <item quantity="other">%1$d Pitches</item>
   </plurals>
+  <string name="area_screen_organizations_header">Local climbing organizations</string>
   <string name="area_screen_show_all_images_button_label">Show All</string>
   <string name="area_screen_updated_title">Updated:</string>
   <string name="area_screen_v_scale_header">%1$d Boulders</string>
   <string name="area_screen_yds_header">%1$d Routes</string>
 
-  <string name="climb_info_card_height_ft_label">%1$d ft</string>
   <string name="climb_info_card_grade_na_label">NA</string>
+  <string name="climb_info_card_height_ft_label">%1$d ft</string>
   <plurals name="climb_info_card_number_of_pitches">
     <item quantity="one">%1$d Pitch</item>
     <item quantity="other">%1$d Pitches</item>
@@ -62,6 +62,7 @@
   <string name="organization_dialog_facebook_button_title">Facebook</string>
   <string name="organization_dialog_instagram_button_title">Instagram</string>
 
+  <string name="search_screen_about_button_label">About</string>
   <string name="search_screen_climb_filter_text">Climbs</string>
   <string name="search_screen_climbs_header">Climbs</string>
   <string name="search_screen_areas_header">Areas</string>

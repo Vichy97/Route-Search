@@ -32,11 +32,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarDefaults.InputField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -86,6 +88,7 @@ internal fun SearchScreen() {
     onClimbSearchResultClick = viewModel::onClimbSearchResultClick,
     onSearchHistoryEntryClick = viewModel::onSearchHistoryEntryClick,
     onRetryClick = viewModel::onRetryClick,
+    onAboutClick = viewModel::onAboutClick,
   )
 }
 
@@ -104,75 +107,96 @@ private fun SearchScreenContent(
   onClimbSearchResultClick: (String) -> Unit,
   onSearchHistoryEntryClick: (String) -> Unit,
   onRetryClick: () -> Unit,
-) = ConstraintLayout(
-  modifier = Modifier
-    .fillMaxSize()
-    .background(MaterialTheme.colorScheme.surface),
-) {
-  val (map, searchBar) = createRefs()
-
-  CragMap(
-    modifier = Modifier.constrainAs(map) {
-      top.linkTo(parent.top)
-      start.linkTo(parent.start)
-      end.linkTo(parent.end)
-      bottom.linkTo(parent.bottom)
-
-      width = Dimension.fillToConstraints
-      height = Dimension.fillToConstraints
-    },
-    textColor = MaterialTheme.colorScheme.primary,
-  )
-
-  SearchBar(
+  onAboutClick: () -> Unit,
+) = Scaffold { padding ->
+  ConstraintLayout(
     modifier = Modifier
-      .wrapContentHeight()
-      .constrainAs(searchBar) {
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.surface),
+  ) {
+    val (map, searchBar, about) = createRefs()
+
+    CragMap(
+      modifier = Modifier.constrainAs(map) {
         top.linkTo(parent.top)
         start.linkTo(parent.start)
         end.linkTo(parent.end)
+        bottom.linkTo(parent.bottom)
+
+        width = Dimension.fillToConstraints
+        height = Dimension.fillToConstraints
       },
-    viewState = viewState,
-    onSearchQueryChange = { onSearchQueryChange(it) },
-    onExpandedChange = { onSearchExpandedChange(it) },
-    onBackClick = { onBackClick() },
-    onClearClick = { onClearClick() },
-    onSearch = { onSearch(it) },
-  ) {
-    // Necessary because SearchBar doesn't properly handle dark mode colors for items within it's content layout
-    Surface(
-      color = SearchBarDefaults.colors().containerColor,
+      textColor = MaterialTheme.colorScheme.primary,
+    )
+
+    SearchBar(
+      modifier = Modifier
+        .wrapContentHeight()
+        .constrainAs(searchBar) {
+          top.linkTo(parent.top)
+          start.linkTo(parent.start)
+          end.linkTo(parent.end)
+        },
+      viewState = viewState,
+      onSearchQueryChange = { onSearchQueryChange(it) },
+      onExpandedChange = { onSearchExpandedChange(it) },
+      onBackClick = { onBackClick() },
+      onClearClick = { onClearClick() },
+      onSearch = { onSearch(it) },
     ) {
-      when (viewState) {
-        is SearchViewState.Loading -> Loading(
-          modifier = Modifier.fillMaxSize(),
-        )
+      // Necessary because SearchBar doesn't properly handle dark mode colors for items within it's content layout
+      Surface(
+        color = SearchBarDefaults.colors().containerColor,
+      ) {
+        when (viewState) {
+          is SearchViewState.Loading -> Loading(
+            modifier = Modifier.fillMaxSize(),
+          )
 
-        is SearchViewState.ShowingHistory -> SearchHistoryList(
-          modifier = Modifier.fillMaxSize(),
-          history = viewState.searchHistory,
-          onSearchHistoryEntryClick = { onSearchHistoryEntryClick(it) },
-        )
+          is SearchViewState.ShowingHistory -> SearchHistoryList(
+            modifier = Modifier.fillMaxSize(),
+            history = viewState.searchHistory,
+            onSearchHistoryEntryClick = { onSearchHistoryEntryClick(it) },
+          )
 
-        is SearchViewState.ShowingResults -> ShowingResults(
-          modifier = Modifier.fillMaxSize(),
-          viewState = viewState,
-          onAreaFilterClick = { onAreaFilterClick() },
-          onClimbFilterClick = { onClimbFilterClick() },
-          onAreaSearchResultClick = { onAreaSearchResultClick(it) },
-          onClimbSearchResultClick = { onClimbSearchResultClick(it) },
-        )
+          is SearchViewState.ShowingResults -> ShowingResults(
+            modifier = Modifier.fillMaxSize(),
+            viewState = viewState,
+            onAreaFilterClick = { onAreaFilterClick() },
+            onClimbFilterClick = { onClimbFilterClick() },
+            onAreaSearchResultClick = { onAreaSearchResultClick(it) },
+            onClimbSearchResultClick = { onClimbSearchResultClick(it) },
+          )
 
-        is SearchViewState.NetworkError -> NetworkError(
-          modifier = Modifier.fillMaxSize(),
-          onRetryClick = { onRetryClick() },
-        )
+          is SearchViewState.NetworkError -> NetworkError(
+            modifier = Modifier.fillMaxSize(),
+            onRetryClick = { onRetryClick() },
+          )
 
-        is SearchViewState.UnknownError -> UnknownError(
-          modifier = Modifier.fillMaxSize(),
-          onRetryClick = { onRetryClick() },
-        )
+          is SearchViewState.UnknownError -> UnknownError(
+            modifier = Modifier.fillMaxSize(),
+            onRetryClick = { onRetryClick() },
+          )
+        }
       }
+    }
+
+    TextButton(
+      onClick = onAboutClick,
+      modifier = Modifier
+        .padding(
+          end = 16.dp,
+          bottom = padding.calculateBottomPadding(),
+        )
+        .constrainAs(about) {
+          bottom.linkTo(parent.bottom)
+          end.linkTo(parent.end)
+        },
+    ) {
+      Text(
+        text = stringResource(R.string.search_screen_about_button_label),
+        color = Color.White,
+      )
     }
   }
 }
@@ -601,6 +625,7 @@ private fun InactivePreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -623,6 +648,7 @@ private fun NoResultsPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -674,6 +700,7 @@ private fun ShowingSearchResultsPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -701,6 +728,7 @@ private fun ShowingHistoryPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -723,6 +751,7 @@ private fun NetworkErrorPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
 
@@ -745,5 +774,6 @@ private fun UnknownErrorPreview() = RouteSearchTheme {
     onClimbSearchResultClick = { },
     onSearchHistoryEntryClick = { },
     onRetryClick = { },
+    onAboutClick = { },
   )
 }
